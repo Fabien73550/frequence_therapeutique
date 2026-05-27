@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
-  },
+  "start": "node server.js",
+  "postinstall": "npm rebuild better-sqlite3"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Fabien73550/frequence_therapeutique.git"
