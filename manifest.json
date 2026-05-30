@@ -1,0 +1,17 @@
+{
+  "name": "Fréquences Thérapeutiques",
+  "short_name": "Fréquences",
+  "description": "Générateur de fréquences thérapeutiques Marc-Alain Lavoie",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080b12",
+  "theme_color": "#080b12",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
