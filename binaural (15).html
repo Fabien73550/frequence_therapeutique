@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fréquences Thérapeutiques</title>
+<meta name="application-name" content="Fréquences Thérapeutiques">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
+  --border:#242a3d;--border2:#2e3650;
+  --text:#e8edf8;--muted:#6b7a9e;--dim:#3d4a6a;
+  --green:#00d4a0;--green-bg:rgba(0,212,160,0.08);--green-border:rgba(0,212,160,0.25);
+  --blue:#4d9fff;--blue-bg:rgba(77,159,255,0.08);--blue-border:rgba(77,159,255,0.25);
+  --purple:#a06fff;--purple-bg:rgba(160,111,255,0.08);--purple-border:rgba(160,111,255,0.25);
+  --amber:#ffb347;--amber-bg:rgba(255,179,71,0.08);--amber-border:rgba(255,179,71,0.25);
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;overflow-x:hidden}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-btn{flex:1;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-family:'Outfit',sans-serif;font-size:9px;cursor:pointer;transition:color 0.2s}
+.nav-btn.active{color:var(--green)}
+.nav-icon{font-size:18px;line-height:1}
+.play-bar{position:fixed;bottom:68px;left:0;right:0;background:var(--s1);border-top:1px solid var(--border);padding:10px 16px;z-index:99;display:flex;align-items:center;gap:10px}
+.play-bar-info{flex:1;min-width:0}
+.play-bar-freq{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.play-bar-timer{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;color:var(--text)}
+.play-bar-timer.playing{color:var(--green)}
+.play-bar-timer.inactive{color:var(--dim)}
+.play-btn{padding:12px 24px;border-radius:12px;border:1.5px solid var(--border2);background:var(--s3);color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.play-btn:active{transform:scale(0.97)}
+.play-btn.playing{border-color:var(--green-border);background:var(--green-bg);color:var(--green)}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
+.page{display:none;padding:16px;padding-bottom:140px;min-height:100vh}
+.page.active{display:block}
+.header{text-align:center;padding:20px 0 8px}
+.header h1{font-size:22px;font-weight:600;letter-spacing:-0.02em;background:linear-gradient(135deg,#e8edf8,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{font-size:12px;color:var(--muted);margin-top:2px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px}
+.card-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px}
+.freq-row{display:flex;justify-content:space-between;align-items:center;background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.freq-box{text-align:center;flex:1}
+.freq-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;color:var(--green);line-height:1}
+.freq-lbl{font-size:10px;color:var(--muted);margin-top:3px}
+.freq-sep{width:1px;height:36px;background:var(--border)}
+.beat-num{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--blue)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:12px;font-family:'Outfit',sans-serif;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:1px;white-space:nowrap}
+.chip:active{transform:scale(0.96)}
+.chip .sub{font-size:10px;opacity:0.6}
+.chip.b{border-color:var(--blue-border);background:var(--blue-bg);color:var(--blue)}
+.timer-chips{display:flex;gap:8px;flex-wrap:wrap}
+.t-chip{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:13px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all 0.15s}
+.t-chip.p{border-color:var(--purple-border);background:var(--purple-bg);color:var(--purple)}
+select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7a9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+select option{background:var(--s2)}
+.freq-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--s2);margin-bottom:8px;cursor:pointer;transition:all 0.15s}
+.freq-item:active{transform:scale(0.99)}
+.freq-item.active{border-color:var(--green-border);background:var(--green-bg)}
+.freq-item-left{display:flex;flex-direction:column;gap:2px}
+.freq-item-name{font-size:14px;font-weight:500;color:var(--text)}
+.freq-item-sub{font-size:11px;color:var(--muted)}
+.freq-item.active .freq-item-name{color:var(--green)}
+.freq-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;margin-left:8px}
+.freq-item-hz{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--blue)}
+.freq-item-dur{font-size:10px;color:var(--muted)}
+.proto-card{border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.proto-header{padding:12px 14px;background:var(--s2);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.proto-title{font-size:14px;font-weight:500}
+.proto-badge{font-size:10px;padding:3px 8px;border-radius:6px;background:var(--s3);color:var(--muted);flex-shrink:0;margin-left:8px}
+.proto-body{padding:12px 14px;background:var(--s1);display:none}
+.proto-body.open{display:block}
+.proto-section{margin-bottom:10px}
+.proto-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.proto-section-title.s1{color:var(--amber)}
+.proto-section-title.s2{color:var(--green)}
+.proto-freq-row{display:flex;flex-wrap:wrap;gap:6px}
+.proto-freq-btn{padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all 0.15s;line-height:1.4;text-align:center}
+.proto-freq-btn:active{transform:scale(0.95)}
+.proto-freq-btn.s1{border-color:var(--amber-border);background:var(--amber-bg);color:var(--amber)}
+.proto-freq-btn.s2{border-color:var(--green-border);background:var(--green-bg);color:var(--green)}
+.cat-tabs{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.cat-tab{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:12px;cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0}
+.cat-tab.active{border-color:var(--blue-border);background:var(--blue-bg);color:var(--blue)}
+.selected-bar{background:var(--green-bg);border:1px solid var(--green-border);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:none;align-items:center;gap:8px}
+.selected-bar.show{display:flex}
+.selected-bar-text{font-size:12px;color:var(--green);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.warning{font-size:11px;color:var(--dim);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="page active" id="page-binaural">
+  <div class="header"><h1>Fréquences Thérapeutiques</h1><p>Marc-Alain Lavoie · Naturasounds</p></div>
+  <div class="freq-row">
+    <div class="freq-box"><div class="freq-num" id="f-left">432</div><div class="freq-lbl">gauche Hz</div></div>
+    <div class="freq-sep"></div>
+    <div class="freq-box"><div class="beat-num" id="f-beat">1.2</div><div class="freq-lbl">battement</div></div>
+    <div class="freq-sep"></div>
+    <div class="freq-box"><div class="freq-num" id="f-right">433.2</div><div class="freq-lbl">droite Hz</div></div>
+  </div>
+  <div class="card"><div class="card-label">Chakras</div>
+  <button onclick="lancerVoyageChakras()" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:10px">✦ Voyage au cœur des chakras</button>
+  <select id="chakra-select" onchange="onChakraSelect()"></select></div>
+  <div class="card"><div class="card-label">Onde binaural</div><div class="chips" id="onde-chips"></div></div>
+  <div class="card"><div class="card-label">Minuteur</div><div class="timer-chips" id="timer-chips"></div></div>
+  <p class="warning">Casque obligatoire pour effet binaural</p>
+</div>
+
+<div class="page" id="page-perso">
+  <div class="header"><h1>Fréquence Perso</h1><p>Slider pour acouphènes · Playlist du jour</p></div>
+  <div class="card">
+    <div class="card-label">Recherche fréquence (acouphènes)</div>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+      <input type="number" id="custom-hz-input" min="20" max="10000" value="432"
+        style="width:100px;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center"
+        oninput="onCustomInput()">
+      <span style="font-size:13px;color:var(--muted)">Hz</span>
+      <button onclick="loadFreq(parseInt(document.getElementById('custom-hz-input').value)||432, Math.round(Math.min(45,Math.max(10,6000/(parseInt(document.getElementById('custom-hz-input').value)||432)))), (parseInt(document.getElementById('custom-hz-input').value)||432)+' Hz')"
+        style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--blue-border);background:var(--blue-bg);color:var(--blue);font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer">
+        ▶ Charger
+      </button>
+    </div>
+    <input type="range" id="custom-slider" min="20" max="10000" value="432" step="1"
+      style="width:100%;accent-color:var(--green);margin-bottom:6px" oninput="onCustomSlider()">
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">
+      <span>20 Hz</span><span style="color:var(--green)">← glisser →</span><span>10 000 Hz</span>
+    </div>
+    <button onclick="addToPlaylist()"
+      style="width:100%;margin-top:12px;padding:10px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer">
+      + Ajouter à la playlist
+    </button>
+  </div>
+
+  <div class="card" id="playlist-card" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="card-label" style="margin-bottom:0">Ma Playlist du jour</div>
+      <button onclick="clearPlaylist()"
+        style="font-size:11px;padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer">
+        Vider
+      </button>
+    </div>
+    <div id="playlist-items"></div>
+    <button onclick="launchPlaylist()"
+      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
+      ▶ Lancer la playlist
+    </button>
+  </div>
+</div>
+<div class="page" id="page-mineraux">
+  <div class="header"><h1>Éléments et Minéraux</h1><p>Appuyer pour charger dans le générateur</p></div>
+  <div class="selected-bar" id="sel-bar-min"><span class="selected-bar-text" id="sel-bar-min-txt">—</span></div>
+  <div class="cat-tabs" id="min-cat-tabs"></div>
+  <div id="min-list"></div>
+</div>
+
+<div class="page" id="page-proto">
+  <div class="header"><h1>Protocoles</h1><p>Appuyer sur une fréquence pour la charger</p></div>
+  <div id="proto-list"></div>
+</div>
+
+<div class="page" id="page-symp">
+  <div class="header"><h1>Par Symptôme</h1><p>Appuyer sur une fréquence pour la charger</p></div>
+  <div class="cat-tabs" id="symp-cat-tabs"></div>
+  <div id="symp-list"></div>
+</div>
+
+<div class="play-bar">
+  <div class="play-bar-info">
+    <div class="play-bar-freq" id="pb-freq">Racine - 432 Hz - D 1.2 Hz</div>
+    <div class="play-bar-timer inactive" id="pb-timer">13:00</div>
+  </div>
+  <div style="display:flex;gap:6px">
+    <button id="pause-btn" onclick="togglePause()"
+      style="display:none;padding:12px 14px;border-radius:12px;border:1.5px solid var(--border2);background:var(--s3);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">
+      ⏸ Pause
+    </button>
+    <button class="play-btn" id="play-btn" onclick="togglePlay()">
+      <span id="play-icon">▶</span><span id="play-label">Lancer</span>
+    </button>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('binaural',this)"><span class="nav-icon">◎</span>Binaural</button>
+  <button class="nav-btn" onclick="showPage('perso',this)"><span class="nav-icon">♫</span>Perso</button>
+  <button class="nav-btn" onclick="showPage('mineraux',this)"><span class="nav-icon">⬡</span>Minéraux</button>
+  <button class="nav-btn" onclick="showPage('proto',this)"><span class="nav-icon">⊞</span>Protocoles</button>
+  <button class="nav-btn" onclick="showPage('symp',this)"><span class="nav-icon">✦</span>Symptômes</button>
+</nav>
+
+<script>
+const CHAKRAS=[
+  {nom:"Racine",hz:432,duree:14},{nom:"Sacral",hz:468,duree:13},{nom:"Plexus solaire",hz:504,duree:12},
+  {nom:"Coeur bas",hz:540,duree:11},{nom:"Coeur",hz:576,duree:10},{nom:"Haut-coeur",hz:612,duree:10},
+  {nom:"Gorge",hz:648,duree:10},{nom:"3eme oeil",hz:684,duree:10},{nom:"Couronne",hz:756,duree:10}
+];
+const ONDES=[
+  {nom:"D 1.2",diff:1.2,label:"Delta 1.2 Hz"},{nom:"D 3",diff:3,label:"Delta 3 Hz"},
+  {nom:"T 4",diff:4,label:"Theta 4 Hz"},{nom:"T 6",diff:6,label:"Theta 6 Hz"},
+  {nom:"T 8",diff:8,label:"Theta 8 Hz"},{nom:"A 10",diff:10,label:"Alpha 10 Hz"},
+  {nom:"A 12",diff:12,label:"Alpha 12 Hz"}
+];
+const TIMERS=[{l:"inf",v:0},{l:"10",v:10},{l:"13",v:13},{l:"18",v:18},{l:"22",v:22},{l:"30",v:30}];
+
+const MINERAUX=[
+  {nom:"Hydrogene",hz:587,duree:10,cat:"Element",action:"Equilibre energetique"},
+  {nom:"Helium",hz:872,duree:10,cat:"Element",action:"Relaxation profonde"},
+  {nom:"Lithium",hz:756,duree:10,cat:"Element",action:"Stabilisation humeur"},
+  {nom:"Carbone",hz:836,duree:10,cat:"Element",action:"Regeneration cellulaire"},
+  {nom:"Azote",hz:2562,duree:10,cat:"Element",action:"Synthese proteique"},
+  {nom:"Oxygene",hz:1296,duree:10,cat:"Element",action:"Respiration cellulaire"},
+  {nom:"Fluor",hz:1368,duree:10,cat:"Element",action:"Renforcement os et dents"},
+  {nom:"Neon",hz:1512,duree:10,cat:"Element",action:"Equilibre electromagnetique"},
+  {nom:"Sodium",hz:1728,duree:10,cat:"Element",action:"Equilibre osmotique"},
+  {nom:"Aluminium",hz:2016,duree:10,cat:"Element",action:"Structure cellulaire"},
+  {nom:"Silicium",hz:2304,duree:10,cat:"Element",action:"Cartilage et muqueuses"},
+  {nom:"Phosphore",hz:2592,duree:10,cat:"Element",action:"Memoire et ATP"},
+  {nom:"Soufre",hz:2736,duree:10,cat:"Element",action:"Detox et glutathion"},
+  {nom:"Chlore",hz:3024,duree:10,cat:"Element",action:"Immunite intestinale"},
+  {nom:"Argon",hz:3456,duree:10,cat:"Element",action:"Equilibre vibratoire"},
+  {nom:"Deuterium",hz:488,duree:12,cat:"Element",action:"Isotope hydrogene"},
+  {nom:"Magnesium",hz:1872,duree:10,cat:"Mineral",action:"Anti-stress et energie"},
+  {nom:"Calcium",hz:1911,duree:10,cat:"Mineral",action:"Os et muscles"},
+  {nom:"Potassium",hz:1864,duree:10,cat:"Mineral",action:"Rythme cardiaque"},
+  {nom:"Titane",hz:3456,duree:10,cat:"Mineral",action:"Solidite osseuse"},
+  {nom:"Chrome",hz:4224,duree:10,cat:"Mineral",action:"Glycemie et insuline"},
+  {nom:"Manganese",hz:3888,duree:10,cat:"Mineral",action:"Antioxydant osseux"},
+  {nom:"Fer",hz:756,duree:10,cat:"Mineral",action:"Transport oxygene"},
+  {nom:"Nickel",hz:5184,duree:10,cat:"Mineral",action:"Soutien enzymatique"},
+  {nom:"Cuivre",hz:5184,duree:10,cat:"Mineral",action:"Antiviral et collagene"},
+  {nom:"Zinc",hz:5472,duree:10,cat:"Mineral",action:"Immunite cellulaire"},
+  {nom:"Selenium",hz:6048,duree:10,cat:"Mineral",action:"Antioxydant profond"},
+  {nom:"Iode",hz:1976,duree:10,cat:"Mineral",action:"Thyroide T3 et T4"},
+  {nom:"Molybdene",hz:4320,duree:10,cat:"Mineral",action:"Detox hepatique"},
+  {nom:"Vanadium",hz:5376,duree:10,cat:"Mineral",action:"Tension arterielle"},
+  {nom:"Bore",hz:6912,duree:10,cat:"Mineral",action:"Os et articulations"},
+  {nom:"Strontium",hz:9216,duree:10,cat:"Mineral",action:"Densite osseuse"},
+  {nom:"Radium",hz:4370,duree:10,cat:"Mineral",action:"Regeneration tissulaire"},
+  {nom:"Or",hz:7777,duree:10,cat:"Oligo",action:"Fonctions cognitives"},
+  {nom:"Argent",hz:6767,duree:10,cat:"Oligo",action:"Antimicrobien naturel"},
+  {nom:"Platine",hz:8088,duree:10,cat:"Oligo",action:"Soutien oncologie"},
+  {nom:"Tellure",hz:6528,duree:10,cat:"Oligo",action:"Detox auto-immune"},
+  {nom:"Vitamine C",hz:525,duree:11,cat:"Vitamine",action:"Immunite et collagene"},
+  {nom:"Vitamine D",hz:4850,duree:10,cat:"Vitamine",action:"Calcium et immunite"},
+  {nom:"CoQ10",hz:5130,duree:10,cat:"Vitamine",action:"Energie mitochondriale"},
+  {nom:"Glutathion",hz:4416,duree:10,cat:"Vitamine",action:"Antioxydant majeur"},
+  {nom:"Dopamine",hz:5777,duree:10,cat:"Neuro",action:"Motivation et plaisir"},
+  {nom:"Serotonine",hz:5588,duree:10,cat:"Neuro",action:"Humeur et bien-etre"},
+  {nom:"Noradrenaline",hz:5632,duree:10,cat:"Neuro",action:"Vigilance et focus"},
+  {nom:"GABA",hz:4444,duree:10,cat:"Neuro",action:"Calme et sommeil"},
+  {nom:"Acetylcholine",hz:5888,duree:10,cat:"Neuro",action:"Memoire et concentration"},
+  {nom:"Melatonine",hz:4444,duree:10,cat:"Neuro",action:"Hormone du sommeil"},
+  {nom:"Histamine",hz:3492,duree:10,cat:"Neuro",action:"Reaction allergique"},
+  {nom:"Xenon",hz:3333,duree:10,cat:"Neuro",action:"Relaxation profonde"},
+  {nom:"Foie",hz:832,duree:10,cat:"Organe",action:"Detox et filtration"},
+  {nom:"Thymus",hz:2442,duree:10,cat:"Organe",action:"Immunite lymphocytes T"},
+  {nom:"Hypothalamus",hz:999,duree:10,cat:"Organe",action:"Chef orchestre hormonal"},
+  {nom:"Pancreas",hz:3724,duree:10,cat:"Organe",action:"Insuline et digestion"},
+  {nom:"Glande pineale",hz:1296,duree:10,cat:"Organe",action:"Melatonine et cycles"},
+  {nom:"Globe oculaire",hz:1472,duree:10,cat:"Organe",action:"Soutien vision"},
+  {nom:"Eau H2O",hz:1388,duree:10,cat:"Molecule",action:"Hydratation cellulaire Lavoie"}
+];
+
+const PROTOCOLES=[
+  {nom:"Vitalite generale",s1:[{n:"Soufre",hz:2736,d:10},{n:"Carbone",hz:836,d:10}],s2:[{n:"Magnesium",hz:1872,d:10},{n:"Zinc",hz:5472,d:10},{n:"Fer",hz:756,d:10},{n:"Or",hz:7777,d:10}]},
+  {nom:"Fatigue chronique",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Fer",hz:756,d:10}],s2:[{n:"Magnesium",hz:1872,d:10},{n:"Phosphore",hz:2592,d:10},{n:"Oxygene",hz:1296,d:10},{n:"CoQ10",hz:5130,d:10}]},
+  {nom:"Anxiete / Burn-out",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Helium",hz:872,d:10}],s2:[{n:"Fer",hz:756,d:10},{n:"Magnesium",hz:1872,d:10},{n:"GABA",hz:4444,d:10},{n:"Serotonine",hz:5588,d:10}]},
+  {nom:"Depression",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Phosphore",hz:2592,d:10}],s2:[{n:"Dopamine",hz:5777,d:10},{n:"Serotonine",hz:5588,d:10},{n:"Zinc",hz:5472,d:10},{n:"Or",hz:7777,d:10}]},
+  {nom:"Insomnie",s1:[{n:"Soufre",hz:2736,d:10},{n:"Iode",hz:1976,d:10}],s2:[{n:"Magnesium",hz:1872,d:10},{n:"GABA",hz:4444,d:10},{n:"Melatonine",hz:4444,d:10},{n:"Xenon",hz:3333,d:10}],note:"S2 le soir uniquement"},
+  {nom:"Diabete type 2",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Molybdene",hz:4320,d:10}],s2:[{n:"Chrome",hz:4224,d:10},{n:"Zinc",hz:5472,d:10},{n:"Pancreas",hz:3724,d:10},{n:"Magnesium",hz:1872,d:10}]},
+  {nom:"Soutien cancer",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Thymus",hz:2442,d:10}],s2:[{n:"Platine",hz:8088,d:10},{n:"Glutathion",hz:4416,d:10},{n:"Selenium",hz:6048,d:10},{n:"Or",hz:7777,d:10}],note:"Supervision medicale obligatoire"},
+  {nom:"Arthrose",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Histamine",hz:3492,d:10}],s2:[{n:"Bore",hz:6912,d:10},{n:"Calcium",hz:1911,d:10},{n:"Magnesium",hz:1872,d:10},{n:"Silicium",hz:2304,d:10}]},
+  {nom:"Osteoporose",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10}],s2:[{n:"Strontium",hz:9216,d:10},{n:"Calcium",hz:1911,d:10},{n:"Bore",hz:6912,d:10},{n:"Fluor",hz:1368,d:10},{n:"Vit D",hz:4850,d:10}]},
+  {nom:"Asthme / Allergies",s1:[{n:"Soufre",hz:2736,d:10},{n:"Histamine",hz:3492,d:10},{n:"Foie",hz:832,d:10}],s2:[{n:"Cuivre",hz:5184,d:10},{n:"Zinc",hz:5472,d:10},{n:"Selenium",hz:6048,d:10},{n:"Silicium",hz:2304,d:10}]},
+  {nom:"Thyroide",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10}],s2:[{n:"Iode",hz:1976,d:10},{n:"Selenium",hz:6048,d:10},{n:"Zinc",hz:5472,d:10},{n:"Manganese",hz:3888,d:10},{n:"Hypothalamus",hz:999,d:10}]},
+  {nom:"Hypertension",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Sodium",hz:1728,d:10}],s2:[{n:"Potassium",hz:1864,d:10},{n:"Magnesium",hz:1872,d:10},{n:"Vanadium",hz:5376,d:10},{n:"CoQ10",hz:5130,d:10}]},
+  {nom:"Memoire / Cognitif",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Oxygene",hz:1296,d:10}],s2:[{n:"Phosphore",hz:2592,d:10},{n:"Acetylcholine",hz:5888,d:10},{n:"Cuivre",hz:5184,d:10},{n:"Or",hz:7777,d:10}]},
+  {nom:"Immunite faible",s1:[{n:"Soufre",hz:2736,d:10},{n:"Thymus",hz:2442,d:10},{n:"Foie",hz:832,d:10}],s2:[{n:"Zinc",hz:5472,d:10},{n:"Cuivre",hz:5184,d:10},{n:"Selenium",hz:6048,d:10},{n:"Or",hz:7777,d:10}]},
+  {nom:"Detox generale",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Chlore",hz:3024,d:10}],s2:[{n:"Selenium",hz:6048,d:10},{n:"Zinc",hz:5472,d:10},{n:"Magnesium",hz:1872,d:10},{n:"Carbone",hz:836,d:10}]},
+  {nom:"Cicatrisation",s1:[{n:"2720 Hz",hz:2720,d:10},{n:"880 Hz",hz:880,d:10},{n:"787 Hz",hz:787,d:10}],s2:[{n:"727 Hz",hz:727,d:10},{n:"220 Hz",hz:220,d:27}],note:"Source CAFL"},
+  {nom:"Inflammation chronique",s1:[{n:"2720 Hz",hz:2720,d:10},{n:"2489 Hz",hz:2489,d:10}],s2:[{n:"2170 Hz",hz:2170,d:10},{n:"1865 Hz",hz:1865,d:10}],note:"Source CAFL"},
+  {nom:"Dentaire",s1:[{n:"2720 Hz",hz:2720,d:10}],s2:[{n:"2720 Hz",hz:2720,d:10}],note:"Source Rife Sevigny"},
+  {nom:"Chevelure / Alopecie",s1:[{n:"727 Hz",hz:727,d:10},{n:"465 Hz",hz:465,d:13}],s2:[{n:"146 Hz",hz:146,d:41},{n:"800 Hz",hz:800,d:10}],note:"Source CAFL"},
+  {nom:"Vision / Yeux",s1:[{n:"Globe oculaire",hz:1472,d:10}],s2:[{n:"650 Hz",hz:650,d:10}],note:"Source KHZ"},
+  {nom:"Circulation / Thrombose",s1:[{n:"685 Hz",hz:685,d:10},{n:"776 Hz",hz:776,d:10}],s2:[{n:"1500 Hz",hz:1500,d:10}],note:"Source CAFL"},
+  {nom:"Trauma emotionnel",s1:[{n:"96 Hz",hz:96,d:45},{n:"192 Hz",hz:192,d:31},{n:"300 Hz",hz:300,d:20}],s2:[{n:"760 Hz",hz:760,d:10},{n:"3000 Hz",hz:3000,d:10}],note:"Source CAFL"},
+  {nom:"Globules blancs",s1:[{n:"Thymus",hz:2442,d:10},{n:"Soufre",hz:2736,d:10}],s2:[{n:"1434 Hz",hz:1434,d:10}],note:"Source XTRA"},
+  {nom:"Lombalgie / Bas du dos",s1:[{n:"Soufre",hz:2736,d:10},{n:"Foie",hz:832,d:10},{n:"Histamine",hz:3492,d:10}],s2:[{n:"Silicium",hz:2304,d:10},{n:"Magnesium",hz:1872,d:10},{n:"Calcium",hz:1911,d:10},{n:"Bore",hz:6912,d:10}]}
+];
+
+const SYMPTOMES={
+  "Douleurs":[
+    {s:"Genou douloureux",s1:[2736,832,3492],s2:[2304,1911,1872,6912]},
+    {s:"Dos / Lombaires",s1:[2736,832,3492],s2:[2304,1872,1911]},
+    {s:"Douleurs musculaires",s1:[2736,832],s2:[1872,756,1296]},
+    {s:"Migraine",s1:[2736,832,1728],s2:[1872,1864,5588]},
+    {s:"Sciatique",s1:[2736,832,3492],s2:[2304,1872,1911]}
+  ],
+  "Fatigue":[
+    {s:"Fatigue generale",s1:[2736,832,756],s2:[1296,1872,5130,2592]},
+    {s:"Fatigue matinale",s1:[2736,832],s2:[1872,999,1976]},
+    {s:"Epuisement nerveux",s1:[2736,832,872],s2:[756,1872,4444,5588]},
+    {s:"Burn-out",s1:[2736,832],s2:[756,1872,4444,5777]}
+  ],
+  "Sommeil":[
+    {s:"Endormissement difficile",s1:[2736,1976],s2:[1872,4444,3333]},
+    {s:"Reveils nocturnes",s1:[2736,832],s2:[1872,4444,999,1296]},
+    {s:"Sommeil non reparateur",s1:[2736,832,756],s2:[1872,5130,1296,4444]}
+  ],
+  "Mental":[
+    {s:"Stress chronique",s1:[2736,832,872],s2:[756,1872,4444,5588]},
+    {s:"Anxiete / Angoisse",s1:[2736,832,872],s2:[756,4444,1872,5588]},
+    {s:"Deprime passagere",s1:[2736,832,2592],s2:[5777,5588,5472,7777]},
+    {s:"Manque concentration",s1:[2736,832,1296],s2:[2592,5888,7777]},
+    {s:"Irritabilite",s1:[2736,832,872],s2:[1872,756,4444,5588]}
+  ],
+  "Immunite":[
+    {s:"Rhume / Grippe",s1:[2736,2442,832],s2:[5472,5184,6048,7777]},
+    {s:"Fatigue post-virale",s1:[2736,832,756],s2:[1296,1872,5130,6048]},
+    {s:"Allergies saisonnieres",s1:[2736,3492,832],s2:[5184,5472,6048,2304]}
+  ],
+  "Cognitif":[
+    {s:"Perte de memoire",s1:[2736,832,1296],s2:[2592,5888,5184,7777]},
+    {s:"Brouillard mental",s1:[2736,832,1296],s2:[2592,5888,1872]},
+    {s:"TDAH",s1:[2736,832,872],s2:[5777,1872,4444,2592]}
+  ]
+};
+
+let baseHz=432,diff=1.2,timerMin=13,secondsLeft=0,playing=false,paused=false,pausedSeconds=0;
+let activeMinItem=null,currentLabel="Racine - 432 Hz";
+let audioCtx=null,leftOsc=null,rightOsc=null,gainNode=null,timerInterval=null;
+let seqQueue=[],seqIndex=0,seqType="",seqProtoName="";
+
+// ── CUSTOM FREQUENCY ──────────────────────────────────────────────────────────
+function onCustomSlider(){
+  var v=parseInt(document.getElementById("custom-slider").value);
+  document.getElementById("custom-hz-input").value=v;
+  baseHz=v;currentLabel=v+" Hz";
+  updateDisplays();
+  if(playing&&leftOsc&&rightOsc){
+    leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
+    rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
+  }
+}
+function onCustomInput(){
+  var v=parseInt(document.getElementById("custom-hz-input").value);
+  if(isNaN(v))return;
+  v=Math.min(10000,Math.max(20,v));
+  document.getElementById("custom-slider").value=v;
+  baseHz=v;currentLabel=v+" Hz";
+  updateDisplays();
+  if(playing&&leftOsc&&rightOsc){
+    leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
+    rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
+  }
+}
+
+// ── PLAYLIST ──────────────────────────────────────────────────────────────────
+var playlist=[];
+function savePlaylist(){try{localStorage.setItem("ft_playlist",JSON.stringify(playlist));}catch(e){}}
+function loadPlaylist(){try{var s=localStorage.getItem("ft_playlist");if(s)playlist=JSON.parse(s);}catch(e){}}
+function addToPlaylist(){
+  var hz=parseInt(document.getElementById("custom-hz-input").value)||baseHz;
+  var d=Math.round(Math.max(10,Math.min(45,6000/hz)));
+  playlist.push({hz:hz,d:d,nom:hz+" Hz"});
+  savePlaylist();renderPlaylist();
+}
+function addFreqToPlaylist(hz,d,nom){
+  playlist.push({hz:hz,d:d,nom:nom});
+  savePlaylist();renderPlaylist();
+  alert(nom+" ajouté à la playlist ✓");
+}
+function renderPlaylist(){
+  var el=document.getElementById("playlist-items");
+  var card=document.getElementById("playlist-card");
+  if(!el||!card)return;
+  if(playlist.length===0){card.style.display="none";return;}
+  card.style.display="block";
+  el.innerHTML="";
+  playlist.forEach(function(item,i){
+    var row=document.createElement("div");
+    row.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)";
+    row.innerHTML="<span style='font-family:JetBrains Mono,monospace;font-size:13px;color:var(--blue)'>"+item.nom+"</span><span style='font-size:11px;color:var(--muted)'>"+item.d+"m</span><button onclick='removeFromPlaylist("+i+")' style='font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer'>✕</button>";
+    el.appendChild(row);
+  });
+}
+function removeFromPlaylist(i){
+  playlist.splice(i,1);
+  savePlaylist();renderPlaylist();
+}
+function clearPlaylist(){
+  playlist=[];
+  savePlaylist();renderPlaylist();
+}
+function launchPlaylist(){
+  if(playlist.length===0)return;
+  if(playing){if(!confirm("Session en cours. Arreter ?"))return;stopAudio();}
+  seqQueue=playlist.map(function(p){return{n:p.nom,hz:p.hz,d:p.d};});
+  seqType="playlist";seqProtoName="Ma Playlist";seqIndex=0;
+  playNextInSequence();
+}
+
+// ── PAUSE ─────────────────────────────────────────────────────────────────────
+function togglePause(){
+  if(!playing)return;
+  var btn=document.getElementById("pause-btn");
+  if(!paused){
+    paused=true;
+    pausedSeconds=secondsLeft;
+    if(gainNode)gainNode.gain.setTargetAtTime(0,audioCtx.currentTime,0.1);
+    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+    btn.innerHTML="▶ Reprendre";
+    btn.style.borderColor="var(--amber-border)";
+    btn.style.color="var(--amber)";
+  } else {
+    paused=false;
+    secondsLeft=pausedSeconds;
+    if(gainNode)gainNode.gain.setTargetAtTime(0.25,audioCtx.currentTime,0.1);
+    if(timerMin>0){
+      timerInterval=setInterval(function(){secondsLeft--;updateTimerDisplay();if(secondsLeft<=0)stopAudio();},1000);
+    }
+    btn.innerHTML="⏸ Pause";
+    btn.style.borderColor="var(--border2)";
+    btn.style.color="var(--text)";
+  }
+}
+
+function init(){
+  const sel=document.getElementById("chakra-select");
+  CHAKRAS.forEach((c,i)=>{
+    const o=document.createElement("option");
+    o.value=i;
+    o.textContent=c.nom+" — "+c.hz+" Hz ("+c.duree+" min)";
+    sel.appendChild(o);
+  });
+  sel.value="0";
+
+  const oc=document.getElementById("onde-chips");
+  ONDES.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.className="chip"+(i===0?" b":"");
+    b.innerHTML="<span>"+o.nom+"</span><span class='sub'>"+o.label+"</span>";
+    b.onclick=function(){
+      document.querySelectorAll("#onde-chips .chip").forEach(function(x,j){x.className="chip"+(j===i?" b":"");});
+      diff=o.diff;updateDisplays();
+      if(playing&&leftOsc&&rightOsc){leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.05);rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.05);}
+    };
+    oc.appendChild(b);
+  });
+
+  const tc=document.getElementById("timer-chips");
+  TIMERS.forEach((t,i)=>{
+    const b=document.createElement("button");
+    b.className="t-chip"+(t.v===13?" p":"");
+    b.textContent=t.v===0?"inf":t.l+"m";
+    b.onclick=function(){
+      document.querySelectorAll(".t-chip").forEach(function(x,j){x.className="t-chip"+(j===i?" p":"");});
+      timerMin=t.v;if(!playing)updateTimerDisplay();
+    };
+    tc.appendChild(b);
+  });
+
+  buildMineraux();buildProtocoles();buildSymptomes();
+  loadPlaylist();renderPlaylist();
+  updateDisplays();
+}
+
+function lancerVoyageChakras(){
+  if(playing){if(!confirm("Session en cours. Arreter et lancer le voyage ?"))return;stopAudio();}
+  seqQueue=CHAKRAS.map(function(c){return{n:c.nom,hz:c.hz,d:c.duree};});
+  seqType="chakras";seqProtoName="Voyage chakras";seqIndex=0;
+  playNextInSequence();
+}
+
+function onChakraSelect(){
+  const v=document.getElementById("chakra-select").value;
+  if(v==="")return;
+  const c=CHAKRAS[parseInt(v)];
+  loadFreq(c.hz,c.duree,c.nom);
+}
+
+function loadFreq(hz,d,nom){
+  if(playing){if(!confirm("Session en cours. Arreter et charger "+nom+" ?"))return;stopAudio();}
+  baseHz=hz;timerMin=d;currentLabel=nom+" - "+hz+" Hz";
+  setTimerChip(d);updateDisplays();
+}
+
+function setTimerChip(d){
+  document.querySelectorAll(".t-chip").forEach(function(x,j){x.className="t-chip"+(TIMERS[j].v===d?" p":"");});
+}
+
+function updateDisplays(){
+  document.getElementById("f-left").textContent=baseHz;
+  document.getElementById("f-right").textContent=(baseHz+diff).toFixed(1);
+  document.getElementById("f-beat").textContent=diff%1===0?diff:diff.toFixed(1);
+  document.getElementById("pb-freq").textContent=currentLabel+" - D "+diff+" Hz";
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  const el=document.getElementById("pb-timer");
+  if(timerMin===0){el.className="play-bar-timer inactive";el.textContent="--:--";return;}
+  const s=playing?secondsLeft:timerMin*60;
+  const m=Math.floor(s/60),sec=s%60;
+  el.className="play-bar-timer"+(playing?" playing":"");
+  el.textContent=String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+}
+
+function togglePlay(){if(playing)stopAudio();else startAudio();}
+
+function startAudio(){
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const merger=audioCtx.createChannelMerger(2);
+  gainNode=audioCtx.createGain();gainNode.gain.value=0.25;
+  leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
+  leftOsc.type="sine";rightOsc.type="sine";
+  leftOsc.frequency.value=baseHz;rightOsc.frequency.value=baseHz+diff;
+  const lg=audioCtx.createGain();const rg=audioCtx.createGain();
+  lg.gain.value=1;rg.gain.value=1;
+  leftOsc.connect(lg);rightOsc.connect(rg);
+  lg.connect(merger,0,0);rg.connect(merger,0,1);
+  merger.connect(gainNode);gainNode.connect(audioCtx.destination);
+  leftOsc.start();rightOsc.start();
+  playing=true;
+  document.getElementById("play-btn").className="play-btn playing";
+  document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arreter</span>";
+  document.getElementById("pause-btn").style.display="flex";
+  paused=false;
+  if(timerMin>0){
+    secondsLeft=timerMin*60;updateTimerDisplay();
+    timerInterval=setInterval(function(){secondsLeft--;updateTimerDisplay();if(secondsLeft<=0)stopAudio();},1000);
+  }
+}
+
+function stopAudio(){
+  if(leftOsc){leftOsc.stop();leftOsc=null;}
+  if(rightOsc){rightOsc.stop();rightOsc=null;}
+  if(audioCtx){audioCtx.close();audioCtx=null;}
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  playing=false;
+  document.getElementById("play-btn").className="play-btn";
+  document.getElementById("play-btn").innerHTML="<span>▶</span><span>Lancer</span>";
+  document.getElementById("pause-btn").style.display="none";
+  paused=false;pausedSeconds=0;
+  secondsLeft=0;updateTimerDisplay();
+}
+
+function buildMineraux(){
+  const cats=[...new Set(MINERAUX.map(function(m){return m.cat;}))];
+  const tabsEl=document.getElementById("min-cat-tabs");
+  const listEl=document.getElementById("min-list");
+  let activeCat=cats[0];
+  cats.forEach(function(cat,i){
+    const b=document.createElement("button");
+    b.className="cat-tab"+(i===0?" active":"");
+    b.textContent=cat;
+    b.onclick=function(){
+      document.querySelectorAll("#min-cat-tabs .cat-tab").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");activeCat=cat;renderMin(cat);
+    };
+    tabsEl.appendChild(b);
+  });
+  function renderMin(cat){
+    listEl.innerHTML="";
+    MINERAUX.filter(function(m){return m.cat===cat;}).forEach(function(m){
+      const el=document.createElement("div");
+      el.className="freq-item"+(activeMinItem===m.nom?" active":"");
+      var hz=m.hz,d=m.duree,nom=m.nom;
+      var calcD=Math.round(Math.max(10,Math.min(45,6000/hz)));
+      el.innerHTML="<div class='freq-item-left' style='flex:1'><div class='freq-item-name'>"+nom+"</div><div class='freq-item-sub'>"+m.action+"</div></div><div class='freq-item-right'><div style='display:flex;flex-direction:column;align-items:flex-end;gap:4px'><div class='freq-item-hz'>"+Math.round(hz)+"</div><div class='freq-item-dur'>"+calcD+" min</div><button style='font-size:10px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\")'>+PL</button></div></div>";
+      el.onclick=function(){
+        activeMinItem=m.nom;
+        loadFreq(m.hz,calcD,m.nom);
+        renderMin(cat);
+        const bar=document.getElementById("sel-bar-min");
+        bar.classList.add("show");
+        document.getElementById("sel-bar-min-txt").textContent=m.nom+" — "+Math.round(m.hz)+" Hz — "+calcD+" min charge";
+      };
+      listEl.appendChild(el);
+    });
+  }
+  renderMin(activeCat);
+}
+
+function buildProtocoles(){
+  const listEl=document.getElementById("proto-list");
+  PROTOCOLES.forEach(function(p,pi){
+    const card=document.createElement("div");
+    card.className="proto-card";
+    const durS1=p.s1.reduce(function(a,x){return a+x.d;},0);
+    const durS2=p.s2.reduce(function(a,x){return a+x.d;},0);
+    let bodyHTML="";
+    if(p.note)bodyHTML+="<div style='font-size:11px;color:var(--amber);margin-bottom:8px'>Note: "+p.note+"</div>";
+    bodyHTML+="<div class='proto-section'>";
+    bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
+    bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 — Nettoyage</div>";
+    bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSequence("+pi+",\"s1\")'>Lancer S1</button>";
+    bodyHTML+="</div><div class='proto-freq-row'>";
+    p.s1.forEach(function(f){
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s1' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\")'>"+f.n+"<br><span style='font-size:9px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:9px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
+    });
+    bodyHTML+="</div></div>";
+    bodyHTML+="<div class='proto-section'>";
+    bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
+    bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 — Reparation</div>";
+    bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSequence("+pi+",\"s2\")'>Lancer S2</button>";
+    bodyHTML+="</div><div class='proto-freq-row'>";
+    p.s2.forEach(function(f){
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\")'>"+f.n+"<br><span style='font-size:9px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:9px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
+    });
+    bodyHTML+="</div></div>";
+    card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+p.nom+"</span><span class='proto-badge'>S1:"+durS1+"m S2:"+durS2+"m</span></div><div class='proto-body'>"+bodyHTML+"</div>";
+    listEl.appendChild(card);
+  });
+}
+
+function toggleProto(header){header.nextElementSibling.classList.toggle("open");}
+
+function launchSequence(pi,type){
+  if(playing){if(!confirm("Session en cours. Arreter et lancer la sequence ?"))return;stopAudio();}
+  const p=PROTOCOLES[pi];
+  seqQueue=type==="s1"?p.s1.slice():p.s2.slice();
+  seqType=type;seqProtoName=p.nom;seqIndex=0;
+  playNextInSequence();
+}
+
+function playNextInSequence(){
+  if(seqIndex>=seqQueue.length){
+    stopAudio();
+    if(seqType==="s1"){
+      setTimeout(function(){alert("Nettoyage S1 termine — "+seqProtoName+"\n\nBois de l eau dans les 24-48h avant le S2.");},300);
+    }else if(seqType==="chakras"){
+      setTimeout(function(){alert("Voyage au coeur des chakras termine.\n\nPrenez un moment pour vous recentrer.");},300);
+    }else{
+      setTimeout(function(){alert("Reparation S2 terminee — "+seqProtoName+"\n\nBonne recuperation!");},300);
+    }
+    return;
+  }
+  const f=seqQueue[seqIndex];
+  baseHz=f.hz;timerMin=f.d;currentLabel=f.n+" - "+f.hz+" Hz";
+  setTimerChip(f.d);updateDisplays();
+  startAudioSequence();
+}
+
+function startAudioSequence(){
+  if(audioCtx){audioCtx.close();audioCtx=null;}
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const merger=audioCtx.createChannelMerger(2);
+  gainNode=audioCtx.createGain();gainNode.gain.value=0.25;
+  leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
+  leftOsc.type="sine";rightOsc.type="sine";
+  leftOsc.frequency.value=baseHz;rightOsc.frequency.value=baseHz+diff;
+  const lg=audioCtx.createGain();const rg=audioCtx.createGain();
+  lg.gain.value=1;rg.gain.value=1;
+  leftOsc.connect(lg);rightOsc.connect(rg);
+  lg.connect(merger,0,0);rg.connect(merger,0,1);
+  merger.connect(gainNode);gainNode.connect(audioCtx.destination);
+  leftOsc.start();rightOsc.start();
+  playing=true;
+  document.getElementById("play-btn").className="play-btn playing";
+  document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arreter</span>";
+  document.getElementById("pause-btn").style.display="flex";
+  paused=false;
+  secondsLeft=timerMin*60;updateTimerDisplay();
+  timerInterval=setInterval(function(){
+    secondsLeft--;updateTimerDisplay();
+    if(secondsLeft<=0){
+      leftOsc.stop();rightOsc.stop();audioCtx.close();
+      leftOsc=null;rightOsc=null;audioCtx=null;
+      clearInterval(timerInterval);timerInterval=null;
+      seqIndex++;
+      setTimeout(playNextInSequence,800);
+    }
+  },1000);
+}
+
+function buildSymptomes(){
+  const cats=Object.keys(SYMPTOMES);
+  const tabsEl=document.getElementById("symp-cat-tabs");
+  const listEl=document.getElementById("symp-list");
+  let activeCat=cats[0];
+  cats.forEach(function(cat,i){
+    const b=document.createElement("button");
+    b.className="cat-tab"+(i===0?" active":"");
+    b.textContent=cat;
+    b.onclick=function(){
+      document.querySelectorAll("#symp-cat-tabs .cat-tab").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");activeCat=cat;renderSymp(cat);
+    };
+    tabsEl.appendChild(b);
+  });
+  function renderSymp(cat){
+    listEl.innerHTML="";
+    SYMPTOMES[cat].forEach(function(s){
+      const card=document.createElement("div");
+      card.className="card";card.style.marginBottom="10px";
+      let html="<div style='font-size:15px;font-weight:500;margin-bottom:10px'>"+s.s+"</div>";
+      html+="<div class='proto-section'><div class='proto-section-title s1'>S1 — Nettoyage</div><div class='proto-freq-row'>";
+      s.s1.forEach(function(hz){html+="<button class='proto-freq-btn s1' onclick='loadFreq("+hz+",18,\""+hz+" Hz\")'>"+hz+"<br><span style='font-size:9px'>Hz 18m</span></button>";});
+      html+="</div></div><div class='proto-section' style='margin-top:8px'><div class='proto-section-title s2'>S2 — Reparation</div><div class='proto-freq-row'>";
+      s.s2.forEach(function(hz){html+="<div style='display:flex;flex-direction:column;gap:2px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+hz+",10,\""+hz+" Hz\")'>"+hz+"<br><span style='font-size:9px'>Hz 10m</span></button><button style='font-size:9px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+hz+",10,\""+hz+" Hz\")'>+ PL</button></div>";});
+      html+="</div></div>";
+      card.innerHTML=html;
+      listEl.appendChild(card);
+    });
+  }
+  renderSymp(activeCat);
+}
+
+function showPage(id,btn){
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+  document.getElementById("page-"+id).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+}
+
+init();
+</script>
+</body>
+</html>
