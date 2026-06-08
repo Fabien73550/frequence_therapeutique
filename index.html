@@ -582,7 +582,6 @@ function loadSavedInto(nom,slot){
   alert("\""+nom+"\" chargee dans "+(slot==="matin"?"Matin":"Soir")+".");
 }
 function deleteSaved(nom){
-  if(!confirm("Supprimer la playlist \""+nom+"\" ?"))return;
   delete savedPlaylists[nom];
   persistSaved();renderSavedPlaylists();
 }
@@ -597,12 +596,34 @@ function renderSavedPlaylists(){
   el.innerHTML="";
   noms.forEach(function(nom){
     var n=savedPlaylists[nom].length;
+    var safeNom=nom.replace(/'/g,"\\'");
     var row=document.createElement("div");
-    row.style.cssText="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 0;border-bottom:1px solid var(--border)";
-    row.innerHTML="<div style='flex:1;min-width:0'><div style='font-size:14px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>"+nom+"</div><div style='font-size:11px;color:var(--muted)'>"+n+" fréquence"+(n>1?"s":"")+"</div></div>"
-      +"<button onclick='loadSavedInto(\""+nom.replace(/"/g,'')+"\",\"matin\")' style='font-size:11px;padding:6px 9px;border-radius:8px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer'>☀</button>"
-      +"<button onclick='loadSavedInto(\""+nom.replace(/"/g,'')+"\",\"soir\")' style='font-size:11px;padding:6px 9px;border-radius:8px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer'>☽</button>"
-      +"<button onclick='deleteSaved(\""+nom.replace(/"/g,'')+"\")' style='font-size:11px;padding:6px 9px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer'>✕</button>";
+    row.style.cssText="border-bottom:1px solid var(--border);padding:10px 0;";
+    var header=document.createElement("div");
+    header.style.cssText="display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;";
+    var delBtn=document.createElement("button");
+    delBtn.textContent="✕";
+    delBtn.style.cssText="font-size:11px;padding:6px 9px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer";
+    delBtn.addEventListener("click",function(e){e.stopPropagation();deleteSaved(nom);});
+    header.innerHTML="<div style='flex:1;min-width:0'><div style='font-size:14px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>"+nom+"</div><div style='font-size:11px;color:var(--muted)'>"+n+" fréquence"+(n>1?"s":"")+" — cliquer pour voir</div></div>";
+    header.appendChild(delBtn);
+    var detail=document.createElement("div");
+    detail.style.cssText="display:none;margin-top:8px;background:var(--s2);border-radius:10px;padding:10px;";
+    var items=savedPlaylists[nom];
+    var listHtml="";
+    items.forEach(function(item,i){
+      listHtml+="<div style='font-size:12px;color:var(--text);padding:3px 0;border-bottom:1px solid var(--border)'>"+(i+1)+". "+item.nom+" — "+item.hz+" Hz — "+item.d+" min</div>";
+    });
+    listHtml+="<div style='display:flex;gap:8px;margin-top:10px;'>"
+      +"<button onclick='loadSavedInto(\""+nom.replace(/"/g,'')+"\",\"matin\")' style='flex:1;font-size:12px;padding:8px;border-radius:8px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer'>☀ Charger dans Matin</button>"
+      +"<button onclick='loadSavedInto(\""+nom.replace(/"/g,'')+"\",\"soir\")' style='flex:1;font-size:12px;padding:8px;border-radius:8px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer'>☽ Charger dans Soir</button>"
+      +"</div>";
+    detail.innerHTML=listHtml;
+    header.addEventListener("click",function(){
+      detail.style.display=detail.style.display==="none"?"block":"none";
+    });
+    row.appendChild(header);
+    row.appendChild(detail);
     el.appendChild(row);
   });
 }
