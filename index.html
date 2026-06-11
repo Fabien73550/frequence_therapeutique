@@ -1092,45 +1092,55 @@ function launchSympSequence(hzList,type,nom){
 }
 
 function buildSymptomes(){
-  const cats=Object.keys(SYMPTOMES);
-  const tabsEl=document.getElementById("symp-cat-tabs");
   const listEl=document.getElementById("symp-list");
-  let activeCat=cats[0];
-  cats.forEach(function(cat,i){
-    const b=document.createElement("button");
-    b.className="cat-tab"+(i===0?" active":"");
-    b.textContent=catLabel(cat);
-    b.onclick=function(){
-      document.querySelectorAll("#symp-cat-tabs .cat-tab").forEach(function(x){x.classList.remove("active");});
-      b.classList.add("active");activeCat=cat;renderSymp(cat);
-    };
-    tabsEl.appendChild(b);
-  });
-  function renderSymp(cat){
-    listEl.innerHTML="";
+  const tabsEl=document.getElementById("symp-cat-tabs");
+  if(tabsEl)tabsEl.style.display="none";
+  listEl.innerHTML="";
+  const ICONS={"Douleurs":"\uD83D\uDD34","Fatigue":"\u26A1","Sommeil":"\uD83C\uDF19","Mental":"\uD83E\uDDE0","Immunite":"\uD83D\uDEE1","Cognitif":"\uD83D\uDCA1"};
+  Object.keys(SYMPTOMES).forEach(function(cat){
+    var secEl=document.createElement("div");
+    secEl.style.cssText="margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden";
+    var titreEl=document.createElement("div");
+    titreEl.style.cssText="font-size:14px;font-weight:700;color:var(--amber);padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
+    var arrow=document.createElement("span");
+    arrow.textContent="\u25BC";
+    arrow.style.cssText="font-size:10px;transition:transform 0.2s;transform:rotate(-90deg)";
+    var titreText=document.createElement("span");
+    titreText.textContent=(ICONS[cat]||"")+"\u00A0"+cat;
+    titreEl.appendChild(titreText);
+    titreEl.appendChild(arrow);
+    var contenuEl=document.createElement("div");
+    contenuEl.style.cssText="display:none;padding:10px";
+    titreEl.addEventListener("click",function(){
+      var open=contenuEl.style.display==="block";
+      contenuEl.style.display=open?"none":"block";
+      arrow.style.transform=open?"rotate(-90deg)":"rotate(0deg)";
+    });
     SYMPTOMES[cat].slice().sort(function(a,b){return a.s.localeCompare(b.s);}).forEach(function(s){
       const card=document.createElement("div");
       card.className="proto-card";
       let bodyHTML="";
       bodyHTML+="<div class='proto-section'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
-      bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 — Nettoyage</div>";
-      bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s1)+",\"s1\",\""+s.s+"\")'>Lancer S1</button>";
+      bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 \u2014 Nettoyage</div>";
+      bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s1).replace(/"/g,'&quot;')+",\"s1\",\""+s.s+"\")'>Lancer S1</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
       s.s1.forEach(function(hz){bodyHTML+="<span class='proto-freq-btn s1'>"+hz+" Hz</span>";});
       bodyHTML+="</div></div>";
       bodyHTML+="<div class='proto-section' style='margin-top:8px'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
-      bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 — Réparation</div>";
-      bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s2)+",\"s2\",\""+s.s+"\")'>Lancer S2</button>";
+      bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 \u2014 R\u00e9paration</div>";
+      bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s2).replace(/"/g,'&quot;')+",\"s2\",\""+s.s+"\")'>Lancer S2</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
       s.s2.forEach(function(hz){bodyHTML+="<span class='proto-freq-btn s2'>"+hz+" Hz</span>";});
       bodyHTML+="</div></div>";
       card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
-      listEl.appendChild(card);
+      contenuEl.appendChild(card);
     });
-  }
-  renderSymp(activeCat);
+    secEl.appendChild(titreEl);
+    secEl.appendChild(contenuEl);
+    listEl.appendChild(secEl);
+  });
 }
 
 function showPage(id,btn){
