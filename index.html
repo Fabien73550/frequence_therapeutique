@@ -60,16 +60,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .t-chip.p{border-color:var(--purple-border);background:var(--purple-bg);color:var(--purple)}
 select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7a9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
 select option{background:var(--s2)}
-.freq-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--s2);margin-bottom:8px;cursor:pointer;transition:all 0.15s}
+.freq-item{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-radius:10px;border:1px solid var(--border);background:var(--s2);margin-bottom:6px;cursor:pointer;transition:all 0.15s}
 .freq-item:active{transform:scale(0.99)}
 .freq-item.active{border-color:var(--green-border);background:var(--green-bg)}
-.freq-item-left{display:flex;flex-direction:column;gap:2px}
+.freq-item-left{display:flex;flex-direction:row;align-items:baseline;gap:6px;flex-wrap:wrap}
 .freq-item-name{font-size:14px;font-weight:500;color:var(--text)}
-.freq-item-sub{font-size:11px;color:var(--muted)}
+.freq-item-sub{font-size:13px;color:var(--muted)}
 .freq-item.active .freq-item-name{color:var(--green)}
-.freq-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;margin-left:8px}
+.freq-item-right{display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;margin-left:8px}
 .freq-item-hz{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--blue)}
-.freq-item-dur{font-size:10px;color:var(--muted)}
+.freq-item-dur{font-size:11px;color:var(--muted)}
 .proto-card{border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
 .proto-header{padding:12px 14px;background:var(--s2);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .proto-title{font-size:14px;font-weight:500}
@@ -182,6 +182,10 @@ select option{background:var(--s2)}
   <div class="card" id="saved-playlists-card">
     <div class="card-label">Mes playlists sauvegardées</div>
     <div id="saved-playlists-list"></div>
+  </div>
+  <div class="card" id="suggested-protocols-card">
+    <div class="card-label">Protocoles suggérés Matin / Soir</div>
+    <div id="suggested-protocols-list"></div>
   </div>
 </div>
 <div class="page" id="page-mineraux">
@@ -598,9 +602,9 @@ function addToPlaylist(slot){
   playlists[slot].push({hz:hz,d:d,nom:hz+" Hz"});
   savePlaylist(slot);renderPlaylist(slot);
 }
-function addFreqToPlaylist(hz,d,nom,slot){
+function addFreqToPlaylist(hz,d,nom,slot,action){
   if(!slot)slot="matin";
-  playlists[slot].push({hz:hz,d:d,nom:nom});
+  playlists[slot].push({hz:hz,d:d,nom:nom,action:action||""});
   savePlaylist(slot);renderPlaylist(slot);
   alert(nom+" ajouté à "+(slot==="matin"?"Matin":"Soir")+" ✓");
 }
@@ -616,7 +620,8 @@ function renderPlaylist(slot){
   playlists[slot].forEach(function(item,i){
     var row=document.createElement("div");
     row.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)";
-    row.innerHTML="<span style='font-family:JetBrains Mono,monospace;font-size:13px;color:var(--blue)'>"+item.nom+"</span><span style='font-size:11px;color:var(--muted)'>"+item.d+"m</span><button onclick='removeFromPlaylist(\""+slot+"\","+i+")' style='font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer'>✕</button>";
+    var actionStr=item.action?" <span style='font-size:13px;color:var(--muted)'>"+item.action+"</span>":"";
+    row.innerHTML="<div style='flex:1'><span style='font-family:JetBrains Mono,monospace;font-size:14px;font-weight:500;color:var(--blue)'>"+item.nom+"</span>"+actionStr+"</div><span style='font-size:11px;color:var(--muted);margin:0 8px'>"+item.d+"m</span><button onclick='removeFromPlaylist(\""+slot+"\","+i+")' style='font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer'>✕</button>";
     el.appendChild(row);
   });
 }
@@ -660,6 +665,157 @@ function deleteSaved(nom){
   delete savedPlaylists[nom];
   persistSaved();renderSavedPlaylists();
 }
+const SUGGESTED_PROTOCOLS=[
+  {slot:"matin",nom:"Energie & Focus",desc:"Relance la dopamine et la neurotransmission cognitive au reveil.",freqs:[
+    {hz:999,d:10,nom:"Hypothalamus",action:"Chef d'orchestre hormonal"},
+    {hz:3652.976349,d:10,nom:"Dopamine",action:"Motivation, plaisir"},
+    {hz:8641.952838,d:10,nom:"Tyrosine",action:"Thyroide, dopamine"},
+    {hz:7878.858048,d:10,nom:"Phenylalanine",action:"Neurotransmetteurs"},
+    {hz:1477.300140,d:10,nom:"Phosphore",action:"Memoire et ATP"}
+  ]},
+  {slot:"matin",nom:"Immunite journaliere",desc:"Stimule les defenses immunitaires pour la journee.",freqs:[
+    {hz:2442.000006,d:10,nom:"Thymus",action:"Immunite lymphocytes T"},
+    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunite, reparation cellulaire"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
+    {hz:3030.839991,d:10,nom:"Cuivre",action:"Antiviral, immunite"},
+    {hz:4200.040431,d:10,nom:"Vitamine C",action:"Antioxydant, immunite"}
+  ]},
+  {slot:"matin",nom:"Detox matinale",desc:"Active les voies de detoxification hepatique apres le jeune nocturne.",freqs:[
+    {hz:832.000005,d:10,nom:"Foie",action:"Detox et filtration"},
+    {hz:1529.346996,d:10,nom:"Soufre",action:"Detox et glutathion"},
+    {hz:3664.423197,d:10,nom:"Glutathion",action:"Antioxydant majeur"},
+    {hz:4576.355667,d:10,nom:"Molybdene",action:"Detox hepatique"},
+    {hz:1690.924077,d:10,nom:"Chlore",action:"Immunite intestinale"}
+  ]},
+  {slot:"matin",nom:"Performance physique",desc:"Optimise l'energie mitochondriale et l'oxygenation musculaire.",freqs:[
+    {hz:2663.539155,d:10,nom:"Fer",action:"Transport oxygene, vitalite"},
+    {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"},
+    {hz:2573.574066,d:10,nom:"CoQ10",action:"Energie mitochondriale"},
+    {hz:763.094781,d:10,nom:"Oxygene",action:"Respiration cellulaire"},
+    {hz:6256.400463,d:10,nom:"Leucine",action:"Muscles, proteines"}
+  ]},
+  {slot:"matin",nom:"Equilibre hormonal",desc:"Relance l'axe thyroide et surrenales au reveil.",freqs:[
+    {hz:999,d:10,nom:"Hypothalamus",action:"Chef d'orchestre hormonal"},
+    {hz:6052.735701,d:10,nom:"Iode",action:"Thyroide, metabolisme"},
+    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunite, reparation cellulaire"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
+    {hz:17287.606827,d:10,nom:"Cortisol",action:"Stress, inflammation"}
+  ]},
+  {slot:"matin",nom:"Anti-inflammatoire matinal",desc:"Calme l'inflammation nocturne residuelle et prepare le terrain.",freqs:[
+    {hz:1529.346996,d:10,nom:"Soufre",action:"Detox et glutathion"},
+    {hz:3030.839991,d:10,nom:"Cuivre",action:"Antiviral, immunite"},
+    {hz:5301.322902,d:10,nom:"Histamine",action:"Modulation allergies"},
+    {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"},
+    {hz:2429.665686,d:10,nom:"Vanadium",action:"Regulation tension arterielle"}
+  ]},
+  {slot:"matin",nom:"Clarte mentale",desc:"Active la neurotransmission et la memoire de travail.",freqs:[
+    {hz:1477.300140,d:10,nom:"Phosphore",action:"Memoire et ATP"},
+    {hz:3486.758535,d:10,nom:"Acetylcholine",action:"Memoire, motricite fine"},
+    {hz:9394.362477,d:10,nom:"Or",action:"Amplificateur vibratoire"},
+    {hz:7878.858048,d:10,nom:"Phenylalanine",action:"Neurotransmetteurs"},
+    {hz:7017.406200,d:10,nom:"Ac. glutamique",action:"Cerveau, memoire"}
+  ]},
+  {slot:"soir",nom:"Sommeil profond",desc:"Induit le sommeil en activant GABA et melatonine.",freqs:[
+    {hz:4918.330341,d:10,nom:"GABA",action:"Apaisement neuronal, sommeil"},
+    {hz:2769.661008,d:10,nom:"Melatonine",action:"Induction du sommeil"},
+    {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"},
+    {hz:6262.047576,d:10,nom:"Xenon",action:"Relaxation profonde, sommeil"},
+    {hz:9740.716992,d:10,nom:"Tryptophane",action:"Serotonine, sommeil"}
+  ]},
+  {slot:"soir",nom:"Recuperation cellulaire",desc:"Renforce les defenses antioxydantes pour la regeneration nocturne.",freqs:[
+    {hz:3664.423197,d:10,nom:"Glutathion",action:"Antioxydant majeur"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
+    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunite, reparation cellulaire"},
+    {hz:9394.362477,d:10,nom:"Or",action:"Renforcement cellulaire"},
+    {hz:9304.572897,d:10,nom:"Platine",action:"Soutien anticancer"}
+  ]},
+  {slot:"soir",nom:"Systeme nerveux",desc:"Descente progressive du systeme nerveux vers le repos.",freqs:[
+    {hz:3580.341309,d:10,nom:"Glycine",action:"Collagene, sommeil"},
+    {hz:331.062012,d:18,nom:"Lithium",action:"Stabilisation humeur"},
+    {hz:763.619832,d:10,nom:"Helium",action:"Apaisement, relaxation"},
+    {hz:3486.758535,d:10,nom:"Acetylcholine",action:"Memoire, motricite fine"},
+    {hz:4202.186724,d:10,nom:"Serotonine",action:"Humeur, anti-depression"}
+  ]},
+  {slot:"soir",nom:"Regeneration tissulaire",desc:"Soutient la reparation du collagene et des tissus pendant le sommeil.",freqs:[
+    {hz:1339.543899,d:10,nom:"Silicium",action:"Cartilage et muqueuses"},
+    {hz:515.632941,d:12,nom:"Bore",action:"Soutien osseux, hormones"},
+    {hz:1911.528738,d:10,nom:"Calcium",action:"Solidite osseuse"},
+    {hz:5491.240470,d:10,nom:"Proline",action:"Collagene, cicatrisation"},
+    {hz:6972.529770,d:10,nom:"Lysine",action:"Collagene, calcium"}
+  ]},
+  {slot:"soir",nom:"Detox hepatique nocturne",desc:"Le foie detoxifie principalement la nuit — soutien optimal.",freqs:[
+    {hz:832.000005,d:10,nom:"Foie",action:"Detox et filtration"},
+    {hz:1529.346996,d:10,nom:"Soufre",action:"Detox et glutathion"},
+    {hz:4576.355667,d:10,nom:"Molybdene",action:"Detox hepatique"},
+    {hz:3664.423197,d:10,nom:"Glutathion",action:"Antioxydant majeur"},
+    {hz:7116.497766,d:10,nom:"Methionine",action:"Detox, foie"}
+  ]},
+  {slot:"soir",nom:"Anti-stress profond",desc:"Descente progressive du cortisol et du stress de la journee.",freqs:[
+    {hz:331.062012,d:18,nom:"Lithium",action:"Stabilisation humeur"},
+    {hz:4918.330341,d:10,nom:"GABA",action:"Apaisement neuronal, sommeil"},
+    {hz:3580.341309,d:10,nom:"Glycine",action:"Collagene, sommeil"},
+    {hz:763.619832,d:10,nom:"Helium",action:"Apaisement, relaxation"},
+    {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"}
+  ]},
+  {slot:"soir",nom:"Reparation ADN",desc:"La replication cellulaire est maximale entre 23h et 2h.",freqs:[
+    {hz:9394.362477,d:10,nom:"Or",action:"Renforcement cellulaire"},
+    {hz:9304.572897,d:10,nom:"Platine",action:"Soutien anticancer"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
+    {hz:3464.103303,d:10,nom:"Germanium",action:"Oxygenation cellulaire"},
+    {hz:4908.099717,d:10,nom:"Rhodium",action:"Soutien ADN, anticancer"}
+  ]}
+];
+
+function toggleSugGroup(id){
+  var el=document.getElementById(id);
+  var arr=document.getElementById("arr-"+id);
+  if(!el)return;
+  var open=el.style.display!=="none";
+  el.style.display=open?"none":"block";
+  if(arr)arr.style.transform=open?"":"rotate(180deg)";
+}
+function buildSuggestedProtocols(){
+  var el=document.getElementById("suggested-protocols-list");
+  if(!el)return;
+  var html="";
+  var matin=SUGGESTED_PROTOCOLS.filter(function(p){return p.slot==="matin";});
+  var soir=SUGGESTED_PROTOCOLS.filter(function(p){return p.slot==="soir";});
+  function renderGroup(list,slot,label,color,groupId){
+    html+="<div style='border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden'>";
+    html+="<div onclick='toggleSugGroup(\""+groupId+"\")' style='display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;background:var(--s2)'>";
+    html+="<span style='font-size:14px;font-weight:600;color:"+color+"'>"+label+"</span>";
+    html+="<span id='arr-"+groupId+"' style='font-size:12px;color:"+color+";transition:transform 0.2s'>▼</span>";
+    html+="</div>";
+    html+="<div id='"+groupId+"' style='display:none'>";
+    list.forEach(function(p){
+      var idx=SUGGESTED_PROTOCOLS.indexOf(p);
+      html+="<div style='border-top:1px solid var(--border);padding:10px 14px;background:var(--s1)'>";
+      html+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:4px'>";
+      html+="<span style='font-size:14px;font-weight:500;color:var(--text)'>"+p.nom+"</span>";
+      html+="<button onclick='loadSuggestedProtocol("+idx+")' style='font-size:11px;padding:4px 10px;border-radius:7px;border:1px solid "+(slot==="matin"?"var(--amber-border);background:var(--amber-bg);color:var(--amber)":"var(--purple-border);background:var(--purple-bg);color:var(--purple)")+";cursor:pointer;font-weight:600'>Charger "+(slot==="matin"?"Matin":"Soir")+"</button>";
+      html+="</div>";
+      html+="<div style='font-size:12px;color:var(--muted);margin-bottom:6px'>"+p.desc+"</div>";
+      html+="<div style='display:flex;flex-wrap:wrap;gap:4px'>";
+      p.freqs.forEach(function(f){
+        html+="<span style='font-size:11px;padding:2px 7px;border-radius:5px;background:var(--s2);border:1px solid var(--border);color:var(--dim)'>"+f.nom+"</span>";
+      });
+      html+="</div></div>";
+    });
+    html+="</div></div>";
+  }
+  renderGroup(matin,"matin","☀ MATIN","var(--amber)","sugg-matin");
+  renderGroup(soir,"soir","☽ SOIR","var(--purple)","sugg-soir");
+  el.innerHTML=html;
+}
+
+function loadSuggestedProtocol(idx){
+  var p=SUGGESTED_PROTOCOLS[idx];
+  if(!p)return;
+  playlists[p.slot]=p.freqs.map(function(f){return{hz:f.hz,d:f.d,nom:f.nom,action:f.action};});
+  savePlaylist(p.slot);renderPlaylist(p.slot);
+  alert(p.nom+" charge dans "+(p.slot==="matin"?"Matin":"Soir")+" ✓");
+}
+
 function renderSavedPlaylists(){
   var el=document.getElementById("saved-playlists-list");
   if(!el)return;
@@ -762,6 +918,7 @@ function init(){
   buildMineraux();buildProtocoles();buildSymptomes();buildEveil();
   loadPlaylist();renderPlaylist("matin");renderPlaylist("soir");
   loadSavedPlaylists();renderSavedPlaylists();
+  buildSuggestedProtocols();
   updateDisplays();
   restoreSession();
 }
@@ -795,7 +952,7 @@ function buildEveil(){
   SOLFEGE.forEach(function(s){
     var el=document.createElement("div");
     el.className="freq-item";
-    el.innerHTML="<div class='freq-item-left'><div class='freq-item-name'>"+s.nom+"</div><div class='freq-item-sub'>"+s.action+"</div></div><div class='freq-item-right'><div class='freq-item-hz'>"+s.hz+"</div><div class='freq-item-dur'>"+Math.round(Math.max(10,Math.min(45,6000/s.hz)))+" min</div></div>";
+    el.innerHTML="<div class='freq-item-left'><span class='freq-item-name'>"+s.nom+"</span> <span class='freq-item-sub'>"+s.action+"</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+s.hz+" <span class='freq-item-dur'>"+Math.round(Math.max(10,Math.min(45,6000/s.hz)))+"m</span></span></div>";
     el.onclick=function(){loadFreq(s.hz,Math.round(Math.max(10,Math.min(45,6000/s.hz))),s.nom);};
     sl.appendChild(el);
   });
@@ -805,7 +962,7 @@ function buildEveil(){
   CHAKRAS.forEach(function(c){
     var el=document.createElement("div");
     el.className="freq-item";
-    el.innerHTML="<div class='freq-item-left'><div class='freq-item-name'>"+c.nom+"</div><div class='freq-item-sub'>G 40 Hz · "+c.duree+" min</div></div><div class='freq-item-right'><div class='freq-item-hz'>"+c.hz+"</div><div class='freq-item-dur'>+40 Hz</div></div>";
+    el.innerHTML="<div class='freq-item-left'><span class='freq-item-name'>"+c.nom+"</span> <span class='freq-item-sub'>G 40 Hz · "+c.duree+"m</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+c.hz+" <span class='freq-item-dur'>+40Hz</span></span></div>";
     el.onclick=function(){
       diff=40;
       loadFreq(c.hz,c.duree,c.nom+" G40");
@@ -940,7 +1097,7 @@ function buildMineraux(){
       el.className="freq-item"+(activeMinItem===m.nom?" active":"");
       var hz=m.hz,d=m.duree,nom=m.nom;
       var calcD=Math.round(Math.max(10,Math.min(45,6000/hz)));
-      el.innerHTML="<div class='freq-item-left' style='flex:1'><div class='freq-item-name'>"+nom+"</div><div class='freq-item-sub'>"+m.action+"</div></div><div class='freq-item-right'><div style='display:flex;flex-direction:column;align-items:flex-end;gap:4px'><div class='freq-item-hz'>"+hz+"</div><div class='freq-item-dur'>"+calcD+" min</div><div style='display:flex;gap:5px'><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"matin\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"soir\")'>+S</button></div></div></div>";
+      el.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><div style='display:flex;flex-direction:row;align-items:center;gap:5px'><span class='freq-item-hz'>"+hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"soir\",\""+m.action+"\")'>+S</button></div>";
       el.onclick=function(){
         activeMinItem=m.nom;
         loadFreq(m.hz,calcD,m.nom);
@@ -989,7 +1146,7 @@ function buildProtocoles(){
     bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSequence("+pi+",\"s1\")'>Lancer S1</button>";
     bodyHTML+="</div><div class='proto-freq-row'>";
     p.s1.forEach(function(f){
-      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s1' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\")'>"+ f.n+"<br><span style='font-size:9px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:9px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s1' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\")'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
     });
     bodyHTML+="</div></div>";
     bodyHTML+="<div class='proto-section'>";
@@ -998,7 +1155,7 @@ function buildProtocoles(){
     bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSequence("+pi+",\"s2\")'>Lancer S2</button>";
     bodyHTML+="</div><div class='proto-freq-row'>";
     p.s2.forEach(function(f){
-      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\")'>"+ f.n+"<br><span style='font-size:9px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:9px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\")'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
     });
     bodyHTML+="</div></div>";
     card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+p.nom+"</span><span class='proto-badge'>S1:"+durS1+"m S2:"+durS2+"m</span></div><div class='proto-body'>"+bodyHTML+"</div>";
@@ -1174,14 +1331,14 @@ function buildSymptomes(){
       bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 \u2014 Nettoyage</div>";
       bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s1)+",'s1','"+s.s+"')'>Lancer S1</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
-      s.s1.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s1'>"+item.hz+" Hz<br><span style='font-size:9px;opacity:0.7'>"+item.d+" min</span></span>";});
+      s.s1.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s1'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       bodyHTML+="<div class='proto-section' style='margin-top:8px'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
       bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 \u2014 R\u00e9paration</div>";
       bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s2)+",'s2','"+s.s+"')'>Lancer S2</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
-      s.s2.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:9px;opacity:0.7'>"+item.d+" min</span></span>";});
+      s.s2.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
       contenuEl.appendChild(card);
