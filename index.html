@@ -295,16 +295,17 @@ select option{background:var(--s2)}
 
 <script>
 const GUIDE=[
-  {t:"🔵 Onde Binaurale 🎧",c:"<b>🤔 Qu'est-ce qu'un battement binaural ?</b><br><br>Le cerveau 🧠 crée une fréquence virtuelle quand chaque oreille 👂 entend une fréquence légèrement différente.<br><br>📌 <b>Exemple</b> : 432 Hz à gauche + 433.2 Hz à droite = battement de <b>1.2 Hz</b><br><br>🎧 <b>Casque indispensable !</b> Sans casque, chaque oreille entend les deux sons et l'effet ne fonctionne pas.<br><br>🎯 <b>Fréquence de base</b> = celle que tu choisis (ex: 432 Hz).<br>⚡ <b>Battement</b> = la différence entre les deux oreilles (ex: 1.2 Hz pour Delta)."},
-  {t:"🎵 Onglet Binaural 🎛️",c:"<b>① Choisis ta fréquence</b> 🎚️ avec le slider (← glisser →) ou tape la valeur directement.<br><br><b>② Préréglages rapides</b> ⚡ :<br>🌙 Delta (sommeil profond)<br>🧘 Thêta (méditation)<br>😌 Alpha (relaxation)<br><br><b>③ Minuteur</b> ⏱️ : choisis une durée ou 'inf' pour illimité.<br><br><b>④ Lance</b> ▶️ avec le bouton et mets ton casque !"},
-  {t:"⬡ Onglet Minéraux 💎",c:"<b>Parcours les catégories</b> 📂 : Élément, Minéral, Neuro, Organe...<br><br><b>➕ <span style='color:var(--amber)'>+M</span></b> = ajoute la fréquence à la Playlist Matin ☀️<br><b>➕ <span style='color:var(--purple)'>+S</span></b> = ajoute à la Playlist Soir 🌙<br><br><b>⭐</b> = met en favori pour la retrouver dans l'onglet Favoris<br><br>👆 Clique sur une fréquence pour la charger et l'écouter."},
-  {t:"♫ Onglet Perso 📋",c:"<b>☀️ Playlist Matin</b> et <b>🌙 Playlist Soir</b><br><br>Ajoute des fréquences depuis Minéraux avec +M ou +S.<br><br>⭐ <b>☆</b> = mettre la playlist en favori<br>🗑️ <b>Vider</b> = supprimer toutes les fréquences<br>▶️ <b>Lancer</b> = écouter toute la playlist<br><br>💾 Tu peux <b>sauvegarder</b> une playlist avec un nom personnalisé."},
-  {t:"⊞ Protocoles / ✦ Symptômes / ✧ Éveil 📚",c:"<b>⊞ Protocoles</b> : fréquences organisées par thème (Détox 🧪, Immunité 🛡️...).<br><br><b>✦ Symptômes</b> : choisis un symptôme 🤒 → 2 séquences :<br>• S1 = 🧹 Nettoyage<br>• S2 = 🔧 Réparation<br><br><b>✧ Éveil</b> : les 9 chakras 🔮 avec leurs fréquences. Clique sur un chakra pour le charger.<br><br>▶️ Utilise <b>Lancer</b> pour écouter directement une séquence."},
-  {t:"⭐ Favoris et Partage 📤",c:"<b>⭐ Favoris</b> : retrouve toutes tes playlists et fréquences sauvegardées. Clique sur ★ pour retirer un favori.<br><br><b>📤 Partager</b> :<br>• Le bouton <span style='color:var(--green)'>📤 vert</span> à côté d'une playlist = partager seulement celle-ci ➡️ idéal pour envoyer à un ami<br>• Le bouton <b>📤 Partager mes favoris</b> en bas = tout partager<br><br>🔗 Quand tu partages, le <b>lien cliquable</b> généré permet à tes amis de :<br>1️⃣ Cliquer sur le lien<br>2️⃣ Ouvrir l'appli<br>3️⃣ Voir les fréquences chargées automatiquement ✨<br><br>📱 Compatible WhatsApp, SMS, Email, Messenger..."},
-  {t:"⏸️ Pause et Reprendre 🔄",c:"Pendant l'écoute ▶️, tu peux <b>mettre en pause</b> ⏸️ avec le bouton.<br><br>💾 La session est sauvegardée <b>automatiquement</b> dans ton téléphone.<br><br>🔄 Quand tu reviens, une barre en haut 🔝 te propose de <b>reprendre</b> là où tu t'es arrêté.<br><br>✅ <b>Utile</b> si tu dois interrompre ta séance et la continuer plus tard !"}
+  {t:"🔵 Onde Binaurale 🎧",k:["binaural"],c:"<b>🤔 Qu'est-ce qu'un battement binaural ?</b><br><br>Le cerveau 🧠 crée une fréquence virtuelle quand chaque oreille 👂 entend une fréquence légèrement différente.<br><br>📌 <b>Exemple</b> : 432 Hz à gauche + 433.2 Hz à droite = battement de <b>1.2 Hz</b><br><br>🎧 <b>Casque indispensable !</b> Sans casque, chaque oreille entend les deux sons et l'effet ne fonctionne pas.<br><br>🎯 <b>Fréquence de base</b> = celle que tu choisis (ex: 432 Hz).<br>⚡ <b>Battement</b> = la différence entre les deux oreilles (ex: 1.2 Hz pour Delta)."},
+  {t:"🎵 Onglet Binaural 🎛️",k:["binaural"],c:"<b>① Choisis ta fréquence</b> 🎚️ avec le slider (← glisser →) ou tape la valeur directement.<br><br><b>② Préréglages rapides</b> ⚡ :<br>🌙 Delta (sommeil profond)<br>🧘 Thêta (méditation)<br>😌 Alpha (relaxation)<br><br><b>③ Minuteur</b> ⏱️ : choisis une durée ou 'inf' pour illimité.<br><br><b>④ Lance</b> ▶️ avec le bouton et mets ton casque !"},
+  {t:"⬡ Onglet Minéraux 💎",k:["mineraux"],c:"<b>Parcours les catégories</b> 📂 : Élément, Minéral, Neuro, Organe...<br><br><b>➕ <span style='color:var(--amber)'>+M</span></b> = ajoute la fréquence à la Playlist Matin ☀️<br><b>➕ <span style='color:var(--purple)'>+S</span></b> = ajoute à la Playlist Soir 🌙<br><br><b>⭐</b> = met en favori pour la retrouver dans l'onglet Favoris<br><br>👆 Clique sur une fréquence pour la charger et l'écouter."},
+  {t:"♫ Onglet Perso 📋",k:["perso"],c:"<b>☀️ Playlist Matin</b> et <b>🌙 Playlist Soir</b><br><br>Ajoute des fréquences depuis Minéraux avec +M ou +S.<br><br>⭐ <b>☆</b> = mettre la playlist en favori<br>🗑️ <b>Vider</b> = supprimer toutes les fréquences<br>▶️ <b>Lancer</b> = écouter toute la playlist<br><br>💾 Tu peux <b>sauvegarder</b> une playlist avec un nom personnalisé."},
+  {t:"⊞ Protocoles / ✦ Symptômes / ✧ Éveil 📚",k:["protocoles","eveil"],c:"<b>⊞ Protocoles</b> : fréquences organisées par thème (Détox 🧪, Immunité 🛡️...).<br><br><b>✦ Symptômes</b> : choisis un symptôme 🤒 → 2 séquences :<br>• S1 = 🧹 Nettoyage<br>• S2 = 🔧 Réparation<br><br><b>✧ Éveil</b> : les 9 chakras 🔮 avec leurs fréquences. Clique sur un chakra pour le charger.<br><br>▶️ Utilise <b>Lancer</b> pour écouter directement une séquence."},
+  {t:"⭐ Favoris et Partage 📤",k:["favs"],c:"<b>⭐ Favoris</b> : retrouve toutes tes playlists et fréquences sauvegardées. Clique sur ★ pour retirer un favori.<br><br><b>📤 Partager</b> :<br>• Le bouton <span style='color:var(--green)'>📤 vert</span> à côté d'une playlist = partager seulement celle-ci ➡️ idéal pour envoyer à un ami<br>• Le bouton <b>📤 Partager mes favoris</b> en bas = tout partager<br><br>🔗 Quand tu partages, le <b>lien cliquable</b> généré permet à tes amis de :<br>1️⃣ Cliquer sur le lien<br>2️⃣ Ouvrir l'appli<br>3️⃣ Voir les fréquences chargées automatiquement ✨<br><br>📱 Compatible WhatsApp, SMS, Email, Messenger..."},
+  {t:"⏸️ Pause et Reprendre 🔄",k:["binaural","perso","protocoles","eveil","favs"],c:"Pendant l'écoute ▶️, tu peux <b>mettre en pause</b> ⏸️ avec le bouton.<br><br>💾 La session est sauvegardée <b>automatiquement</b> dans ton téléphone.<br><br>🔄 Quand tu reviens, une barre en haut 🔝 te propose de <b>reprendre</b> là où tu t'es arrêté.<br><br>✅ <b>Utile</b> si tu dois interrompre ta séance et la continuer plus tard !"}
 ];
 
 var accEl=document.getElementById('help-accordion');
+var guideSections=[];
 if(accEl){
   GUIDE.forEach(function(section,i){
     var sec=document.createElement('div');
@@ -329,11 +330,36 @@ if(accEl){
     sec.appendChild(titre);
     sec.appendChild(contenu);
     accEl.appendChild(sec);
+    guideSections.push({titre:titre,contenu:contenu,arrow:arrow,keywords:section.k});
   });
 }
 function toggleAide(){
   var m=document.getElementById('help-modal');
-  m.style.display=m.style.display==='none'?'block':'none';
+  var ouvert=m.style.display==='block';
+  m.style.display=ouvert?'none':'block';
+  if(!ouvert){
+    // Determine which page is active and open the right section
+    var pageId='';
+    document.querySelectorAll('.page').forEach(function(p){
+      if(p.classList.contains('active')){
+        var id=p.id;
+        if(id==='page-binaural')pageId='binaural';
+        else if(id==='page-perso')pageId='perso';
+        else if(id==='page-mineraux')pageId='mineraux';
+        else if(id==='page-proto'||id==='page-symptomes')pageId='protocoles';
+        else if(id==='page-eveil')pageId='eveil';
+        else if(id==='page-favs')pageId='favs';
+      }
+    });
+    guideSections.forEach(function(sec){
+      sec.contenu.style.display='none';
+      sec.arrow.style.transform='rotate(0deg)';
+      if(sec.keywords.indexOf(pageId)>=0){
+        sec.contenu.style.display='block';
+        sec.arrow.style.transform='rotate(90deg)';
+      }
+    });
+  }
 }
 
 const CHAKRAS=[
