@@ -375,7 +375,7 @@ function toggleAide(){
   } else {
     m.style.display='block';
     m.style.animation='';
-    // Determine which page is active and scroll to the right section
+    // Determine which page is active and open the right section
     var pageId='';
     document.querySelectorAll('.page').forEach(function(p){
       if(p.classList.contains('active')){
@@ -390,16 +390,11 @@ function toggleAide(){
       }
     });
     guideSections.forEach(function(sec){
+      sec.contenu.style.display='none';
+      sec.arrow.style.transform='rotate(0deg)';
       if(sec.keywords.indexOf(pageId)>=0){
-        // Ouvrir cette section
         sec.contenu.style.display='block';
         sec.arrow.style.transform='rotate(90deg)';
-        // Scroll vers elle
-        setTimeout(function(){
-          if(sec.titre&&sec.titre.scrollIntoView){
-            sec.titre.scrollIntoView({behavior:'smooth',block:'center'});
-          }
-        },100);
       }
     });
   }
