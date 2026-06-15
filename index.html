@@ -391,9 +391,15 @@ function toggleAide(){
     });
     guideSections.forEach(function(sec){
       sec.contenu.style.display='none';
+      sec.contenu.style.maxHeight='0';
+      sec.contenu.style.opacity='0';
+      sec.contenu.style.padding='0 14px';
       sec.arrow.style.transform='rotate(0deg)';
       if(sec.keywords.indexOf(pageId)>=0){
         sec.contenu.style.display='block';
+        sec.contenu.style.maxHeight='2000px';
+        sec.contenu.style.opacity='1';
+        sec.contenu.style.padding='14px';
         sec.arrow.style.transform='rotate(90deg)';
       }
     });
