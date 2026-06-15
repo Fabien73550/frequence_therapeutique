@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>Fréquences Thérapeutiques Binaural X</title>
 <meta name="application-name" content="Fréquences Thérapeutiques">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -211,6 +211,21 @@ select option{background:var(--s2)}
         💾 Sauver
       </button>
     </div>
+  </div>
+
+  <div class="card" id="playlist-card-partage" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:20px">🔗</span><span style="font-size:15px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.05em">Playlist Partagée</span></div>
+      <button onclick="clearPlaylist('partage')"
+        style="font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer;font-weight:600">
+        Vider
+      </button>
+    </div>
+    <div id="playlist-items-partage"></div>
+    <button onclick="launchPlaylist('partage')"
+      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
+      ▶ Lancer Partagée
+    </button>
   </div>
 
   <div class="card" id="saved-playlists-card">
@@ -1647,18 +1662,23 @@ function buildSymptomes(){
       bodyHTML+="<div class='proto-section'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
       bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 \u2014 Nettoyage</div>";
-      bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s1)+",'s1','"+s.s+"')'>Lancer S1</button>";
+      bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px'>Lancer S1</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
       s.s1.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s1'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       bodyHTML+="<div class='proto-section' style='margin-top:8px'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
       bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 \u2014 R\u00e9paration</div>";
-      bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSympSequence("+JSON.stringify(s.s2)+",'s2','"+s.s+"')'>Lancer S2</button>";
+      bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px'>Lancer S2</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
       s.s2.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
+      // Attach click handlers via JS to avoid JSON escaping issues
+      var btns=card.querySelectorAll('.proto-freq-btn.s1');
+      if(btns.length>0)btns[0].onclick=function(){launchSympSequence(s.s1,'s1',s.s);};
+      var btns2=card.querySelectorAll('.proto-freq-btn.s2');
+      if(btns2.length>0)btns2[0].onclick=function(){launchSympSequence(s.s2,'s2',s.s);};
       contenuEl.appendChild(card);
     });
     secEl.appendChild(titreEl);
@@ -1705,6 +1725,11 @@ if('serviceWorker' in navigator){
     });
     savePlaylist(slot2);
     renderPlaylist(slot2);
+    // Afficher la carte partagée et aller sur l'onglet Perso
+    var card=document.getElementById('playlist-card-partage');
+    if(card)card.style.display='block';
+    var persoBtn=document.querySelectorAll('.nav-btn')[1];
+    if(persoBtn)showPage('perso',persoBtn);
   }
 })();
 </script>
