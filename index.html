@@ -1155,21 +1155,24 @@ function updateFavPlaylistBtns(){
 }
 function partagerFavs(){
   var txt="🔮 Mes protocoles favoris :\n";
+  var link=window.location.origin+window.location.pathname+"?f=";
+  var freqs=[];
   favs.forEach(function(nom){
     if(nom==='matin_playlist'){
       txt+="\n☀ PLAYLIST MATIN :\n";
-      playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";});
+      playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
     } else if(nom==='soir_playlist'){
       txt+="\n☽ PLAYLIST SOIR :\n";
-      playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";});
+      playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
     }
   });
-  txt+="\nVia Fréquences Thérapeutiques";
-  // Try native Web Share API first
+  if(freqs.length>0){
+    link+=freqs.join(",");
+    txt+="\n📱 Ouvre ce lien :\n"+link;
+  }
   if(navigator.share){
     navigator.share({title:'Mes favoris',text:txt}).catch(function(){});
   } else {
-    // Fallback: show box + copy button
     var box=document.getElementById('favs-share-box');
     var btn=document.getElementById('favs-copy-btn');
     box.textContent=txt;
@@ -1179,18 +1182,21 @@ function partagerFavs(){
 }
 function partagerUnFav(nom){
   var txt="";
+  var link=window.location.origin+window.location.pathname+"?p=";
+  var freqs=[];
   if(nom==='matin_playlist'){
     txt+="☀ PLAYLIST MATIN :\n";
-    playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";});
+    playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
+    link+=("matin_"+freqs.join("_"));
   } else if(nom==='soir_playlist'){
     txt+="☽ PLAYLIST SOIR :\n";
-    playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";});
+    playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
+    link+=("soir_"+freqs.join("_"));
   }
-  txt+="\nVia Fréquences Thérapeutiques";
+  txt+="\n📱 Clique pour ouvrir et lancer :\n"+link;
   if(navigator.share){
     navigator.share({title:'Partager',text:txt}).catch(function(){});
   } else {
-    // Fallback: copy to clipboard
     if(navigator.clipboard&&navigator.clipboard.writeText){
       navigator.clipboard.writeText(txt).then(function(){
         alert('Texte copié ! Colle-le où tu veux.');
@@ -1537,6 +1543,34 @@ checkFirstVisit();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js');
 }
+
+// --- DETECTION LIEN PARTAGE ---
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var p=params.get('p');
+  var f=params.get('f');
+  if(p){
+    var parts=p.split('_');
+    var slot=parts[0];
+    var hzList=parts.slice(1).map(Number);
+    if(slot==='matin'||slot==='soir'){
+      playlists[slot]=hzList.map(function(hz,idx){
+        return {hz:hz, d:Math.round(Math.max(10,Math.min(45,6000/hz))), nom:hz+' Hz'};
+      });
+      savePlaylist(slot);
+      renderPlaylist(slot);
+    }
+  }
+  if(f){
+    var hzList2=f.split(',').map(Number);
+    var slot2='partage';
+    playlists[slot2]=hzList2.map(function(hz){
+      return {hz:hz, d:Math.round(Math.max(10,Math.min(45,6000/hz))), nom:hz+' Hz'};
+    });
+    savePlaylist(slot2);
+    renderPlaylist(slot2);
+  }
+})();
 </script>
 </body>
 </html>
