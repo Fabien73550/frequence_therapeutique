@@ -1127,14 +1127,15 @@ function stopAudio(){
   secondsLeft=0;updateTimerDisplay();updateVoyageBtn();
 }
 var favs=JSON.parse(localStorage.getItem('ft_favs')||'[]');
+var activeMinCat='Element';
 function toggleFav(nom){
   var idx=favs.indexOf(nom);
   if(idx>=0){favs.splice(idx,1);}else{favs.push(nom);}
   localStorage.setItem('ft_favs',JSON.stringify(favs));
-  var activeTab=document.querySelector('#min-cat-tabs .cat-tab.active');
-  var catName=activeTab?activeTab.textContent.trim():'Element';
-  renderMin(catName);
   renderFavs();
+  // Re-render current mineral category by triggering tab click
+  var activeTab=document.querySelector('#min-cat-tabs .cat-tab.active');
+  if(activeTab) activeTab.click();
 }
 function renderFavs(){
   var el=document.getElementById('favs-list');
