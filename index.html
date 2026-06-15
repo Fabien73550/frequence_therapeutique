@@ -281,7 +281,64 @@ select option{background:var(--s2)}
   </div>
 </div>
 
+<!-- Bouton aide flottant -->
+<button id="help-btn" onclick="toggleAide()" style="position:fixed;bottom:75px;right:16px;width:48px;height:48px;border-radius:50%;border:none;background:var(--amber);color:#fff;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:300;display:flex;align-items:center;justify-content:center">❓</button>
+
+<!-- Modale aide -->
+<div id="help-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:400;overflow-y:auto;padding:20px">
+  <div style="max-width:500px;margin:20px auto;background:var(--s1);border-radius:16px;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="margin:0;font-size:20px">❓ Guide</h2>
+      <button onclick="toggleAide()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--dim)">✕</button>
+    </div>
+
+    <div id="help-accordion"></div>
+  </div>
+</div>
+
 <script>
+const GUIDE=[
+  {t:"🔵 Onde Binaurale",c:"<b>Qu'est-ce qu'un battement binaural ?</b><br>Le cerveau crée une fréquence virtuelle quand chaque oreille entend une fréquence légèrement différente. Ex: 432 Hz à gauche + 433.2 Hz à droite = battement de 1.2 Hz.<br><br><b>Casque indispensable !</b> Sans casque, chaque oreille entend les deux sons et l'effet ne fonctionne pas.<br><br><b>Fréquence de base</b> = celle que tu choisis (ex: 432 Hz).<br><b>Battement</b> = la différence entre les deux oreilles (ex: 1.2 Hz pour Delta)."},
+  {t:"🎵 Onglet Binaural",c:"<b>① Choisis ta fréquence</b> avec le slider (← glisser →) ou tape la valeur directement.<br><br><b>② Préréglages rapides</b> : Delta (sommeil profond), Thêta (méditation), Alpha (relaxation).<br><br><b>③ Minuteur</b> : choisis une durée ou 'inf' pour illimité.<br><br><b>④ Lance</b> avec le bouton ▶ et mets ton casque !"},
+  {t:"⬡ Onglet Minéraux",c:"<b>Parcours les catégories</b> : Élément, Minéral, Neuro, Organe...<br><br><b>+M</b> = ajoute la fréquence à la Playlist Matin<br><b>+S</b> = ajoute à la Playlist Soir<br><br><b>⭐</b> = met en favori pour la retrouver dans l'onglet Favoris<br><br>Clique sur une fréquence pour la charger et l'écouter."},
+  {t:"♫ Onglet Perso",c:"<b>Playlist Matin ☀</b> et <b>Playlist Soir ☽</b><br>Ajoute des fréquences depuis Minéraux avec +M ou +S.<br><br><b>☆</b> = mettre la playlist en favori<br><b>Vider</b> = supprimer toutes les fréquences<br><b>▶ Lancer</b> = écouter toute la playlist<br><br>Tu peux <b>sauvegarder</b> une playlist avec un nom personnalisé (bouton 💾)."},
+  {t:"⊞ Protocoles / ✦ Symptômes / ✧ Éveil",c:"<b>Protocoles</b> : fréquences organisées par thème (Détox, Immunité...).<br><br><b>Symptômes</b> : choisis un symptôme → 2 séquences S1 (nettoyage) et S2 (réparation).<br><br><b>Éveil</b> : les 9 chakras avec leurs fréquences. Clique sur un chakra pour le charger.<br><br>Utilise <b>▶ Lancer</b> pour écouter directement une séquence."},
+  {t:"⭐ Favoris et Partage",c:"<b>⭐ Favoris</b> : retrouve toutes tes playlists et fréquences sauvegardées. Clique sur ★ pour retirer un favori.<br><br><b>📤 Partager</b> :<br>• Le bouton <b>📤 vert</b> à côté d'une playlist = partager seulement celle-ci<br>• Le bouton <b>📤 Partager mes favoris</b> en bas = tout partager<br><br>Quand tu partages, le lien généré permet à tes amis de <b>cliquer et tout charger automatiquement</b> dans l'appli !<br><br>Le partage fonctionne avec WhatsApp, SMS, Email, Messenger..."},
+  {t:"⏸ Pause et Reprendre",c:"Pendant l'écoute, tu peux <b>mettre en pause</b> avec le bouton ⏸.<br><br>La session est sauvegardée automatiquement. Quand tu reviens, une barre en haut te propose de <b>reprendre</b> là où tu t'es arrêté.<br><br>Utile si tu dois interrompre ta séance et la continuer plus tard !"}
+];
+
+var accEl=document.getElementById('help-accordion');
+if(accEl){
+  GUIDE.forEach(function(section,i){
+    var sec=document.createElement('div');
+    sec.style.cssText='margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden';
+    var titre=document.createElement('div');
+    titre.style.cssText='font-size:14px;font-weight:600;padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none';
+    var arrow=document.createElement('span');
+    arrow.textContent='▶';
+    arrow.style.cssText='font-size:10px;transition:transform 0.2s';
+    var txtSpan=document.createElement('span');
+    txtSpan.innerHTML=section.t;
+    titre.appendChild(txtSpan);
+    titre.appendChild(arrow);
+    var contenu=document.createElement('div');
+    contenu.style.cssText='display:none;padding:14px;font-size:13px;color:var(--text);line-height:1.7';
+    contenu.innerHTML=section.c;
+    titre.addEventListener('click',function(){
+      var open=contenu.style.display==='block';
+      contenu.style.display=open?'none':'block';
+      arrow.style.transform=open?'rotate(0deg)':'rotate(90deg)';
+    });
+    sec.appendChild(titre);
+    sec.appendChild(contenu);
+    accEl.appendChild(sec);
+  });
+}
+function toggleAide(){
+  var m=document.getElementById('help-modal');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+
 const CHAKRAS=[
   {nom:"Racine",hz:432,duree:14},{nom:"Sacral",hz:468,duree:13},{nom:"Plexus solaire",hz:504,duree:12},
   {nom:"Coeur bas",hz:540,duree:11},{nom:"Coeur",hz:576,duree:10},{nom:"Haut-coeur",hz:612,duree:10},
