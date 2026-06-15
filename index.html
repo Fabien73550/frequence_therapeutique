@@ -128,7 +128,7 @@ select option{background:var(--s2)}
     <span>20 Hz</span><span style="color:var(--green)">← glisser →</span><span>20 000 Hz</span>
   </div>
   </div>
-  <div class="card"><div class="card-label">Onde binaural</div><div class="chips" id="onde-chips"></div></div>
+  <div class="card"><div class="card-label">Onde binaurale</div><div class="chips" id="onde-chips"></div></div>
   <div class="card"><div class="card-label">Minuteur</div><div class="timer-chips" id="timer-chips"></div></div>
   <p class="warning">Casque obligatoire pour effet binaural</p>
 </div>
@@ -408,7 +408,7 @@ const MINERAUX=[
   {nom:"Vanadium",hz:2429.665686,duree:10,cat:"Mineral",action:"Tension artérielle"},
   {nom:"Bore",hz:515.632941,duree:10,cat:"Mineral",action:"Os et articulations"},
   {nom:"Strontium",hz:4179.054546,duree:10,cat:"Mineral",action:"Densité osseuse"},
-  {nom:"Radium",hz:10779.118092,duree:10,cat:"Mineral",action:"Regeneration tissulaire"},
+  {nom:"Radium",hz:10779.118092,duree:10,cat:"Mineral",action:"Régénération tissulaire"},
   {nom:"Or",hz:4697.181234,duree:10,cat:"Oligo",action:"Fonctions cognitives"},
   {nom:"Argent",hz:5144.796756,duree:10,cat:"Oligo",action:"Antimicrobien naturel"},
   {nom:"Platine",hz:4652.286444,duree:10,cat:"Oligo",action:"Soutien oncologie"},
@@ -435,39 +435,39 @@ const MINERAUX=[
   // Elements ajouts
   {nom:"Scandium",hz:2144.181600,duree:10,cat:"Mineral",action:"Soutien osseux, immunité"},
   {nom:"Gallium",hz:3325.453317,duree:10,cat:"Mineral",action:"Antimicrobien, os"},
-  {nom:"Germanium",hz:3464.103303,duree:10,cat:"Mineral",action:"Oxygenation cellulaire"},
-  {nom:"Rubidium",hz:4076.404911,duree:10,cat:"Mineral",action:"Systeme nerveux, humeur"},
-  {nom:"Cesium",hz:6338.953809,duree:10,cat:"Mineral",action:"Equilibre cellulaire"},
-  {nom:"Baryum",hz:6549.840486,duree:10,cat:"Mineral",action:"Systeme nerveux"},
+  {nom:"Germanium",hz:3464.103303,duree:10,cat:"Mineral",action:"Oxygénation cellulaire"},
+  {nom:"Rubidium",hz:4076.404911,duree:10,cat:"Mineral",action:"Système nerveux, humeur"},
+  {nom:"Cesium",hz:6338.953809,duree:10,cat:"Mineral",action:"Équilibre cellulaire"},
+  {nom:"Baryum",hz:6549.840486,duree:10,cat:"Mineral",action:"Système nerveux"},
   {nom:"Lanthane",hz:6625.125945,duree:10,cat:"Mineral",action:"Soutien cognitif"},
   {nom:"Rhodium",hz:4908.099717,duree:10,cat:"Oligo",action:"Soutien ADN, anticancer"},
-  {nom:"Palladium",hz:5075.724546,duree:10,cat:"Oligo",action:"Detox, foie"},
-  {nom:"Indium",hz:5476.268943,duree:10,cat:"Oligo",action:"Absorption mineraux, hormones"},
-  {nom:"Etain",hz:5661.898713,duree:10,cat:"Oligo",action:"Croissance, vitalite"},
+  {nom:"Palladium",hz:5075.724546,duree:10,cat:"Oligo",action:"Détox, foie"},
+  {nom:"Indium",hz:5476.268943,duree:10,cat:"Oligo",action:"Absorption minéraux, hormones"},
+  {nom:"Etain",hz:5661.898713,duree:10,cat:"Oligo",action:"Croissance, vitalité"},
   // Molecules
-  {nom:"Adrenaline",hz:8737.953759,duree:10,cat:"Neuro",action:"Energie urgence, vigilance"},
+  {nom:"Adrénaline",hz:8737.953759,duree:10,cat:"Neuro",action:"Énergie urgence, vigilance"},
   {nom:"Cortisol",hz:17287.606827,duree:10,cat:"Neuro",action:"Stress, inflammation"},
   // Acides amines
-  {nom:"Glycine",hz:3580.341309,duree:10,cat:"AA",action:"Collagene, sommeil"},
-  {nom:"Alanine",hz:4249.357290,duree:10,cat:"AA",action:"Energie, immunite"},
-  {nom:"Serine",hz:5012.452071,duree:10,cat:"AA",action:"Membranes, cerveau"},
-  {nom:"Proline",hz:5491.240470,duree:10,cat:"AA",action:"Collagene, cicatrisation"},
-  {nom:"Valine",hz:5587.389252,duree:10,cat:"AA",action:"Muscles, energie"},
-  {nom:"Threonine",hz:5681.468052,duree:10,cat:"AA",action:"Systeme immunitaire"},
-  {nom:"Cysteine",hz:5778.465813,duree:10,cat:"AA",action:"Antioxydant, detox"},
-  {nom:"Leucine",hz:6256.400463,duree:10,cat:"AA",action:"Muscles, proteines"},
-  {nom:"Isoleucine",hz:6256.400463,duree:10,cat:"AA",action:"Hemoglobine, energie"},
-  {nom:"Asparagine",hz:6301.443816,duree:10,cat:"AA",action:"Systeme nerveux"},
+  {nom:"Glycine",hz:3580.341309,duree:10,cat:"AA",action:"Collagène, sommeil"},
+  {nom:"Alanine",hz:4249.357290,duree:10,cat:"AA",action:"Énergie, immunité"},
+  {nom:"Sérine",hz:5012.452071,duree:10,cat:"AA",action:"Membranes, cerveau"},
+  {nom:"Proline",hz:5491.240470,duree:10,cat:"AA",action:"Collagène, cicatrisation"},
+  {nom:"Valine",hz:5587.389252,duree:10,cat:"AA",action:"Muscles, énergie"},
+  {nom:"Thréonine",hz:5681.468052,duree:10,cat:"AA",action:"Système immunitaire"},
+  {nom:"Cystéine",hz:5778.465813,duree:10,cat:"AA",action:"Antioxydant, détox"},
+  {nom:"Leucine",hz:6256.400463,duree:10,cat:"AA",action:"Muscles, protéines"},
+  {nom:"Isoleucine",hz:6256.400463,duree:10,cat:"AA",action:"Hémoglobine, énergie"},
+  {nom:"Asparagine",hz:6301.443816,duree:10,cat:"AA",action:"Système nerveux"},
   {nom:"Ac. aspartique",hz:6348.414060,duree:10,cat:"AA",action:"Neurotransmission"},
-  {nom:"Glutamine",hz:6970.459797,duree:10,cat:"AA",action:"Intestin, immunite"},
-  {nom:"Lysine",hz:6972.529770,duree:10,cat:"AA",action:"Collagene, calcium"},
-  {nom:"Ac. glutamique",hz:7017.406200,duree:10,cat:"AA",action:"Cerveau, memoire"},
-  {nom:"Methionine",hz:7116.497766,duree:10,cat:"AA",action:"Detox, foie"},
-  {nom:"Histidine",hz:7400.212740,duree:10,cat:"AA",action:"Croissance, reparation"},
-  {nom:"Phenylalanine",hz:7878.858048,duree:10,cat:"AA",action:"Neurotransmetteurs"},
-  {nom:"Arginine",hz:8308.634841,duree:10,cat:"AA",action:"Circulation, immunite"},
-  {nom:"Tyrosine",hz:8641.952838,duree:10,cat:"AA",action:"Thyroide, dopamine"},
-  {nom:"Tryptophane",hz:9740.716992,duree:10,cat:"AA",action:"Serotonine, sommeil"},
+  {nom:"Glutamine",hz:6970.459797,duree:10,cat:"AA",action:"Intestin, immunité"},
+  {nom:"Lysine",hz:6972.529770,duree:10,cat:"AA",action:"Collagène, calcium"},
+  {nom:"Ac. glutamique",hz:7017.406200,duree:10,cat:"AA",action:"Cerveau, mémoire"},
+  {nom:"Méthionine",hz:7116.497766,duree:10,cat:"AA",action:"Détox, foie"},
+  {nom:"Histidine",hz:7400.212740,duree:10,cat:"AA",action:"Croissance, réparation"},
+  {nom:"Phénylalanine",hz:7878.858048,duree:10,cat:"AA",action:"Neurotransmetteurs"},
+  {nom:"Arginine",hz:8308.634841,duree:10,cat:"AA",action:"Circulation, immunité"},
+  {nom:"Tyrosine",hz:8641.952838,duree:10,cat:"AA",action:"Thyroïde, dopamine"},
+  {nom:"Tryptophane",hz:9740.716992,duree:10,cat:"AA",action:"Sérotonine, sommeil"},
 ];
 
 const PROTOCOLES=[
@@ -493,45 +493,45 @@ const PROTOCOLES=[
   {nom:"Chevelure / Alopécie",s1:[{n:"Stimulation racine",hz:727.2,d:10},{n:"Circulation cuir",hz:465.3,d:13}],s2:[{n:"Nutrition follicule",hz:146.300004,d:41},{n:"Croissance",hz:799.2,d:10}],note:"Source CAFL Rife"},
   {nom:"Vision / Yeux",s1:[{n:"Globe oculaire",hz:1472.4,d:10}],s2:[{n:"Soutien retine",hz:649.8,d:10}],note:"Source KHZ"},
   {nom:"Circulation / Thrombose",s1:[{n:"Fluidification",hz:684.600003,d:10},{n:"Circulation",hz:775.500003,d:10}],s2:[{n:"Drainage veineux",hz:1500.3,d:10}],note:"Source CAFL Rife"},
-  {nom:"Trauma emotionnel",s1:[{n:"Liberation",hz:95.4,d:45},{n:"Apaisement",hz:192.6,d:31},{n:"Equilibrage",hz:300.6,d:20}],s2:[{n:"Integration",hz:759.6,d:10},{n:"Ancrage",hz:3000.6,d:10}],note:"Source CAFL Rife"},
+  {nom:"Trauma émotionnel",s1:[{n:"Liberation",hz:95.4,d:45},{n:"Apaisement",hz:192.6,d:31},{n:"Equilibrage",hz:300.6,d:20}],s2:[{n:"Integration",hz:759.6,d:10},{n:"Ancrage",hz:3000.6,d:10}],note:"Source CAFL Rife"},
   {nom:"Globules blancs",s1:[{n:"Thymus",hz:2442.6,d:10},{n:"Soufre",hz:1529.346996,d:10}],s2:[{n:"Stimulation immune",hz:1434.6,d:10}],note:"Source XTRA"},
   {nom:"Relaxation",s1:[{n:"Apaisement",hz:1500.3,d:10},{n:"Ancrage",hz:10.8,d:10}],s2:[{n:"Schumann",hz:7.83,d:10}],note:"Source CAFL / Bien-etre"},
   {nom:"Concentration mentale CAFL",s1:[{n:"Focus",hz:2500.2,d:10}],s2:[{n:"Schumann",hz:7.83,d:10}],note:"Source CAFL / Bien-etre"},
   {nom:"Insomnie CAFL",s1:[{n:"Apaisement",hz:3.6,d:10},{n:"Calme nerveux",hz:10.8,d:10},{n:"Detente",hz:1551.6,d:10}],s2:[{n:"Relaxation",hz:1500.3,d:10},{n:"Respiration",hz:880.2,d:10},{n:"Equilibre",hz:801.9,d:10},{n:"Schumann",hz:7.83,d:10},{n:"Ancrage",hz:304.2,d:10}],note:"Source CAFL / Bien-etre"},
-  {nom:"Detox assist",s1:[{n:"Nettoyage",hz:2500.2,d:10}],s2:[{n:"Drainage",hz:3177,d:10}],note:"Source CAFL / Bien-etre"},
-  {nom:"Regeneration CAFL",s1:[{n:"Regeneration",hz:47.7,d:10}],s2:[{n:"Guerison",hz:2721.6,d:10}],note:"Source CAFL / Bien-etre"},
+  {nom:"Détox assist",s1:[{n:"Nettoyage",hz:2500.2,d:10}],s2:[{n:"Drainage",hz:3177,d:10}],note:"Source CAFL / Bien-etre"},
+  {nom:"Régénération CAFL",s1:[{n:"Regeneration",hz:47.7,d:10}],s2:[{n:"Guerison",hz:2721.6,d:10}],note:"Source CAFL / Bien-etre"},
   {nom:"Foie support CAFL",s1:[{n:"Equilibrage",hz:33.3,d:10},{n:"Soutien",hz:1551.6,d:10}],s2:[{n:"Drainage",hz:801.9,d:10}],note:"Source CAFL / Bien-etre"},
   {nom:"Fatigue CAFL",s1:[{n:"Revitalisation",hz:427.5,d:10},{n:"Energie",hz:423.9,d:10},{n:"Tonus",hz:664.2,d:10}],s2:[{n:"Circulation",hz:660.6,d:10},{n:"Oxygenation",hz:464.4,d:10},{n:"Recuperation",hz:125.1,d:10},{n:"Equilibre",hz:120.6,d:10},{n:"Vitalite",hz:94.5,d:10},{n:"Ancrage",hz:72,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Soutien",hz:444.6,d:10},{n:"Regeneration",hz:1866.6,d:10},{n:"Focus",hz:2500.2,d:10}],note:"Source CAFL / Bien-etre"},
-  {nom:"Prostate general",s1:[{n:"Equilibre",hz:2720.7,d:10},{n:"Regulation",hz:2007.9,d:10},{n:"Tonus",hz:664.2,d:10},{n:"Drainage",hz:690.000003,d:10},{n:"Equilibre",hz:666,d:10}],s2:[{n:"Soutien",hz:465.3,d:10},{n:"Respiration",hz:880.2,d:10},{n:"Ancrage",hz:787.5,d:10},{n:"Circulation",hz:727.2,d:10},{n:"Nettoyage",hz:72,d:10},{n:"Regeneration",hz:19.8,d:10}],note:"Source CAFL / Prostate"},
+  {nom:"Prostate général",s1:[{n:"Equilibre",hz:2720.7,d:10},{n:"Regulation",hz:2007.9,d:10},{n:"Tonus",hz:664.2,d:10},{n:"Drainage",hz:690.000003,d:10},{n:"Equilibre",hz:666,d:10}],s2:[{n:"Soutien",hz:465.3,d:10},{n:"Respiration",hz:880.2,d:10},{n:"Ancrage",hz:787.5,d:10},{n:"Circulation",hz:727.2,d:10},{n:"Nettoyage",hz:72,d:10},{n:"Regeneration",hz:19.8,d:10}],note:"Source CAFL / Prostate"},
   {nom:"Prostate hyperplasie",s1:[{n:"Regulation",hz:919.8,d:10},{n:"Equilibre",hz:2127.6,d:10}],s2:[{n:"Soutien",hz:2007.9,d:10},{n:"Drainage",hz:690.000003,d:10},{n:"Harmonisation",hz:666,d:10}],note:"Source CAFL / Prostate"},
   {nom:"Prostatite",s1:[{n:"Apaisement",hz:99.9,d:10},{n:"Regulation",hz:409.5,d:10},{n:"Nettoyage",hz:522,d:10},{n:"Drainage",hz:146.300004,d:10},{n:"Equilibre",hz:2720.7,d:10}],s2:[{n:"Soutien",hz:2489.4,d:10},{n:"Harmonisation",hz:2170.8,d:10},{n:"Ancrage",hz:787.5,d:10},{n:"Circulation",hz:775.500003,d:10},{n:"Tonus",hz:727.2,d:10},{n:"Regeneration",hz:690.000003,d:10},{n:"Equilibre",hz:666,d:10},{n:"Vitalite",hz:465.3,d:10},{n:"Recuperation",hz:125.1,d:10},{n:"Nettoyage",hz:94.5,d:10},{n:"Ancrage",hz:72,d:10},{n:"Detente",hz:19.8,d:10},{n:"Soutien",hz:444.6,d:10}],note:"Source CAFL / Prostate"}
 ,
-  {nom:"Anxiete Stress",s1:[{n:"Apaisement",hz:1.8,d:10},{n:"Calme",hz:3.6,d:10},{n:"Equilibre",hz:6.3,d:10},{n:"Schumann",hz:7.83,d:10}],s2:[{n:"Detente",hz:35.1,d:10},{n:"Ancrage",hz:72.9,d:10},{n:"Harmonisation",hz:787.5,d:10}],note:"Source CAFL / Systeme nerveux"},
-  {nom:"Depression legere",s1:[{n:"Apaisement",hz:1.8,d:10},{n:"Calme",hz:3.6,d:10},{n:"Equilibre",hz:35.1,d:10}],s2:[{n:"Ancrage",hz:72.9,d:10},{n:"Harmonisation",hz:787.5,d:10},{n:"Tonus",hz:799.2,d:10}],note:"Source CAFL / Systeme nerveux"},
-  {nom:"Memoire Concentration",s1:[{n:"Focus",hz:2500.2,d:10},{n:"Schumann",hz:7.83,d:10}],s2:[{n:"Ancrage",hz:19.8,d:10}],note:"Source CAFL / Systeme nerveux"},
+  {nom:"Anxiété Stress",s1:[{n:"Apaisement",hz:1.8,d:10},{n:"Calme",hz:3.6,d:10},{n:"Equilibre",hz:6.3,d:10},{n:"Schumann",hz:7.83,d:10}],s2:[{n:"Detente",hz:35.1,d:10},{n:"Ancrage",hz:72.9,d:10},{n:"Harmonisation",hz:787.5,d:10}],note:"Source CAFL / Systeme nerveux"},
+  {nom:"Dépression légère",s1:[{n:"Apaisement",hz:1.8,d:10},{n:"Calme",hz:3.6,d:10},{n:"Equilibre",hz:35.1,d:10}],s2:[{n:"Ancrage",hz:72.9,d:10},{n:"Harmonisation",hz:787.5,d:10},{n:"Tonus",hz:799.2,d:10}],note:"Source CAFL / Systeme nerveux"},
+  {nom:"Mémoire Concentration",s1:[{n:"Focus",hz:2500.2,d:10},{n:"Schumann",hz:7.83,d:10}],s2:[{n:"Ancrage",hz:19.8,d:10}],note:"Source CAFL / Systeme nerveux"},
   {nom:"Sommeil profond",s1:[{n:"Apaisement",hz:3.6,d:10},{n:"Schumann",hz:7.83,d:10},{n:"Ancrage",hz:10.8,d:10},{n:"Detente",hz:1551.6,d:10}],s2:[{n:"Relaxation",hz:1500.3,d:10},{n:"Respiration",hz:880.2,d:10},{n:"Equilibre",hz:801.9,d:10},{n:"Nettoyage",hz:304.2,d:10}],note:"Source CAFL / Systeme nerveux"},
-  {nom:"Arthrite general",s1:[{n:"Principal",hz:120.6,d:20},{n:"Tonus",hz:727.2,d:10},{n:"Harmonisation",hz:787.5,d:10},{n:"Respiration",hz:880.2,d:10},{n:"Soutien",hz:1551.6,d:10},{n:"Equilibre",hz:801.9,d:10},{n:"Regeneration",hz:1664.1,d:10},{n:"Circulation",hz:79.2,d:10},{n:"Ancrage",hz:58.5,d:10},{n:"Detente",hz:39.6,d:10}],s2:[{n:"Calme",hz:29.7,d:10},{n:"Vitalite",hz:25.2,d:10},{n:"Energie",hz:26.1,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Focus",hz:10.8,d:10},{n:"Mental",hz:2500.2,d:10},{n:"Schumann",hz:7.83,d:10},{n:"Apaisement",hz:3.6,d:10},{n:"Douceur",hz:1.8,d:10},{n:"Ancrage",hz:27.9,d:3}],note:"Source CAFL / Articulations"},
+  {nom:"Arthrite général",s1:[{n:"Principal",hz:120.6,d:20},{n:"Tonus",hz:727.2,d:10},{n:"Harmonisation",hz:787.5,d:10},{n:"Respiration",hz:880.2,d:10},{n:"Soutien",hz:1551.6,d:10},{n:"Equilibre",hz:801.9,d:10},{n:"Regeneration",hz:1664.1,d:10},{n:"Circulation",hz:79.2,d:10},{n:"Ancrage",hz:58.5,d:10},{n:"Detente",hz:39.6,d:10}],s2:[{n:"Calme",hz:29.7,d:10},{n:"Vitalite",hz:25.2,d:10},{n:"Energie",hz:26.1,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Focus",hz:10.8,d:10},{n:"Mental",hz:2500.2,d:10},{n:"Schumann",hz:7.83,d:10},{n:"Apaisement",hz:3.6,d:10},{n:"Douceur",hz:1.8,d:10},{n:"Ancrage",hz:27.9,d:3}],note:"Source CAFL / Articulations"},
   {nom:"Dos Lombaires",s1:[{n:"Apaisement",hz:0.9,d:10},{n:"Calme",hz:3.6,d:10},{n:"Schumann",hz:7.83,d:10},{n:"Equilibre",hz:9.45,d:10},{n:"Tonus",hz:9.9,d:10}],s2:[{n:"Ancrage",hz:432,d:10},{n:"Soutien",hz:465.3,d:10},{n:"Harmonisation",hz:727.2,d:10},{n:"Circulation",hz:774.9,d:10},{n:"Detente",hz:787.5,d:10}],note:"Source CAFL / Corps physique"},
   {nom:"Circulation sanguine",s1:[{n:"Equilibre",hz:9.45,d:10},{n:"Ancrage",hz:39.6,d:10},{n:"Tonus",hz:2111.4,d:10}],s2:[{n:"Soutien",hz:2144.7,d:10},{n:"Harmonisation",hz:2489.4,d:10},{n:"Regeneration",hz:2720.7,d:10}],note:"Source CAFL / Corps physique"},
   {nom:"Reins support",s1:[{n:"Equilibre",hz:8.1,d:10},{n:"Ancrage",hz:9.45,d:10},{n:"Tonus",hz:10.8,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Detente",hz:39.6,d:10},{n:"Vitalite",hz:72,d:10},{n:"Recuperation",hz:94.5,d:10},{n:"Soutien",hz:125.1,d:10},{n:"Drainage",hz:146.7,d:10},{n:"Harmonisation",hz:247.5,d:10},{n:"Circulation",hz:249.3,d:10}],s2:[{n:"Respiration",hz:440.1,d:10},{n:"Calme",hz:444.6,d:10},{n:"Energie",hz:599.4,d:10},{n:"Focus",hz:624.6,d:10},{n:"Ancrage2",hz:649.8,d:10},{n:"Regulation",hz:799.2,d:10},{n:"Principal",hz:880.2,d:10},{n:"Equilibre2",hz:801.9,d:10},{n:"Relaxation",hz:1500.3,d:10},{n:"Soutien2",hz:1551.6,d:10},{n:"Tonus2",hz:1599.3,d:10},{n:"Regeneration",hz:1866.6,d:10},{n:"Detox",hz:3000.6,d:10}],note:"Source CAFL / Corps physique"},
   {nom:"Lymphe drainage",s1:[{n:"Apaisement",hz:2.7,d:10},{n:"Equilibre",hz:6.3,d:10},{n:"Ancrage",hz:10.8,d:10},{n:"Tonus",hz:15.3,d:10},{n:"Drainage",hz:146.7,d:10},{n:"Soutien",hz:148.5,d:10}],s2:[{n:"Respiration",hz:440.1,d:10},{n:"Calme",hz:444.6,d:10},{n:"Vitalite",hz:465.3,d:10},{n:"Nettoyage",hz:522,d:10},{n:"Harmonisation",hz:727.2,d:10},{n:"Circulation",hz:787.5,d:10},{n:"Principal",hz:880.2,d:10},{n:"Regeneration",hz:3177,d:10}],note:"Source CAFL / Corps physique"},
   {nom:"Digestion Colon",s1:[{n:"Equilibre",hz:4.5,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Ancrage",hz:72,d:10},{n:"Recuperation",hz:94.5,d:10},{n:"Soutien",hz:125.1,d:10},{n:"Tonus",hz:440.1,d:10},{n:"Calme",hz:444.6,d:10},{n:"Energie",hz:465.3,d:10}],s2:[{n:"Harmonisation",hz:727.2,d:10},{n:"Circulation",hz:787.5,d:10},{n:"Regulation",hz:799.2,d:10},{n:"Equilibre2",hz:801.9,d:10},{n:"Detente",hz:831.6,d:10},{n:"Principal",hz:880.2,d:10},{n:"Soutien2",hz:1551.6,d:10}],note:"Source CAFL / Corps physique"},
   {nom:"Yeux Vision",s1:[{n:"Nettoyage",hz:19.8,d:10},{n:"Lumiere",hz:159.3,d:10},{n:"Vision",hz:349.2,d:10},{n:"Equilibre",hz:360,d:10},{n:"Harmonisation",hz:727.2,d:10}],s2:[{n:"Tonus",hz:783.9,d:10},{n:"Soutien",hz:787.5,d:10},{n:"Regulation",hz:799.2,d:10},{n:"Principal",hz:880.2,d:10},{n:"Regeneration",hz:1551.6,d:10},{n:"Ancrage",hz:1599.3,d:10},{n:"Profond",hz:1829.7,d:10}],note:"Source CAFL / Yeux"},
-  {nom:"Recuperation post-effort",s1:[{n:"Nettoyage",hz:19.8,d:10},{n:"Ancrage",hz:39.6,d:10},{n:"Regeneration",hz:47.7,d:10},{n:"Tonus",hz:120.6,d:10},{n:"Drainage",hz:189.9,d:10},{n:"Equilibre",hz:220.5,d:10},{n:"Souplesse",hz:239.4,d:10}],s2:[{n:"Stabilisation",hz:300.6,d:10},{n:"Detente",hz:304.2,d:10},{n:"Relaxation",hz:327.6,d:10},{n:"Harmonisation",hz:727.2,d:10},{n:"Soutien",hz:787.5,d:10},{n:"Principal",hz:880.2,d:10},{n:"Profond",hz:2720.7,d:10},{n:"Focus",hz:2500.2,d:10}],note:"Source CAFL / Corps physique"},
-  {nom:"Regeneration tissulaire",s1:[{n:"Regeneration",hz:47.7,d:10},{n:"DNA",hz:527.4,d:10},{n:"Reparation",hz:730.8,d:10},{n:"Tissus",hz:731.7,d:10}],s2:[{n:"Profond",hz:2500.2,d:10},{n:"Guerison",hz:2720.7,d:10}],note:"Source CAFL / Corps physique"},
+  {nom:"Récupération post-effort",s1:[{n:"Nettoyage",hz:19.8,d:10},{n:"Ancrage",hz:39.6,d:10},{n:"Regeneration",hz:47.7,d:10},{n:"Tonus",hz:120.6,d:10},{n:"Drainage",hz:189.9,d:10},{n:"Equilibre",hz:220.5,d:10},{n:"Souplesse",hz:239.4,d:10}],s2:[{n:"Stabilisation",hz:300.6,d:10},{n:"Detente",hz:304.2,d:10},{n:"Relaxation",hz:327.6,d:10},{n:"Harmonisation",hz:727.2,d:10},{n:"Soutien",hz:787.5,d:10},{n:"Principal",hz:880.2,d:10},{n:"Profond",hz:2720.7,d:10},{n:"Focus",hz:2500.2,d:10}],note:"Source CAFL / Corps physique"},
+  {nom:"Régénération tissulaire",s1:[{n:"Regeneration",hz:47.7,d:10},{n:"DNA",hz:527.4,d:10},{n:"Reparation",hz:730.8,d:10},{n:"Tissus",hz:731.7,d:10}],s2:[{n:"Profond",hz:2500.2,d:10},{n:"Guerison",hz:2720.7,d:10}],note:"Source CAFL / Corps physique"},
   {nom:"Circulation pelvienne",s1:[{n:"Equilibre",hz:9.45,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Ancrage",hz:39.6,d:10},{n:"Tonus",hz:72,d:10},{n:"Soutien",hz:72.9,d:10},{n:"Recuperation",hz:94.5,d:10},{n:"Regulation",hz:123.3,d:10}],s2:[{n:"Energie",hz:599.4,d:10},{n:"Equilibre2",hz:624.6,d:10},{n:"Circulation",hz:649.8,d:10},{n:"Harmonisation",hz:666,d:10},{n:"Drainage",hz:689.4,d:10},{n:"Ancrage2",hz:727.2,d:10},{n:"Soutien2",hz:787.5,d:10},{n:"Detente",hz:801.9,d:10},{n:"Principal",hz:880.2,d:10},{n:"Reparation",hz:2007.9,d:10},{n:"Stase",hz:2111.4,d:10},{n:"Profond",hz:2127.6,d:10},{n:"Vitalite",hz:2144.7,d:10},{n:"Regeneration",hz:2489.4,d:10},{n:"Guerison",hz:2720.7,d:10}],note:"Source CAFL / Corps physique"},
-  {nom:"Vitalite generale",s1:[{n:"Bien-etre",hz:6.3,d:10},{n:"Schumann",hz:7.83,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Ancrage",hz:72,d:10},{n:"Recuperation",hz:94.5,d:10},{n:"Tonus",hz:120.6,d:10},{n:"Soutien",hz:125.1,d:10},{n:"Energie",hz:423.9,d:10}],s2:[{n:"Revitalisation",hz:427.5,d:10},{n:"Calme",hz:444.6,d:10},{n:"Oxygenation",hz:464.4,d:10},{n:"Circulation",hz:660.6,d:10},{n:"Harmonisation",hz:664.2,d:10},{n:"Regeneration",hz:1866.6,d:10},{n:"Focus",hz:2500.2,d:10}],note:"Source CAFL / Vitalite"},
+  {nom:"Vitalité générale",s1:[{n:"Bien-etre",hz:6.3,d:10},{n:"Schumann",hz:7.83,d:10},{n:"Nettoyage",hz:19.8,d:10},{n:"Ancrage",hz:72,d:10},{n:"Recuperation",hz:94.5,d:10},{n:"Tonus",hz:120.6,d:10},{n:"Soutien",hz:125.1,d:10},{n:"Energie",hz:423.9,d:10}],s2:[{n:"Revitalisation",hz:427.5,d:10},{n:"Calme",hz:444.6,d:10},{n:"Oxygenation",hz:464.4,d:10},{n:"Circulation",hz:660.6,d:10},{n:"Harmonisation",hz:664.2,d:10},{n:"Regeneration",hz:1866.6,d:10},{n:"Focus",hz:2500.2,d:10}],note:"Source CAFL / Vitalite"},
   // Protocoles THQV
   {nom:"Fatigue Fibromyalgie THQV",s1:[{n:"Magnesium",hz:1159.232148,d:10},{n:"Fer",hz:2663.539155,d:10},{n:"Phosphore",hz:1477.300140,d:10}],s2:[{n:"CoQ10",hz:2573.574066,d:10},{n:"Oxygene",hz:763.094781,d:10}],note:"Source THQV"},
-  {nom:"Anxiete Burn-out THQV",s1:[{n:"Lithium",hz:331.062012,d:18},{n:"Magnesium",hz:1159.232148,d:10},{n:"GABA",hz:4918.330341,d:10}],s2:[{n:"Helium",hz:763.619832,d:10},{n:"Serotonine",hz:4202.186724,d:10}],note:"Source THQV"},
-  {nom:"Depression THQV",s1:[{n:"Dopamine",hz:3652.976349,d:10},{n:"Serotonine",hz:4202.186724,d:10},{n:"Zinc",hz:3118.313016,d:10}],s2:[{n:"Phosphore",hz:1477.300140,d:10},{n:"Or",hz:9394.362477,d:10}],note:"Source THQV"},
+  {nom:"Anxiété Burn-out THQV",s1:[{n:"Lithium",hz:331.062012,d:18},{n:"Magnesium",hz:1159.232148,d:10},{n:"GABA",hz:4918.330341,d:10}],s2:[{n:"Helium",hz:763.619832,d:10},{n:"Serotonine",hz:4202.186724,d:10}],note:"Source THQV"},
+  {nom:"Dépression THQV",s1:[{n:"Dopamine",hz:3652.976349,d:10},{n:"Serotonine",hz:4202.186724,d:10},{n:"Zinc",hz:3118.313016,d:10}],s2:[{n:"Phosphore",hz:1477.300140,d:10},{n:"Or",hz:9394.362477,d:10}],note:"Source THQV"},
   {nom:"Insomnie THQV",s1:[{n:"Magnesium",hz:1159.232148,d:10},{n:"Melatonine",hz:2769.661008,d:10},{n:"GABA",hz:4918.330341,d:10}],s2:[{n:"Xenon",hz:6262.047576,d:10},{n:"Iode",hz:6052.735701,d:10}],note:"Source THQV"},
-  {nom:"Diabete type 2 THQV",s1:[{n:"Chrome",hz:2479.965057,d:10},{n:"Molybdene",hz:4576.355667,d:10},{n:"Zinc",hz:3118.313016,d:10}],s2:[{n:"Pancreas",hz:3724.000002,d:10}],note:"Source THQV"},
+  {nom:"Diabète type 2 THQV",s1:[{n:"Chrome",hz:2479.965057,d:10},{n:"Molybdene",hz:4576.355667,d:10},{n:"Zinc",hz:3118.313016,d:10}],s2:[{n:"Pancreas",hz:3724.000002,d:10}],note:"Source THQV"},
   {nom:"Cancer soutien THQV",s1:[{n:"Platine",hz:9304.572897,d:10},{n:"Glutathion",hz:3664.423197,d:10},{n:"Selenium",hz:3766.014000,d:10}],s2:[{n:"Soufre",hz:1529.346996,d:10},{n:"Or",hz:9394.362477,d:10}],note:"Source THQV"},
   {nom:"Arthrose THQV",s1:[{n:"Bore",hz:515.632941,d:12},{n:"Calcium",hz:1911.528738,d:10},{n:"Magnesium",hz:1159.232148,d:10}],s2:[{n:"Soufre",hz:1529.346996,d:10},{n:"Silicium",hz:1339.543899,d:10}],note:"Source THQV"},
-  {nom:"Osteoporose THQV",s1:[{n:"Strontium",hz:4179.054546,d:10},{n:"Calcium",hz:1911.528738,d:10},{n:"Bore",hz:515.632941,d:12}],s2:[{n:"Fluor",hz:906.132870,d:10},{n:"Vitamine D",hz:4586.371668,d:10}],note:"Source THQV"},
+  {nom:"Ostéoporose THQV",s1:[{n:"Strontium",hz:4179.054546,d:10},{n:"Calcium",hz:1911.528738,d:10},{n:"Bore",hz:515.632941,d:12}],s2:[{n:"Fluor",hz:906.132870,d:10},{n:"Vitamine D",hz:4586.371668,d:10}],note:"Source THQV"},
   {nom:"Asthme Allergies THQV",s1:[{n:"Cuivre",hz:3030.839991,d:10},{n:"Histamine",hz:5301.322902,d:10},{n:"Zinc",hz:3118.313016,d:10}],s2:[{n:"Silicium",hz:1339.543899,d:10},{n:"Selenium",hz:3766.014000,d:10}],note:"Source THQV"},
-  {nom:"Thyroide THQV",s1:[{n:"Iode",hz:6052.735701,d:10},{n:"Zinc",hz:3118.313016,d:10},{n:"Selenium",hz:3766.014000,d:10}],s2:[{n:"Manganese",hz:2620.281744,d:10},{n:"Hypothalamus",hz:999,d:10}],note:"Source THQV"},
+  {nom:"Thyroïde THQV",s1:[{n:"Iode",hz:6052.735701,d:10},{n:"Zinc",hz:3118.313016,d:10},{n:"Selenium",hz:3766.014000,d:10}],s2:[{n:"Manganese",hz:2620.281744,d:10},{n:"Hypothalamus",hz:999,d:10}],note:"Source THQV"},
   {nom:"Hypertension THQV",s1:[{n:"Potassium",hz:1864.801737,d:10},{n:"Magnesium",hz:1159.232148,d:10},{n:"Sodium",hz:1096.501932,d:10}],s2:[{n:"Vanadium",hz:2429.665686,d:10},{n:"CoQ10",hz:2573.574066,d:10}],note:"Source THQV"},
   {nom:"Cognitif Alzheimer THQV",s1:[{n:"Phosphore",hz:1477.300140,d:10},{n:"Acetylcholine",hz:3486.758535,d:10},{n:"Cuivre",hz:3030.839991,d:10}],s2:[{n:"Oxygene",hz:763.094781,d:10},{n:"Or",hz:9394.362477,d:10}],note:"Source THQV"}
 ];
@@ -545,30 +545,30 @@ const SYMPTOMES={
     {s:"Sciatique",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:5301.322902,d:10}],s2:[{hz:1339.543899,d:10},{hz:1159.232148,d:10},{hz:1911.528738,d:10}]}
   ],
   "Fatigue":[
-    {s:"Fatigue generale",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:763.094781,d:10},{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:1477.300140,d:10}]},
+    {s:"Fatigue générale",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:763.094781,d:10},{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:1477.300140,d:10}]},
     {s:"Fatigue matinale",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:1159.232148,d:10},{hz:999,d:10},{hz:6052.735701,d:10}]},
-    {s:"Epuisement nerveux",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]},
+    {s:"Épuisement nerveux",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]},
     {s:"Burn-out",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:3652.976349,d:10}]}
   ],
   "Sommeil":[
     {s:"Endormissement difficile",s1:[{hz:1529.346996,d:10},{hz:6052.735701,d:10}],s2:[{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:6262.047576,d:10}]},
-    {s:"Reveils nocturnes",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:999,d:10},{hz:763.094781,d:10}]},
-    {s:"Sommeil non reparateur",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:763.094781,d:10},{hz:4918.330341,d:10}]}
+    {s:"Réveils nocturnes",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:999,d:10},{hz:763.094781,d:10}]},
+    {s:"Sommeil non réparateur",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:763.094781,d:10},{hz:4918.330341,d:10}]}
   ],
   "Mental":[
     {s:"Stress chronique",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]},
-    {s:"Anxiete / Angoisse",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:4918.330341,d:10},{hz:1159.232148,d:10},{hz:4202.186724,d:10}]},
-    {s:"Deprime passagere",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:1477.300140,d:10}],s2:[{hz:3652.976349,d:10},{hz:4202.186724,d:10},{hz:3118.313016,d:10},{hz:4697.181234,d:10}]},
+    {s:"Anxiété / Angoisse",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:4918.330341,d:10},{hz:1159.232148,d:10},{hz:4202.186724,d:10}]},
+    {s:"Déprime passagère",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:1477.300140,d:10}],s2:[{hz:3652.976349,d:10},{hz:4202.186724,d:10},{hz:3118.313016,d:10},{hz:4697.181234,d:10}]},
     {s:"Manque concentration",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.094781,d:10}],s2:[{hz:1477.300140,d:10},{hz:3486.758535,d:10},{hz:4697.181234,d:10}]},
-    {s:"Irritabilite",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:1159.232148,d:10},{hz:2663.539155,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]}
+    {s:"Irritabilité",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:1159.232148,d:10},{hz:2663.539155,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]}
   ],
   "Immunite":[
     {s:"Rhume / Grippe",s1:[{hz:1529.346996,d:10},{hz:2442.000006,d:10},{hz:832.000005,d:10}],s2:[{hz:3118.313016,d:10},{hz:3030.839991,d:10},{hz:3766.014000,d:10},{hz:4697.181234,d:10}]},
     {s:"Fatigue post-virale",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:763.094781,d:10},{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:3766.014000,d:10}]},
-    {s:"Allergies saisonnieres",s1:[{hz:1529.346996,d:10},{hz:5301.322902,d:10},{hz:832.000005,d:10}],s2:[{hz:3030.839991,d:10},{hz:3118.313016,d:10},{hz:3766.014000,d:10},{hz:1339.543899,d:10}]}
+    {s:"Allergies saisonnières",s1:[{hz:1529.346996,d:10},{hz:5301.322902,d:10},{hz:832.000005,d:10}],s2:[{hz:3030.839991,d:10},{hz:3118.313016,d:10},{hz:3766.014000,d:10},{hz:1339.543899,d:10}]}
   ],
   "Cognitif":[
-    {s:"Perte de memoire",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.094781,d:10}],s2:[{hz:1477.300140,d:10},{hz:3486.758535,d:10},{hz:3030.839991,d:10},{hz:4697.181234,d:10}]},
+    {s:"Perte de mémoire",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.094781,d:10}],s2:[{hz:1477.300140,d:10},{hz:3486.758535,d:10},{hz:3030.839991,d:10},{hz:4697.181234,d:10}]},
     {s:"Brouillard mental",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.094781,d:10}],s2:[{hz:1477.300140,d:10},{hz:3486.758535,d:10},{hz:1159.232148,d:10}]},
     {s:"TDAH",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:3652.976349,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:1477.300140,d:10}]}
   ]
@@ -749,115 +749,115 @@ function savePlaylistAs(slot){
   savedPlaylists[nom]=playlists[slot].slice();
   persistSaved();renderSavedPlaylists();
   if(inp)inp.value="";
-  alert("Playlist \""+nom+"\" sauvegardee.");
+  alert("Playlist \""+nom+"\" sauvegardée.");
 }
 function loadSavedInto(nom,slot){
   if(!savedPlaylists[nom])return;
   playlists[slot]=savedPlaylists[nom].slice();
   savePlaylist(slot);renderPlaylist(slot);
-  alert("\""+nom+"\" chargee dans "+(slot==="matin"?"Matin":"Soir")+".");
+  alert("\""+nom+"\" chargée dans "+(slot==="matin"?"Matin":"Soir")+".");
 }
 function deleteSaved(nom){
   delete savedPlaylists[nom];
   persistSaved();renderSavedPlaylists();
 }
 const SUGGESTED_PROTOCOLS=[
-  {slot:"matin",nom:"Energie & Focus",desc:"Relance la dopamine et la neurotransmission cognitive au reveil.",freqs:[
+  {slot:"matin",nom:"Énergie & Focus",desc:"Relance la dopamine et la neurotransmission cognitive au réveil.",freqs:[
     {hz:999,d:10,nom:"Hypothalamus",action:"Chef d'orchestre hormonal"},
     {hz:3652.976349,d:10,nom:"Dopamine",action:"Motivation, plaisir"},
-    {hz:8641.952838,d:10,nom:"Tyrosine",action:"Thyroide, dopamine"},
+    {hz:8641.952838,d:10,nom:"Tyrosine",action:"Thyroïde, dopamine"},
     {hz:7878.858048,d:10,nom:"Phenylalanine",action:"Neurotransmetteurs"},
-    {hz:1477.300140,d:10,nom:"Phosphore",action:"Memoire et ATP"}
+    {hz:1477.300140,d:10,nom:"Phosphore",action:"Mémoire et ATP"}
   ]},
-  {slot:"matin",nom:"Immunite journaliere",desc:"Stimule les defenses immunitaires pour la journee.",freqs:[
-    {hz:2442.000006,d:10,nom:"Thymus",action:"Immunite lymphocytes T"},
-    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunite, reparation cellulaire"},
-    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
-    {hz:3030.839991,d:10,nom:"Cuivre",action:"Antiviral, immunite"},
-    {hz:4200.040431,d:10,nom:"Vitamine C",action:"Antioxydant, immunite"}
+  {slot:"matin",nom:"Immunité journalière",desc:"Stimule les défenses immunitaires pour la journée.",freqs:[
+    {hz:2442.000006,d:10,nom:"Thymus",action:"Immunité lymphocytes T"},
+    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunité, réparation cellulaire"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunité"},
+    {hz:3030.839991,d:10,nom:"Cuivre",action:"Antiviral, immunité"},
+    {hz:4200.040431,d:10,nom:"Vitamine C",action:"Antioxydant, immunité"}
   ]},
-  {slot:"matin",nom:"Detox matinale",desc:"Active les voies de detoxification hepatique apres le jeune nocturne.",freqs:[
-    {hz:832.000005,d:10,nom:"Foie",action:"Detox et filtration"},
-    {hz:1529.346996,d:10,nom:"Soufre",action:"Detox et glutathion"},
+  {slot:"matin",nom:"Détox matinale",desc:"Active les voies de détoxification hépatique après le jeûne nocturne.",freqs:[
+    {hz:832.000005,d:10,nom:"Foie",action:"Détox et filtration"},
+    {hz:1529.346996,d:10,nom:"Soufre",action:"Détox et glutathion"},
     {hz:3664.423197,d:10,nom:"Glutathion",action:"Antioxydant majeur"},
-    {hz:4576.355667,d:10,nom:"Molybdene",action:"Detox hepatique"},
-    {hz:1690.924077,d:10,nom:"Chlore",action:"Immunite intestinale"}
+    {hz:4576.355667,d:10,nom:"Molybdene",action:"Détox hépatique"},
+    {hz:1690.924077,d:10,nom:"Chlore",action:"Immunité intestinale"}
   ]},
-  {slot:"matin",nom:"Performance physique",desc:"Optimise l'energie mitochondriale et l'oxygenation musculaire.",freqs:[
-    {hz:2663.539155,d:10,nom:"Fer",action:"Transport oxygene, vitalite"},
+  {slot:"matin",nom:"Performance physique",desc:"Optimise l'énergie mitochondriale et l'oxygénation musculaire.",freqs:[
+    {hz:2663.539155,d:10,nom:"Fer",action:"Transport oxygène, vitalité"},
     {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"},
-    {hz:2573.574066,d:10,nom:"CoQ10",action:"Energie mitochondriale"},
+    {hz:2573.574066,d:10,nom:"CoQ10",action:"Énergie mitochondriale"},
     {hz:763.094781,d:10,nom:"Oxygene",action:"Respiration cellulaire"},
-    {hz:6256.400463,d:10,nom:"Leucine",action:"Muscles, proteines"}
+    {hz:6256.400463,d:10,nom:"Leucine",action:"Muscles, protéines"}
   ]},
-  {slot:"matin",nom:"Equilibre hormonal",desc:"Relance l'axe thyroide et surrenales au reveil.",freqs:[
+  {slot:"matin",nom:"Équilibre hormonal",desc:"Relance l'axe thyroïde et surrénales au réveil.",freqs:[
     {hz:999,d:10,nom:"Hypothalamus",action:"Chef d'orchestre hormonal"},
-    {hz:6052.735701,d:10,nom:"Iode",action:"Thyroide, metabolisme"},
-    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunite, reparation cellulaire"},
-    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
+    {hz:6052.735701,d:10,nom:"Iode",action:"Thyroïde, métabolisme"},
+    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunité, réparation cellulaire"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunité"},
     {hz:17287.606827,d:10,nom:"Cortisol",action:"Stress, inflammation"}
   ]},
-  {slot:"matin",nom:"Anti-inflammatoire matinal",desc:"Calme l'inflammation nocturne residuelle et prepare le terrain.",freqs:[
-    {hz:1529.346996,d:10,nom:"Soufre",action:"Detox et glutathion"},
-    {hz:3030.839991,d:10,nom:"Cuivre",action:"Antiviral, immunite"},
+  {slot:"matin",nom:"Anti-inflammatoire matinal",desc:"Calme l'inflammation nocturne résiduelle et prépare le terrain.",freqs:[
+    {hz:1529.346996,d:10,nom:"Soufre",action:"Détox et glutathion"},
+    {hz:3030.839991,d:10,nom:"Cuivre",action:"Antiviral, immunité"},
     {hz:5301.322902,d:10,nom:"Histamine",action:"Modulation allergies"},
     {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"},
-    {hz:2429.665686,d:10,nom:"Vanadium",action:"Regulation tension arterielle"}
+    {hz:2429.665686,d:10,nom:"Vanadium",action:"Régulation tension artérielle"}
   ]},
-  {slot:"matin",nom:"Clarte mentale",desc:"Active la neurotransmission et la memoire de travail.",freqs:[
-    {hz:1477.300140,d:10,nom:"Phosphore",action:"Memoire et ATP"},
-    {hz:3486.758535,d:10,nom:"Acetylcholine",action:"Memoire, motricite fine"},
+  {slot:"matin",nom:"Clarté mentale",desc:"Active la neurotransmission et la mémoire de travail.",freqs:[
+    {hz:1477.300140,d:10,nom:"Phosphore",action:"Mémoire et ATP"},
+    {hz:3486.758535,d:10,nom:"Acetylcholine",action:"Mémoire, motricité fine"},
     {hz:9394.362477,d:10,nom:"Or",action:"Amplificateur vibratoire"},
     {hz:7878.858048,d:10,nom:"Phenylalanine",action:"Neurotransmetteurs"},
-    {hz:7017.406200,d:10,nom:"Ac. glutamique",action:"Cerveau, memoire"}
+    {hz:7017.406200,d:10,nom:"Ac. glutamique",action:"Cerveau, mémoire"}
   ]},
-  {slot:"soir",nom:"Sommeil profond",desc:"Induit le sommeil en activant GABA et melatonine.",freqs:[
+  {slot:"soir",nom:"Sommeil profond",desc:"Induit le sommeil en activant GABA et mélatonine.",freqs:[
     {hz:4918.330341,d:10,nom:"GABA",action:"Apaisement neuronal, sommeil"},
     {hz:2769.661008,d:10,nom:"Melatonine",action:"Induction du sommeil"},
     {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"},
     {hz:6262.047576,d:10,nom:"Xenon",action:"Relaxation profonde, sommeil"},
-    {hz:9740.716992,d:10,nom:"Tryptophane",action:"Serotonine, sommeil"}
+    {hz:9740.716992,d:10,nom:"Tryptophane",action:"Sérotonine, sommeil"}
   ]},
-  {slot:"soir",nom:"Recuperation cellulaire",desc:"Renforce les defenses antioxydantes pour la regeneration nocturne.",freqs:[
+  {slot:"soir",nom:"Récupération cellulaire",desc:"Renforce les défenses antioxydantes pour la régénération nocturne.",freqs:[
     {hz:3664.423197,d:10,nom:"Glutathion",action:"Antioxydant majeur"},
-    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
-    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunite, reparation cellulaire"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunité"},
+    {hz:3118.313016,d:10,nom:"Zinc",action:"Immunité, réparation cellulaire"},
     {hz:9394.362477,d:10,nom:"Or",action:"Renforcement cellulaire"},
     {hz:9304.572897,d:10,nom:"Platine",action:"Soutien anticancer"}
   ]},
-  {slot:"soir",nom:"Systeme nerveux",desc:"Descente progressive du systeme nerveux vers le repos.",freqs:[
-    {hz:3580.341309,d:10,nom:"Glycine",action:"Collagene, sommeil"},
+  {slot:"soir",nom:"Système nerveux",desc:"Descente progressive du système nerveux vers le repos.",freqs:[
+    {hz:3580.341309,d:10,nom:"Glycine",action:"Collagène, sommeil"},
     {hz:331.062012,d:18,nom:"Lithium",action:"Stabilisation humeur"},
     {hz:763.619832,d:10,nom:"Helium",action:"Apaisement, relaxation"},
-    {hz:3486.758535,d:10,nom:"Acetylcholine",action:"Memoire, motricite fine"},
-    {hz:4202.186724,d:10,nom:"Serotonine",action:"Humeur, anti-depression"}
+    {hz:3486.758535,d:10,nom:"Acetylcholine",action:"Mémoire, motricité fine"},
+    {hz:4202.186724,d:10,nom:"Serotonine",action:"Humeur, anti-dépression"}
   ]},
-  {slot:"soir",nom:"Regeneration tissulaire",desc:"Soutient la reparation du collagene et des tissus pendant le sommeil.",freqs:[
+  {slot:"soir",nom:"Régénération tissulaire",desc:"Soutient la réparation du collagène et des tissus pendant le sommeil.",freqs:[
     {hz:1339.543899,d:10,nom:"Silicium",action:"Cartilage et muqueuses"},
     {hz:515.632941,d:12,nom:"Bore",action:"Soutien osseux, hormones"},
-    {hz:1911.528738,d:10,nom:"Calcium",action:"Solidite osseuse"},
-    {hz:5491.240470,d:10,nom:"Proline",action:"Collagene, cicatrisation"},
-    {hz:6972.529770,d:10,nom:"Lysine",action:"Collagene, calcium"}
+    {hz:1911.528738,d:10,nom:"Calcium",action:"Solidité osseuse"},
+    {hz:5491.240470,d:10,nom:"Proline",action:"Collagène, cicatrisation"},
+    {hz:6972.529770,d:10,nom:"Lysine",action:"Collagène, calcium"}
   ]},
-  {slot:"soir",nom:"Detox hepatique nocturne",desc:"Le foie detoxifie principalement la nuit — soutien optimal.",freqs:[
-    {hz:832.000005,d:10,nom:"Foie",action:"Detox et filtration"},
-    {hz:1529.346996,d:10,nom:"Soufre",action:"Detox et glutathion"},
-    {hz:4576.355667,d:10,nom:"Molybdene",action:"Detox hepatique"},
+  {slot:"soir",nom:"Détox hépatique nocturne",desc:"Le foie détoxifie principalement la nuit — soutien optimal.",freqs:[
+    {hz:832.000005,d:10,nom:"Foie",action:"Détox et filtration"},
+    {hz:1529.346996,d:10,nom:"Soufre",action:"Détox et glutathion"},
+    {hz:4576.355667,d:10,nom:"Molybdene",action:"Détox hépatique"},
     {hz:3664.423197,d:10,nom:"Glutathion",action:"Antioxydant majeur"},
-    {hz:7116.497766,d:10,nom:"Methionine",action:"Detox, foie"}
+    {hz:7116.497766,d:10,nom:"Methionine",action:"Détox, foie"}
   ]},
-  {slot:"soir",nom:"Anti-stress profond",desc:"Descente progressive du cortisol et du stress de la journee.",freqs:[
+  {slot:"soir",nom:"Anti-stress profond",desc:"Descente progressive du cortisol et du stress de la journée.",freqs:[
     {hz:331.062012,d:18,nom:"Lithium",action:"Stabilisation humeur"},
     {hz:4918.330341,d:10,nom:"GABA",action:"Apaisement neuronal, sommeil"},
-    {hz:3580.341309,d:10,nom:"Glycine",action:"Collagene, sommeil"},
+    {hz:3580.341309,d:10,nom:"Glycine",action:"Collagène, sommeil"},
     {hz:763.619832,d:10,nom:"Helium",action:"Apaisement, relaxation"},
     {hz:1159.232148,d:10,nom:"Magnesium",action:"Relaxation musculaire"}
   ]},
-  {slot:"soir",nom:"Reparation ADN",desc:"La replication cellulaire est maximale entre 23h et 2h.",freqs:[
+  {slot:"soir",nom:"Réparation ADN",desc:"La réplication cellulaire est maximale entre 23h et 2h.",freqs:[
     {hz:9394.362477,d:10,nom:"Or",action:"Renforcement cellulaire"},
     {hz:9304.572897,d:10,nom:"Platine",action:"Soutien anticancer"},
-    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunite"},
-    {hz:3464.103303,d:10,nom:"Germanium",action:"Oxygenation cellulaire"},
+    {hz:3766.014000,d:10,nom:"Selenium",action:"Antioxydant, immunité"},
+    {hz:3464.103303,d:10,nom:"Germanium",action:"Oxygénation cellulaire"},
     {hz:4908.099717,d:10,nom:"Rhodium",action:"Soutien ADN, anticancer"}
   ]}
 ];
@@ -917,7 +917,7 @@ function renderSavedPlaylists(){
   if(!el)return;
   var noms=Object.keys(savedPlaylists);
   if(noms.length===0){
-    el.innerHTML="<div style='font-size:12px;color:var(--dim);text-align:center;padding:12px 0'>Aucune playlist sauvegardee. Utilise le bouton 💾.</div>";
+    el.innerHTML="<div style='font-size:12px;color:var(--dim);text-align:center;padding:12px 0'>Aucune playlist sauvegardée. Utilise le bouton 💾.</div>";
     return;
   }
   el.innerHTML="";
@@ -996,12 +996,12 @@ function showGuidePopup() {
     '<div style="margin-bottom:10px"><span style="color:var(--green);font-weight:600">2. Règle le minuteur</span>' +
     '<br><span style="font-size:12px;color:var(--muted)">En bas, choisis la durée : 10, 13, 18, 22 ou 30 minutes. Ou laisse Inf pour illimité.</span></div>' +
     '<div style="margin-bottom:10px"><span style="color:var(--green);font-weight:600">3. Mets ton casque</span>' +
-    '<br><span style="font-size:12px;color:var(--muted)">Les fréquences binaurales nécessitent un casque — une oreille entend la gauche, l autre la droite.</span></div>' +
+    '<br><span style="font-size:12px;color:var(--muted)">Les fréquences binaurales nécessitent un casque — une oreille entend la gauche, l'autre la droite.</span></div>' +
     '<div style="margin-bottom:10px"><span style="color:var(--green);font-weight:600">4. Appuie sur Lancer</span>' +
-    '<br><span style="font-size:12px;color:var(--muted)">La barre en bas de l écran s illumine en vert. Tu peux faire pause ou arrêter à tout moment.</span></div></div>' +
+    '<br><span style="font-size:12px;color:var(--muted)">La barre en bas de l&#39;écran s&#39;illumine en vert. Tu peux faire pause ou arrêter à tout moment.</span></div></div>' +
     '<div style="margin-bottom:12px;background:var(--s3);border-radius:10px;padding:12px;font-size:12px;line-height:1.5;color:var(--muted)">' +
     '<div style="font-weight:600;color:var(--amber);margin-bottom:4px"> À savoir</div>' +
-    'Les protocoles Rife sont en deux phases : S1 = Nettoyage, S2 = Réparation. Bois beaucoup d eau entre les deux.</div>' +
+    'Les protocoles Rife sont en deux phases : S1 = Nettoyage, S2 = Réparation. Bois beaucoup d&#39;eau entre les deux.</div>' +
     '<button onclick="document.getElementById(\'guide-popup\').style.display=\'none\'" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:14px;font-weight:600;cursor:pointer"> Compris</button>' +
     '<button onclick="localStorage.removeItem(\'introShown\');document.getElementById(\'guide-popup\').style.display=\'none\'" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid var(--muted);background:transparent;color:var(--muted);font-size:12px;cursor:pointer">Réafficher au prochain lancement</button></div>';
   document.body.appendChild(g);
@@ -1378,19 +1378,19 @@ function buildProtocoles(){
   const listEl=document.getElementById("proto-list");
   listEl.innerHTML="";
   const SECTIONS=[
-    {titre:"\u{1F9E0} Syst\u00e8me nerveux",noms:["Anxiete Stress","Depression legere","Memoire Concentration","Sommeil profond"]},
+    {titre:"\u{1F9E0} Syst\u00e8me nerveux",noms:["Anxiété Stress","Dépression légère","Mémoire Concentration","Sommeil profond"]},
     {titre:"\u{1F4AA} Corps physique",sous:[
-      {sous_titre:"Articulations",noms:["Arthrite general"]},
+      {sous_titre:"Articulations",noms:["Arthrite général"]},
       {sous_titre:"Colonne & Dos",noms:["Dos Lombaires"]},
       {sous_titre:"Cardiovasculaire",noms:["Circulation sanguine","Circulation pelvienne"]},
       {sous_titre:"Organes",noms:["Reins support","Lymphe drainage","Digestion Colon"]},
-      {sous_titre:"R\u00e9cup\u00e9ration",noms:["Recuperation post-effort","Regeneration tissulaire"]}
+      {sous_titre:"R\u00e9cup\u00e9ration",noms:["Récupération post-effort","Régénération tissulaire"]}
     ]},
     {titre:"\u{1F441} Yeux & Vision",noms:["Yeux Vision"]},
-    {titre:"\u26A1 Vitalit\u00e9",noms:["Vitalite generale","Fatigue CAFL"]},
-    {titre:"\u{1F33F} Bien-\u00eatre quotidien",noms:["Relaxation","Insomnie CAFL","Detox assist","Foie support CAFL","Concentration mentale CAFL"]},
-    {titre:"\u{1F52C} Prostate",noms:["Prostate general","Prostate hyperplasie","Prostatite"]},
-    {titre:"\u{1F9EC} Protocoles THQV",noms:["Fatigue Fibromyalgie THQV","Anxiete Burn-out THQV","Depression THQV","Insomnie THQV","Diabete type 2 THQV","Cancer soutien THQV","Arthrose THQV","Osteoporose THQV","Asthme Allergies THQV","Thyroide THQV","Hypertension THQV","Cognitif Alzheimer THQV"]},
+    {titre:"\u26A1 Vitalit\u00e9",noms:["Vitalité générale","Fatigue CAFL"]},
+    {titre:"\u{1F33F} Bien-\u00eatre quotidien",noms:["Relaxation","Insomnie CAFL","Détox assist","Foie support CAFL","Concentration mentale CAFL"]},
+    {titre:"\u{1F52C} Prostate",noms:["Prostate général","Prostate hyperplasie","Prostatite"]},
+    {titre:"\u{1F9EC} Protocoles THQV",noms:["Fatigue Fibromyalgie THQV","Anxiété Burn-out THQV","Dépression THQV","Insomnie THQV","Diabète type 2 THQV","Cancer soutien THQV","Arthrose THQV","Ostéoporose THQV","Asthme Allergies THQV","Thyroïde THQV","Hypertension THQV","Cognitif Alzheimer THQV"]},
     {titre:"\u{1F48A} Protocoles th\u00e9rapeutiques",reste:true}
   ];
   var done=new Set();
