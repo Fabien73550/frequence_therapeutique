@@ -1154,9 +1154,7 @@ function updateFavPlaylistBtns(){
   });
 }
 function partagerFavs(){
-  var box=document.getElementById('favs-share-box');
-  var btn=document.getElementById('favs-copy-btn');
-  var txt="🔮 Mes protocoles favorites :\n";
+  var txt="🔮 Mes protocoles favoris :\n";
   favs.forEach(function(nom){
     if(nom==='matin_playlist'){
       txt+="\n☀ PLAYLIST MATIN :\n";
@@ -1167,9 +1165,40 @@ function partagerFavs(){
     }
   });
   txt+="\nVia Fréquences Thérapeutiques";
-  box.textContent=txt;
-  box.style.display='block';
-  btn.style.display='block';
+  // Try native Web Share API first
+  if(navigator.share){
+    navigator.share({title:'Mes favoris',text:txt}).catch(function(){});
+  } else {
+    // Fallback: show box + copy button
+    var box=document.getElementById('favs-share-box');
+    var btn=document.getElementById('favs-copy-btn');
+    box.textContent=txt;
+    box.style.display='block';
+    btn.style.display='block';
+  }
+}
+function partagerUnFav(nom){
+  var txt="";
+  if(nom==='matin_playlist'){
+    txt+="☀ PLAYLIST MATIN :\n";
+    playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";});
+  } else if(nom==='soir_playlist'){
+    txt+="☽ PLAYLIST SOIR :\n";
+    playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";});
+  }
+  txt+="\nVia Fréquences Thérapeutiques";
+  if(navigator.share){
+    navigator.share({title:'Partager',text:txt}).catch(function(){});
+  } else {
+    // Fallback: copy to clipboard
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){
+        alert('Texte copié ! Colle-le où tu veux.');
+      });
+    } else {
+      prompt('Copie ce texte :', txt);
+    }
+  }
 }
 function copierFavs(){
   var box=document.getElementById('favs-share-box');
@@ -1206,12 +1235,12 @@ function renderFavs(){
     // Check if it's a playlist (matin/soir prefix)
     if(nom==='matin_playlist'){
       hasContent=true;
-      headerFreqs+="<div class='freq-item'><div class='freq-item-left'><span class='freq-item-name'>☀ Playlist Matin</span></div><div class='freq-item-right'><button onclick='event.stopPropagation();toggleFav(\"matin_playlist\")' style='background:none;border:none;font-size:18px;cursor:pointer;color:var(--amber);padding:4px'>★</button></div></div>";
+      headerFreqs+="<div class='freq-item'><div class='freq-item-left'><span class='freq-item-name'>☀ Playlist Matin</span></div><div class='freq-item-right'><button onclick='event.stopPropagation();partagerUnFav(\"matin_playlist\")' style='background:none;border:none;font-size:16px;cursor:pointer;color:var(--green);padding:4px' title='Partager'>📤</button><button onclick='event.stopPropagation();toggleFav(\"matin_playlist\")' style='background:none;border:none;font-size:18px;cursor:pointer;color:var(--amber);padding:4px'>★</button></div></div>";
       return;
     }
     if(nom==='soir_playlist'){
       hasContent=true;
-      headerFreqs+="<div class='freq-item'><div class='freq-item-left'><span class='freq-item-name'>☽ Playlist Soir</span></div><div class='freq-item-right'><button onclick='event.stopPropagation();toggleFav(\"soir_playlist\")' style='background:none;border:none;font-size:18px;cursor:pointer;color:var(--amber);padding:4px'>★</button></div></div>";
+      headerFreqs+="<div class='freq-item'><div class='freq-item-left'><span class='freq-item-name'>☽ Playlist Soir</span></div><div class='freq-item-right'><button onclick='event.stopPropagation();partagerUnFav(\"soir_playlist\")' style='background:none;border:none;font-size:16px;cursor:pointer;color:var(--green);padding:4px' title='Partager'>📤</button><button onclick='event.stopPropagation();toggleFav(\"soir_playlist\")' style='background:none;border:none;font-size:18px;cursor:pointer;color:var(--amber);padding:4px'>★</button></div></div>";
       return;
     }
   });
