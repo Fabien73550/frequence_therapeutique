@@ -1127,11 +1127,13 @@ function stopAudio(){
   secondsLeft=0;updateTimerDisplay();updateVoyageBtn();
 }
 var favs=JSON.parse(localStorage.getItem('ft_favs')||'[]');
-function toggleFav(nom,hz,action){
+function toggleFav(nom){
   var idx=favs.indexOf(nom);
   if(idx>=0){favs.splice(idx,1);}else{favs.push(nom);}
   localStorage.setItem('ft_favs',JSON.stringify(favs));
-  renderMin(document.querySelector('#min-cat-tabs .cat-tab.active')?.textContent||'Element');
+  var activeTab=document.querySelector('#min-cat-tabs .cat-tab.active');
+  var catName=activeTab?activeTab.textContent.trim():'Element';
+  renderMin(catName);
   renderFavs();
 }
 function renderFavs(){
@@ -1148,7 +1150,7 @@ function renderFavs(){
     var calcD=Math.round(Math.max(10,Math.min(45,6000/m.hz)));
     var row=document.createElement('div');
     row.className='freq-item';
-    row.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+m.nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+m.hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+m.hz+","+calcD+",\""+m.nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+m.hz+","+calcD+",\""+m.nom+"\",\"soir\",\""+m.action+"\")'>+S</button><button onclick='event.stopPropagation();toggleFav(\""+m.nom+"\","+m.hz+",\""+m.action+"\")' class='star-btn active' style='font-size:16px'>★</button></div>";
+    row.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+m.nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+m.hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+m.hz+","+calcD+",\""+m.nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+m.hz+","+calcD+",\""+m.nom+"\",\"soir\",\""+m.action+"\")'>+S</button><button onclick='event.stopPropagation();toggleFav(\""+m.nom+"\")' class='star-btn active' style='font-size:16px;color:var(--amber)'>★</button></div>";
     row.onclick=function(){loadFreq(m.hz,calcD,m.nom);};
     el.appendChild(row);
   });
@@ -1180,7 +1182,7 @@ function buildMineraux(){
       var hz=m.hz,d=m.duree,nom=m.nom;
       var calcD=Math.round(Math.max(10,Math.min(45,6000/hz)));
       var isFav=favs.indexOf(nom)>=0;
-      el.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><div style='display:flex;flex-direction:row;align-items:center;gap:5px'><span class='freq-item-hz'>"+hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"soir\",\""+m.action+"\")'>+S</button><button onclick='event.stopPropagation();toggleFav(\""+nom+"\","+hz+",\""+m.action+"\")' class='star-btn"+(isFav?" active":"")+"'>"+(isFav?"★":"☆")+"</button></div></div>";
+      el.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><div style='display:flex;flex-direction:row;align-items:center;gap:5px'><span class='freq-item-hz'>"+hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"soir\",\""+m.action+"\")'>+S</button><button onclick='event.stopPropagation();toggleFav(\""+nom+"\")' class='star-btn"+(isFav?" active":"")+"'>"+(isFav?"★":"☆")+"</button></div></div>";
       el.onclick=function(){
         activeMinItem=m.nom;
         loadFreq(m.hz,calcD,m.nom);
