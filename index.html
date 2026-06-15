@@ -93,20 +93,19 @@ select option{background:var(--s2)}
 .selected-bar-text{font-size:12px;color:var(--green);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .warning{font-size:11px;color:var(--dim);text-align:center;margin-top:8px}
 
-/* ===== MODAL ACCUEIL ===== */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:400;display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.modal-overlay.hidden{display:none}
-.modal-box{background:var(--s1);border:1px solid var(--green-border);border-radius:20px;max-width:440px;width:100%;margin:auto;padding:22px 18px;position:relative;box-shadow:0 0 40px rgba(0,255,186,0.15)}
-.modal-title{font-size:20px;font-weight:600;background:linear-gradient(135deg,#e8edf8,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;text-align:center}
-.modal-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px}
-.modal-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding:10px 12px;background:var(--s2);border-radius:12px;border:1px solid var(--border)}
-.modal-step-num{width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
-.modal-step-text{font-size:12px;color:var(--text);line-height:1.5}
-.modal-step-text strong{color:var(--green)}
-.modal-note{font-size:11px;color:var(--dim);text-align:center;margin-top:12px;padding:0 4px}
-.modal-start-btn{width:100%;margin-top:16px;padding:14px;border-radius:12px;border:1.5px solid var(--green-border);background:var(--green-bg);color:var(--green);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s}
-.modal-start-btn:active{transform:scale(0.98)}
-.modal-help-btn{width:100%;margin-top:8px;padding:10px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer}
+/* ===== BANDEAU PREMIERS PAS (non bloquant) ===== */
+.bandeau-premiers-pas{position:fixed;top:8px;left:8px;z-index:300;padding:6px 14px;border-radius:20px;border:1.5px solid var(--g);background:var(--g-bg);color:var(--g);font-size:12px;font-weight:500;font-family:'Outfit',sans-serif;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px}
+.bandeau-premiers-pas:active{transform:scale(0.96)}
+.bandeau-premiers-pas .ico{font-size:14px}
+.guide-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:350;display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.guide-overlay.hidden{display:none}
+.guide-box{background:var(--s1);border:1px solid var(--g-border);border-radius:20px;max-width:440px;width:100%;margin:auto;padding:22px 18px;position:relative;box-shadow:0 0 40px rgba(0,255,186,0.15)}
+.guide-title{font-size:20px;font-weight:600;margin-bottom:4px;text-align:center}
+.guide-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding:10px 12px;background:var(--s2);border-radius:12px;border:1px solid var(--border)}
+.guide-step-num{width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--g-bg);border:1px solid var(--g-border);color:var(--g);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.guide-step-text{font-size:12px;color:var(--text);line-height:1.5}
+.guide-step-text strong{color:var(--g)}
+.guide-close-btn{width:100%;margin-top:16px;padding:14px;border-radius:12px;border:1.5px solid var(--g-border);background:var(--g-bg);color:var(--g);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s}
 
 /* ===== FAVORIS ===== */
 .fav-btn{background:none;border:none;font-size:17px;cursor:pointer;padding:4px 6px;border-radius:6px;color:var(--dim);transition:color 0.15s,transform 0.15s;flex-shrink:0}
@@ -143,58 +142,60 @@ select option{background:var(--s2)}
 </head>
 <body>
 
-<!-- ===== MODAL D'ACCUEIL ===== -->
-<div id="welcome-modal" class="modal-overlay">
-  <div class="modal-box">
-    <div class="modal-title">✦ Fréquences Thérapeutiques</div>
-    <div class="modal-sub">Bienvenue ! Voici comment utiliser l'application.</div>
+<!-- ===== BANDEAU PREMIERS PAS ===== -->
+<div id="premiers-pas-bandeau" class="bandeau-premiers-pas" onclick="showGuide()"><span class="ico">✦</span> Premiers pas</div>
 
-    <div class="modal-step">
-      <div class="modal-step-num">1</div>
-      <div class="modal-step-text">
+<!-- ===== GUIDE (overlay non bloquant) ===== -->
+<div id="guide-overlay" class="guide-overlay hidden">
+  <div class="guide-box">
+    <div class="guide-title">✦ Fréquences Thérapeutiques</div>
+    <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px">Bienvenue ! Voici comment utiliser l'application.</div>
+
+    <div class="guide-step">
+      <div class="guide-step-num">1</div>
+      <div class="guide-step-text">
         <strong>Choisissez une fréquence</strong><br>
         Rendez-vous dans <strong>Minéraux</strong> pour les fréquences de nutriments, <strong>Protocoles</strong> pour des séquences thérapeutiques ou <strong>Symptômes</strong> selon votre besoin.
       </div>
     </div>
 
-    <div class="modal-step">
-      <div class="modal-step-num">2</div>
-      <div class="modal-step-text">
+    <div class="guide-step">
+      <div class="guide-step-num">2</div>
+      <div class="guide-step-text">
         <strong>Portez un casque</strong> (indispensable)<br>
         L'effet binaural nécessite un canal gauche et droit distincts. Les écouteurs filaires ou Bluetooth fonctionnent.
       </div>
     </div>
 
-    <div class="modal-step">
-      <div class="modal-step-num">3</div>
-      <div class="modal-step-text">
+    <div class="guide-step">
+      <div class="guide-step-num">3</div>
+      <div class="guide-step-text">
         <strong>Appuyez sur une fréquence</strong> pour la charger, puis sur <strong>▶ Lancer</strong> dans la barre du bas.
       </div>
     </div>
 
-    <div class="modal-step">
-      <div class="modal-step-num">4</div>
-      <div class="modal-step-text">
+    <div class="guide-step">
+      <div class="guide-step-num">4</div>
+      <div class="guide-step-text">
         <strong>Protocoles S1 → S2</strong><br>
         Pour les protocoles à deux étapes : lancez d'abord <strong>S1 (Nettoyage)</strong>, buvez de l'eau, puis <strong>S2 (Réparation)</strong> dans les 24-48h.
       </div>
     </div>
 
-    <div class="modal-step">
-      <div class="modal-step-num">5</div>
-      <div class="modal-step-text">
+    <div class="guide-step">
+      <div class="guide-step-num">5</div>
+      <div class="guide-step-text">
         <strong>Playlists Matin / Soir</strong><br>
         Ajoutez vos fréquences préférées à vos playlists (+M / +S) depuis Minéraux, puis lancez-les en séquence depuis <strong>Perso</strong>.
       </div>
     </div>
 
-    <div class="modal-note">
+    <div style="font-size:11px;color:var(--dim);text-align:center;margin-top:12px;padding:0 4px">
       ⚠️ Cette application est un outil de bien-être complémentaire. Elle ne remplace pas un avis médical.
       Durée recommandée : 10 à 45 min par session.
     </div>
 
-    <button class="modal-start-btn" onclick="closeWelcomeModal()">✦ Commencer l'exploration</button>
-    <button class="modal-help-btn" onclick="closeWelcomeModal()">Passer — je connais déjà</button>
+    <button class="guide-close-btn" onclick="closeGuide()">✓ J'ai compris</button>
   </div>
 </div>
 
@@ -1513,28 +1514,28 @@ function renderFavorites(){
 }
 
 // ===========================================================================
-// PAGE D'INTRODUCTION (MODAL)
+// BANDEAU PREMIERS PAS ET GUIDE
 // ===========================================================================
-function showWelcomeModal(){
-  var modal=document.getElementById("welcome-modal");
-  if(modal)modal.classList.remove("hidden");
+function showGuide(){
+  var el=document.getElementById("guide-overlay");
+  if(el)el.classList.remove("hidden");
 }
-function closeWelcomeModal(){
-  var modal=document.getElementById("welcome-modal");
-  if(modal)modal.classList.add("hidden");
+function closeGuide(){
+  var el=document.getElementById("guide-overlay");
+  if(el)el.classList.add("hidden");
   try{localStorage.setItem("ft_welcomed","1");}catch(e){}
 }
-function checkFirstVisit(){
-  try{
-    if(!localStorage.getItem("ft_welcomed")){
-      showWelcomeModal();
-    }
-  }catch(e){}
+function maybeShowTip(){
+  if(!localStorage.getItem("ft_welcomed")){
+    document.getElementById("premiers-pas-bandeau").style.display="flex";
+  }else{
+    document.getElementById("premiers-pas-bandeau").style.display="none";
+  }
 }
 
 init();
 loadFavorites();renderFavorites();
-checkFirstVisit();
+maybeShowTip();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js');
 }
