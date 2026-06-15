@@ -40,7 +40,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .page{display:none;padding:16px;padding-bottom:140px;min-height:100vh}
 .page.active{display:block}
 .header{text-align:center;padding:20px 0 8px}
-.header h1{font-size:22px;font-weight:600;letter-spacing:-0.02em;background:linear-gradient(135deg,#e8edf8,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header h1{font-size:18px;font-weight:600;letter-spacing:-0.02em;background:linear-gradient(135deg,#e8edf8,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .header p{font-size:12px;color:var(--muted);margin-top:2px}
 .card{background:var(--s1);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px}
 .card-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px}
@@ -106,7 +106,7 @@ select option{background:var(--s2)}
 </div>
 
 <div class="page active" id="page-binaural">
-  <div class="header"><h1>Fréquences Thérapeutiques</h1><p>Marc-Alain Lavoie · Naturasounds <span style="display:inline-block;margin-left:8px;font-size:11px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div class="header"><h1>Fréquences Thérapeutiques</h1><p>Marc-Alain Lavoie · Naturasounds <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
   <div class="freq-row">
     <div class="freq-box"><div class="freq-num" id="f-left">432</div><div class="freq-lbl">gauche Hz</div></div>
     <div class="freq-sep"></div>
@@ -134,7 +134,7 @@ select option{background:var(--s2)}
 </div>
 
 <div class="page" id="page-perso">
-  <div class="header"><h1>Mes Playlists</h1><p>Matin et Soir · Ajoute depuis Minéraux</p></div>
+  <div class="header"><h1>Mes Playlists</h1><p>Matin et Soir · Ajoute depuis Minéraux <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓</span></p></div>
 
   <div class="card" id="playlist-card-matin">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -192,19 +192,19 @@ select option{background:var(--s2)}
   </div>
 </div>
 <div class="page" id="page-mineraux">
-  <div class="header"><h1>Éléments et Minéraux</h1><p>Appuyer pour charger dans le générateur</p></div>
+  <div class="header"><h1>Éléments et Minéraux</h1><p>Appuyer pour charger dans le générateur <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓</span></p></div>
   <div class="selected-bar" id="sel-bar-min"><span class="selected-bar-text" id="sel-bar-min-txt">—</span></div>
   <div class="cat-tabs" id="min-cat-tabs"></div>
   <div id="min-list"></div>
 </div>
 
 <div class="page" id="page-proto">
-  <div class="header"><h1>Protocoles</h1><p>Appuyer sur une fréquence pour la charger</p></div>
+  <div class="header"><h1>Protocoles</h1><p>Appuyer sur une fréquence pour la charger <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓</span></p></div>
   <div id="proto-list"></div>
 </div>
 
-<div class="page" id="page-symp">
-  <div class="header"><h1>Par Symptôme</h1><p>Appuyer sur une fréquence pour la charger</p></div>
+<div class="page" id="page-symptomes">
+  <div class="header"><h1>Par Symptôme</h1><p>Appuyer sur une fréquence pour la charger <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓</span></p></div>
   <div class="cat-tabs" id="symp-cat-tabs"></div>
   <div id="symp-list"></div>
 </div>
@@ -236,7 +236,7 @@ select option{background:var(--s2)}
 </nav>
 
 <div class="page" id="page-eveil">
-  <div class="header"><h1>Éveil & Conscience</h1><p>Solfège · Chakras G40 · Séquence éveil</p></div>
+  <div class="header"><h1>Éveil & Conscience</h1><p>Solfège · Chakras G40 · Séquence éveil <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓</span></p></div>
 
   <div class="card">
     <div class="card-label">Séquence Éveil</div>
@@ -270,7 +270,7 @@ select option{background:var(--s2)}
 </div>
 
 <div class="page" id="page-favs">
-  <div class="header"><h1>⭐ Mes Favoris</h1><p>Fréquences que tu as mises en favori dans Minéraux</p></div>
+  <div class="header"><h1>⭐ Mes Favoris</h1><p>Fréquences que tu as mises en favori dans Minéraux <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓</span></p></div>
   <div id="favs-list">
     <div style="font-size:13px;color:var(--dim);text-align:center;padding:40px 0">Clique sur ⭐ dans l'onglet Minéraux pour ajouter ici</div>
   </div>
