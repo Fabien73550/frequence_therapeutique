@@ -274,6 +274,11 @@ select option{background:var(--s2)}
   <div id="favs-list">
     <div style="font-size:13px;color:var(--dim);text-align:center;padding:40px 0">Clique sur ⭐ dans l'onglet Minéraux pour ajouter ici</div>
   </div>
+  <div id="favs-actions" style="display:none;margin-top:12px">
+    <button onclick="partagerFavs()" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:15px;font-weight:500;font-family:'Outfit',sans-serif;cursor:pointer;margin-bottom:8px">📤 Partager mes favoris</button>
+    <div id="favs-share-box" style="display:none;background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:13px;color:var(--text);font-family:'JetBrains Mono',monospace;word-break:break-word;line-height:1.6;max-height:300px;overflow-y:auto;margin-bottom:8px"></div>
+    <button onclick="copierFavs()" id="favs-copy-btn" style="display:none;width:100%;padding:10px;border-radius:10px;border:1px solid var(--blue-border);background:var(--blue-bg);color:var(--blue);font-size:14px;font-weight:500;font-family:'Outfit',sans-serif;cursor:pointer">📋 Copier le texte</button>
+  </div>
 </div>
 
 <script>
@@ -1137,13 +1142,47 @@ function toggleFav(nom){
   var activeTab=document.querySelector('#min-cat-tabs .cat-tab.active');
   if(activeTab) activeTab.click();
 }
+function partagerFavs(){
+  var box=document.getElementById('favs-share-box');
+  var btn=document.getElementById('favs-copy-btn');
+  var txt="🔮 Mes fréquences favorites :\n";
+  favs.forEach(function(nom){
+    var m=MINERAUX.find(function(x){return x.nom===nom;});
+    if(m) txt+="• "+m.nom+" — "+m.hz+" Hz\n";
+  });
+  txt+="\nVia Fréquences Thérapeutiques";
+  box.textContent=txt;
+  box.style.display='block';
+  btn.style.display='block';
+}
+function copierFavs(){
+  var box=document.getElementById('favs-share-box');
+  var txt=box.textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      var btn=document.getElementById('favs-copy-btn');
+      btn.textContent='✅ Copié !';
+      setTimeout(function(){btn.textContent='📋 Copier le texte';},2000);
+    });
+  } else {
+    // Fallback: select text
+    var range=document.createRange();
+    range.selectNodeContents(box);
+    var sel=window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
 function renderFavs(){
   var el=document.getElementById('favs-list');
   if(!el)return;
+  var actions=document.getElementById('favs-actions');
   if(favs.length===0){
     el.innerHTML="<div style='font-size:13px;color:var(--dim);text-align:center;padding:40px 0'>Clique sur ⭐ dans l'onglet Minéraux pour ajouter ici</div>";
+    if(actions)actions.style.display='none';
     return;
   }
+  if(actions)actions.style.display='block';
   el.innerHTML="";
   favs.forEach(function(nom){
     var m=MINERAUX.find(function(x){return x.nom===nom;});
