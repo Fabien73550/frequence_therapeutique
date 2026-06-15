@@ -92,6 +92,9 @@ select option{background:var(--s2)}
 .selected-bar.show{display:flex}
 .selected-bar-text{font-size:12px;color:var(--green);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .warning{font-size:11px;color:var(--dim);text-align:center;margin-top:8px}
+.star-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:2px;line-height:1;transition:transform 0.15s;color:var(--dim)}
+.star-btn:active{transform:scale(0.8)}
+.star-btn.active{color:var(--amber)}
 </style>
 </head>
 <body>
@@ -229,6 +232,7 @@ select option{background:var(--s2)}
   <button class="nav-btn" onclick="showPage('proto',this)"><span class="nav-icon">⊞</span>Protocoles</button>
   <button class="nav-btn" onclick="showPage('symp',this)"><span class="nav-icon">✦</span>Symptômes</button>
   <button class="nav-btn" onclick="showPage('eveil',this)"><span class="nav-icon">✧</span>Éveil</button>
+  <button class="nav-btn" onclick="showPage('favs',this)"><span class="nav-icon">⭐</span>Favoris</button>
 </nav>
 
 <div class="page" id="page-eveil">
@@ -262,6 +266,13 @@ select option{background:var(--s2)}
 
     <button onclick="var l=document.getElementById('chakra-eveil-list');l.style.display=l.style.display==='none'?'block':'none';" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:8px">☯ Choisir un chakra</button>
     <div id="chakra-eveil-list" style="display:none"></div>
+  </div>
+</div>
+
+<div class="page" id="page-favs">
+  <div class="header"><h1>⭐ Mes Favoris</h1><p>Fréquences que tu as mises en favori dans Minéraux</p></div>
+  <div id="favs-list">
+    <div style="font-size:13px;color:var(--dim);text-align:center;padding:40px 0">Clique sur ⭐ dans l'onglet Minéraux pour ajouter ici</div>
   </div>
 </div>
 
@@ -337,7 +348,7 @@ const MINERAUX=[
   {nom:"Globe oculaire",hz:1472.000004,duree:10,cat:"Organe",action:"Soutien vision"},
   {nom:"Eau H2O",hz:1388.000007,duree:10,cat:"Molecule",action:"Hydratation cellulaire Lavoie"},
   // Elements ajouts
-  {nom:"Scandium",hz:2144.181600,duree:10,cat:"Mineral",action:"Soutien osseux, immunite"},
+  {nom:"Scandium",hz:2144.181600,duree:10,cat:"Mineral",action:"Soutien osseux, immunité"},
   {nom:"Gallium",hz:3325.453317,duree:10,cat:"Mineral",action:"Antimicrobien, os"},
   {nom:"Germanium",hz:3464.103303,duree:10,cat:"Mineral",action:"Oxygenation cellulaire"},
   {nom:"Rubidium",hz:4076.404911,duree:10,cat:"Mineral",action:"Systeme nerveux, humeur"},
@@ -965,6 +976,7 @@ function init(){
   buildSuggestedProtocols();
   updateDisplays();
   restoreSession();
+  renderFavs();
 }
 
 function lancerSequenceEveil(){
@@ -1114,7 +1126,33 @@ function stopAudio(){
   paused=false;pausedSeconds=0;
   secondsLeft=0;updateTimerDisplay();updateVoyageBtn();
 }
-
+var favs=JSON.parse(localStorage.getItem('ft_favs')||'[]');
+function toggleFav(nom,hz,action){
+  var idx=favs.indexOf(nom);
+  if(idx>=0){favs.splice(idx,1);}else{favs.push(nom);}
+  localStorage.setItem('ft_favs',JSON.stringify(favs));
+  renderMin(document.querySelector('#min-cat-tabs .cat-tab.active')?.textContent||'Element');
+  renderFavs();
+}
+function renderFavs(){
+  var el=document.getElementById('favs-list');
+  if(!el)return;
+  if(favs.length===0){
+    el.innerHTML="<div style='font-size:13px;color:var(--dim);text-align:center;padding:40px 0'>Clique sur ⭐ dans l'onglet Minéraux pour ajouter ici</div>";
+    return;
+  }
+  el.innerHTML="";
+  favs.forEach(function(nom){
+    var m=MINERAUX.find(function(x){return x.nom===nom;});
+    if(!m)return;
+    var calcD=Math.round(Math.max(10,Math.min(45,6000/m.hz)));
+    var row=document.createElement('div');
+    row.className='freq-item';
+    row.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+m.nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+m.hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+m.hz+","+calcD+",\""+m.nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+m.hz+","+calcD+",\""+m.nom+"\",\"soir\",\""+m.action+"\")'>+S</button><button onclick='event.stopPropagation();toggleFav(\""+m.nom+"\","+m.hz+",\""+m.action+"\")' class='star-btn active' style='font-size:16px'>★</button></div>";
+    row.onclick=function(){loadFreq(m.hz,calcD,m.nom);};
+    el.appendChild(row);
+  });
+}
 function catLabel(c){
   var L={"Element":"Élément","Mineral":"Minéral","Oligo":"Oligo","Vitamine":"Vitamine","Neuro":"Neuro","Organe":"Organe","Molecule":"Molécule","AA":"Acides Aminés"};
   return L[c]||c;
@@ -1141,7 +1179,8 @@ function buildMineraux(){
       el.className="freq-item"+(activeMinItem===m.nom?" active":"");
       var hz=m.hz,d=m.duree,nom=m.nom;
       var calcD=Math.round(Math.max(10,Math.min(45,6000/hz)));
-      el.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><div style='display:flex;flex-direction:row;align-items:center;gap:5px'><span class='freq-item-hz'>"+hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"soir\",\""+m.action+"\")'>+S</button></div>";
+      var isFav=favs.indexOf(nom)>=0;
+      el.innerHTML="<div class='freq-item-left' style='flex:1'><span class='freq-item-name'>"+nom+"</span> <span class='freq-item-sub'>"+m.action+"</span></div><div class='freq-item-right'><div style='display:flex;flex-direction:row;align-items:center;gap:5px'><span class='freq-item-hz'>"+hz+" <span class='freq-item-dur'>"+calcD+"m</span></span><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"matin\",\""+m.action+"\")'>+M</button><button style='font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600' onclick='event.stopPropagation();addFreqToPlaylist("+hz+","+calcD+",\""+nom+"\",\"soir\",\""+m.action+"\")'>+S</button><button onclick='event.stopPropagation();toggleFav(\""+nom+"\","+hz+",\""+m.action+"\")' class='star-btn"+(isFav?" active":"")+"'>"+(isFav?"★":"☆")+"</button></div></div>";
       el.onclick=function(){
         activeMinItem=m.nom;
         loadFreq(m.hz,calcD,m.nom);
