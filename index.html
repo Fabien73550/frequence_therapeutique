@@ -999,7 +999,17 @@ function renderSavedPlaylists(){
     delBtn.textContent="✕";
     delBtn.style.cssText="font-size:11px;padding:6px 9px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer";
     delBtn.addEventListener("click",function(e){e.stopPropagation();deleteSaved(nom);});
-    header.innerHTML="<div style='flex:1;min-width:0'><div style='font-size:14px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>"+nom+"</div><div style='font-size:11px;color:var(--muted)'>"+n+" fréquence"+(n>1?"s":"")+" — cliquer pour voir</div></div>";
+    var leftDiv=document.createElement("div");
+    leftDiv.style.cssText="flex:1;min-width:0";
+    var nameDiv=document.createElement("div");
+    nameDiv.style.cssText="font-size:14px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
+    nameDiv.textContent=nom;
+    var infoDiv=document.createElement("div");
+    infoDiv.style.cssText="font-size:11px;color:var(--muted)";
+    infoDiv.textContent=n+" fréquence"+(n>1?"s":"")+" — cliquer pour voir";
+    leftDiv.appendChild(nameDiv);
+    leftDiv.appendChild(infoDiv);
+    header.appendChild(leftDiv);
     header.appendChild(delBtn);
     var detail=document.createElement("div");
     detail.style.cssText="display:none;margin-top:8px;background:var(--s2);border-radius:10px;padding:10px;";
@@ -1040,7 +1050,21 @@ function togglePause(){
     secondsLeft=pausedSeconds;
     if(gainNode)gainNode.gain.setTargetAtTime(0.25,audioCtx.currentTime,0.1);
     if(timerMin>0){
-      timerInterval=setInterval(function(){secondsLeft--;saveSession();updateTimerDisplay();if(secondsLeft<=0)stopAudio();},1000);
+      timerInterval=setInterval(function(){
+        secondsLeft--;saveSession();updateTimerDisplay();
+        if(secondsLeft<=0){
+          if(seqQueue&&seqQueue.length>0&&seqIndex<seqQueue.length){
+            if(leftOsc){leftOsc.stop();leftOsc=null;}
+            if(rightOsc){rightOsc.stop();rightOsc=null;}
+            if(audioCtx){audioCtx.close();audioCtx=null;}
+            clearInterval(timerInterval);timerInterval=null;
+            seqIndex++;
+            setTimeout(playNextInSequence,800);
+          } else {
+            stopAudio();
+          }
+        }
+      },1000);
     }
     btn.innerHTML="⏸ Pause";
     btn.style.borderColor="var(--green-border)";
@@ -1207,7 +1231,7 @@ function updateVoyageBtn(){
 // onChakraSelect supprime (element chakra-select inexistant)
 
 function loadFreq(hz,d,nom){
-  if(playing){if(!confirm("Session en cours. Arreter et charger "+nom+" ?"))return;stopAudio();}
+  if(playing){if(!confirm("Session en cours. Arrêter et charger "+nom+" ?"))return;stopAudio();}
   baseHz=hz;timerMin=d;currentLabel=nom+" - "+hz+" Hz";
   setTimerChip(d);updateDisplays();
 }
@@ -1227,7 +1251,7 @@ function updateDisplays(){
 function updateTimerDisplay(){
   const el=document.getElementById("pb-timer");
   if(timerMin===0){el.className="play-bar-timer inactive";el.textContent="--:--";return;}
-  const s=playing?secondsLeft:timerMin*60;
+  const s=(playing||paused)?secondsLeft:timerMin*60;
   const m=Math.floor(s/60),sec=s%60;
   el.className="play-bar-timer"+(playing?" playing":"");
   var timeStr=String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");
@@ -1241,6 +1265,8 @@ function updateTimerDisplay(){
 function togglePlay(){if(playing)stopAudio();else startAudio();}
 
 function startAudio(){
+  stopLiveTone();
+  if(audioCtx){audioCtx.close();audioCtx=null;}
   audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   const merger=audioCtx.createChannelMerger(2);
   gainNode=audioCtx.createGain();gainNode.gain.value=0.25;
@@ -1255,7 +1281,7 @@ function startAudio(){
   leftOsc.start();rightOsc.start();
   playing=true;
   document.getElementById("play-btn").className="play-btn playing";
-  document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arreter</span>";
+  document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arrêter</span>";
   var pb=document.getElementById("pause-btn");
   pb.style.display="flex";pb.innerHTML="\u23f8 Pause";
   pb.style.borderColor="var(--green-border)";pb.style.background="var(--green-bg)";pb.style.color="var(--green)";
@@ -1279,12 +1305,22 @@ function stopAudio(){
   paused=false;pausedSeconds=0;
   secondsLeft=0;updateTimerDisplay();updateVoyageBtn();
 }
-var favs=JSON.parse(localStorage.getItem('ft_favs')||'[]');
+var favs=[];
+try {
+  var storedFavs = localStorage.getItem('ft_favs');
+  if(storedFavs) favs = JSON.parse(storedFavs);
+} catch(e) {
+  // Mode privé ou stockage désactivé : on continue sans crash
+}
 var activeMinCat='Element';
 function toggleFav(nom){
   var idx=favs.indexOf(nom);
   if(idx>=0){favs.splice(idx,1);}else{favs.push(nom);}
-  localStorage.setItem('ft_favs',JSON.stringify(favs));
+  try {
+    localStorage.setItem('ft_favs',JSON.stringify(favs));
+  } catch(e) {
+    // Mode privé : on ignore l'erreur de sauvegarde
+  }
   renderFavs();
   updateFavPlaylistBtns();
   // Re-render current mineral category by triggering tab click
@@ -1563,25 +1599,36 @@ function playNextInSequence(){
     if(seqType==="s1"){
       setTimeout(function(){
         if(confirm("S1 : lecture terminée, voulez-vous continuer avec S2 ?")){
-          // Find symptom and launch S2
-          var symptomFound = false;
+          var found = null;
+          var isSymp = false;
+          var pIdx = -1;
+          
           for(var cat in SYMPTOMES){
             if(SYMPTOMES.hasOwnProperty(cat)){
               for(var i=0;i<SYMPTOMES[cat].length;i++){
-                var s = SYMPTOMES[cat][i];
-                if(s.s === seqProtoName){
-                  symptomFound = true;
-                  if(s.s2 && s.s2.length > 0){
-                    launchSympSequence(s.s2, 's2', s.s);
-                    return; // Important: exit after launching
-                  }
+                if(SYMPTOMES[cat][i].s === seqProtoName){
+                  found = SYMPTOMES[cat][i];
+                  isSymp = true;
                   break;
                 }
               }
-              if(symptomFound) break;
+              if(found) break;
             }
           }
-          // If not found or no s2, show original message
+          
+          if(!found){
+            pIdx = PROTOCOLES.findIndex(function(p){ return p.nom === seqProtoName; });
+            if(pIdx >= 0) found = PROTOCOLES[pIdx];
+          }
+
+          if(found && found.s2 && found.s2.length > 0){
+            if(isSymp){
+              launchSympSequence(found.s2, 's2', found.s);
+            } else {
+              launchSequence(pIdx, 's2');
+            }
+            return;
+          }
           alert("Nettoyage S1 terminé — "+seqProtoName+"\n\nBois de l’eau dans les 24-48h avant le S2.");
         }
       },300);
@@ -1609,6 +1656,7 @@ function playNextInSequence(){
 }
 
 function startAudioSequence(){
+  stopLiveTone();
   if(audioCtx){audioCtx.close();audioCtx=null;}
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   audioCtx=new(window.AudioContext||window.webkitAudioContext)();
@@ -1626,7 +1674,7 @@ function startAudioSequence(){
   playing=true;
   updateVoyageBtn();
   document.getElementById("play-btn").className="play-btn playing";
-  document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arreter</span>";
+  document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arrêter</span>";
   var pb=document.getElementById("pause-btn");
   pb.style.display="flex";pb.innerHTML="\u23f8 Pause";
   pb.style.borderColor="var(--green-border)";pb.style.background="var(--green-bg)";pb.style.color="var(--green)";
