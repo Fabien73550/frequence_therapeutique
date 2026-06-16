@@ -1144,6 +1144,37 @@ function checkFirstVisit() {
   }
 }
 
+function filterSympList(query){
+  var cards=document.querySelectorAll(".proto-card");
+  var q=query.toLowerCase();
+  cards.forEach(function(card){
+    var title=card.querySelector(".proto-title")?card.querySelector(".proto-title").textContent.toLowerCase():"";
+    var matches=title.includes(q)||q==="";
+    card.style.display=matches?"":"none";
+  });
+}
+
+function filterProtoList(query){
+  var cards=document.querySelectorAll(".proto-card");
+  var q=query.toLowerCase();
+  cards.forEach(function(card){
+    var title=card.querySelector(".proto-title")?card.querySelector(".proto-title").textContent.toLowerCase():"";
+    var matches=title.includes(q)||q==="";
+    card.style.display=matches?"":"none";
+  });
+}
+
+function filterMinList(query,cat){
+  var items=document.querySelectorAll("#min-items-container .freq-item");
+  var q=query.toLowerCase();
+  items.forEach(function(item){
+    var nom=item.querySelector(".freq-item-name").textContent.toLowerCase();
+    var sub=item.querySelector(".freq-item-sub")?item.querySelector(".freq-item-sub").textContent.toLowerCase():"";
+    var matches=(nom.includes(q)||sub.includes(q)||q==="");
+    item.style.display=matches?"":"none";
+  });
+}
+
 function init(){
   document.getElementById("bin-slider").value=baseHz;
   document.getElementById("bin-hz-input").value=baseHz;
@@ -1471,6 +1502,7 @@ function buildMineraux(){
   const tabsEl=document.getElementById("min-cat-tabs");
   const listEl=document.getElementById("min-list");
   let activeCat=cats[0];
+  let minSearchTimeout=null;
   cats.forEach(function(cat,i){
     const b=document.createElement("button");
     b.className="cat-tab"+(i===0?" active":"");
@@ -1482,7 +1514,11 @@ function buildMineraux(){
     tabsEl.appendChild(b);
   });
   function renderMin(cat){
-    listEl.innerHTML="";
+    // Ajouter la barre de recherche
+    var searchBar='<div style="margin-bottom:12px"><input type="text" id="min-search" placeholder="Chercher... (magnésium, dos, etc)" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-family:\'Outfit\',sans-serif;outline:none" oninput="filterMinList(this.value,\''+cat+'\')"></div>';
+    listEl.innerHTML=searchBar;
+    var itemsContainer=document.createElement("div");
+    itemsContainer.id="min-items-container";
     MINERAUX.filter(function(m){return m.cat===cat;}).sort(function(a,b){return a.nom.localeCompare(b.nom);}).forEach(function(m){
       const el=document.createElement("div");
       el.className="freq-item"+(activeMinItem===m.nom?" active":"");
@@ -1506,7 +1542,8 @@ function buildMineraux(){
 
 function buildProtocoles(){
   const listEl=document.getElementById("proto-list");
-  listEl.innerHTML="";
+  var searchHTML='<div style="margin-bottom:12px;position:sticky;top:0;background:var(--bg);z-index:10;padding-top:4px"><input type="text" id="proto-search" placeholder="Chercher un protocole... (fatigue, stress, etc)" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-family:\'Outfit\',sans-serif;outline:none" oninput="filterProtoList(this.value)"></div>';
+  listEl.innerHTML=searchHTML;
   const SECTIONS=[
     {titre:"\u{1F9E0} Syst\u00e8me nerveux",noms:["Anxiété Stress","Dépression légère","Mémoire Concentration","Sommeil profond"]},
     {titre:"\u{1F4AA} Corps physique",sous:[
@@ -1730,7 +1767,8 @@ function buildSymptomes(){
   const listEl=document.getElementById("symp-list");
   const tabsEl=document.getElementById("symp-cat-tabs");
   if(tabsEl)tabsEl.style.display="none";
-  listEl.innerHTML="";
+  var searchHTML='<div style="margin-bottom:12px;position:sticky;top:0;background:var(--bg);z-index:10;padding-top:4px"><input type="text" id="symp-search" placeholder="Chercher un symptôme... (insomnie, migraine, etc)" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-family:\'Outfit\',sans-serif;outline:none" oninput="filterSympList(this.value)"></div>';
+  listEl.innerHTML=searchHTML;
   const ICONS={"Douleurs":"\uD83D\uDD34","Fatigue":"\u26A1","Sommeil":"\uD83C\uDF19","Mental":"\uD83E\uDDE0","Immunité":"\uD83D\uDEE1","Cognitif":"\uD83D\uDCA1"};
   Object.keys(SYMPTOMES).forEach(function(cat){
     var secEl=document.createElement("div");
