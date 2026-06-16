@@ -1301,7 +1301,7 @@ function setTimerChip(d){
 function updateDisplays(){
   document.getElementById("f-left").textContent=baseHz;
   document.getElementById("f-right").textContent=(baseHz+diff).toFixed(1);
-  document.getElementById("f-beat").textContent=diff%1===0?diff:diff.toFixed(1);
+  var beatEl=document.getElementById("f-beat");beatEl.textContent=diff%1===0?diff:diff.toFixed(1);beatEl.style.color="var(--green)";
   document.getElementById("pb-freq").textContent=currentLabel+" - D "+diff+" Hz";
   updateTimerDisplay();
 }
