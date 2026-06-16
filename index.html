@@ -15,12 +15,18 @@
 :root{
   --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
   --border:#242a3d;--border2:#2e3650;
-  --text:#e8edf8;--muted:#7a8caf;--dim:#4a5a7a;
+  --muted:#a8b8d8;--dim:#7a8caf;
   --green:#00ffba;--green-bg:rgba(0,255,186,0.12);--green-border:rgba(0,255,186,0.4);
   --blue:#3db5ff;--blue-bg:rgba(61,181,255,0.12);--blue-border:rgba(61,181,255,0.4);
   --purple:#c77dff;--purple-bg:rgba(199,125,255,0.15);--purple-border:rgba(199,125,255,0.5);
   --amber:#ff9e2c;--amber-bg:rgba(255,158,44,0.15);--amber-border:rgba(255,158,44,0.5);
 }
+*:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:16px;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .nav{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 20px rgba(0,0,0,0.4)}
 .nav-btn{flex:1;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--amber);font-family:'Outfit',sans-serif;font-size:10px;cursor:pointer;transition:color 0.2s;border-radius:0;position:relative}
@@ -155,9 +161,10 @@ select option{background:var(--s2)}
   </div>
   <input type="range" id="bin-slider" min="20" max="20000" value="432" step="1"
     style="width:100%;accent-color:var(--green);margin-bottom:6px" oninput="onBinSlider()">
-  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">
+  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:8px">
     <span>20 Hz</span><span style="color:var(--green)">← glisser →</span><span>20 000 Hz</span>
   </div>
+  <button id="btn-live-tone" onclick="toggleLiveTone()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--blue-border);background:var(--blue-bg);color:var(--blue);font-size:14px;font-family:'Outfit',sans-serif;cursor:pointer;font-weight:500">▶ Lancer l'écoute</button>
   </div>
   <div class="card"><div class="card-label">Onde binaurale</div><div class="chips" id="onde-chips"></div></div>
   <div class="card"><div class="card-label">Minuteur</div><div class="timer-chips" id="timer-chips"></div></div>
@@ -674,6 +681,25 @@ function dismissResume(){
 }
 
 // CUSTOM FREQUENCY
+var liveToneActive=false;
+function toggleLiveTone(){
+  var btn=document.getElementById("btn-live-tone");
+  if(!liveToneActive){
+    startLiveTone();
+    liveToneActive=true;
+    btn.innerHTML="⏹ Arrêter l'écoute";
+    btn.style.borderColor="var(--amber-border)";
+    btn.style.background="var(--amber-bg)";
+    btn.style.color="var(--amber)";
+  }else{
+    stopLiveTone();
+    liveToneActive=false;
+    btn.innerHTML="▶ Lancer l'écoute";
+    btn.style.borderColor="var(--blue-border)";
+    btn.style.background="var(--blue-bg)";
+    btn.style.color="var(--blue)";
+  }
+}
 function onBinSlider(){
   var v=parseInt(document.getElementById("bin-slider").value);
   document.getElementById("bin-hz-input").value=v;
@@ -682,8 +708,9 @@ function onBinSlider(){
   if(playing&&leftOsc&&rightOsc){
     leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
     rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
-  } else {
-    startLiveTone();
+  }else if(liveToneActive&&liveCtx){
+    liveLeft.frequency.setTargetAtTime(baseHz,liveCtx.currentTime,0.02);
+    liveRight.frequency.setTargetAtTime(baseHz+diff,liveCtx.currentTime,0.02);
   }
 }
 var liveCtx=null,liveLeft=null,liveRight=null;
@@ -703,10 +730,7 @@ function startLiveTone(){
   }
   liveLeft.frequency.setTargetAtTime(baseHz,liveCtx.currentTime,0.02);
   liveRight.frequency.setTargetAtTime(baseHz+diff,liveCtx.currentTime,0.02);
-  if(liveTimeout)clearTimeout(liveTimeout);
-  liveTimeout=setTimeout(stopLiveTone,3000);
 }
-var liveTimeout=null;
 function stopLiveTone(){
   if(liveLeft){liveLeft.stop();liveLeft=null;}
   if(liveRight){liveRight.stop();liveRight=null;}
@@ -722,6 +746,9 @@ function onBinInput(){
   if(playing&&leftOsc&&rightOsc){
     leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
     rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
+  }else if(liveToneActive&&liveCtx){
+    liveLeft.frequency.setTargetAtTime(baseHz,liveCtx.currentTime,0.02);
+    liveRight.frequency.setTargetAtTime(baseHz+diff,liveCtx.currentTime,0.02);
   }
 }
 function onCustomSlider(){
