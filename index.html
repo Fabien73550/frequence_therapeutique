@@ -1561,7 +1561,30 @@ function playNextInSequence(){
   if(seqIndex>=seqQueue.length){
     stopAudio();
     if(seqType==="s1"){
-      setTimeout(function(){alert("Nettoyage S1 terminé — "+seqProtoName+"\n\nBois de l’eau dans les 24-48h avant le S2.");},300);
+      setTimeout(function(){
+        if(confirm("S1 : lecture terminée, voulez-vous continuer avec S2 ?")){
+          // Find symptom and launch S2
+          var symptomFound = false;
+          for(var cat in SYMPTOMES){
+            if(SYMPTOMES.hasOwnProperty(cat)){
+              for(var i=0;i<SYMPTOMES[cat].length;i++){
+                var s = SYMPTOMES[cat][i];
+                if(s.s === seqProtoName){
+                  symptomFound = true;
+                  if(s.s2 && s.s2.length > 0){
+                    launchSympSequence(s.s2, 's2', s.s);
+                    return; // Important: exit after launching
+                  }
+                  break;
+                }
+              }
+              if(symptomFound) break;
+            }
+          }
+          // If not found or no s2, show original message
+          alert("Nettoyage S1 terminé — "+seqProtoName+"\n\nBois de l’eau dans les 24-48h avant le S2.");
+        }
+      },300);
     }else if(seqType==="chakras"){
       setTimeout(function(){alert("Voyage au cœur des chakras terminé.\n\nPrenez un moment pour vous recentrer.");},300);
     }else if(seqType==="eveil"||seqType==="eveil_chakras"){
