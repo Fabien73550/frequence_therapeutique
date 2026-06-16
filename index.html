@@ -94,12 +94,12 @@ select option{background:var(--s2)}
 .proto-card{border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
 .proto-header{padding:12px 14px;background:var(--s2);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.2s}
 .proto-header:hover{background:var(--s3)}
-.proto-title{font-size:14px;font-weight:500}
+.proto-title{font-size:14px;font-weight:500;color:var(--text)}
 .proto-badge{font-size:10px;padding:3px 8px;border-radius:6px;background:var(--s3);color:var(--muted);flex-shrink:0;margin-left:8px}
 .proto-body{padding:12px 14px;background:var(--s1);display:none}
 .proto-body.open{display:block;animation:slideDown 0.2s ease-out}
 .proto-section{margin-bottom:10px}
-.proto-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.proto-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;color:var(--text)}
 .proto-section-title.s1{color:var(--amber)}
 .proto-section-title.s2{color:var(--green)}
 .proto-freq-row{display:flex;flex-wrap:wrap;gap:6px}
@@ -1301,7 +1301,7 @@ function setTimerChip(d){
 function updateDisplays(){
   document.getElementById("f-left").textContent=baseHz;
   document.getElementById("f-right").textContent=(baseHz+diff).toFixed(1);
-  var beatEl=document.getElementById("f-beat");beatEl.textContent=diff%1===0?diff:diff.toFixed(1);beatEl.style.color="var(--green)";
+  var beatEl=document.getElementById("f-beat");beatEl.textContent=diff%1===0?diff:diff.toFixed(1);beatEl.style.color="var(--blue)";
   document.getElementById("pb-freq").textContent=currentLabel+" - D "+diff+" Hz";
   updateTimerDisplay();
 }
