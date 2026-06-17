@@ -1809,7 +1809,7 @@ function buildSymptomes(){
       bodyHTML+="</div><div class='proto-freq-row'>";
       s.s2.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
-      card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
+      card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title' style='color:var(--text)'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
       // Attach click handlers via JS to avoid JSON escaping issues
       var btns=card.querySelectorAll('.proto-freq-btn.s1');
       if(btns.length>0)btns[0].onclick=function(){launchSympSequence(s.s1,'s1',s.s);};
