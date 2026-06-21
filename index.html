@@ -20,6 +20,8 @@
   --blue:#3db5ff;--blue-bg:rgba(61,181,255,0.12);--blue-border:rgba(61,181,255,0.4);
   --purple:#c77dff;--purple-bg:rgba(199,125,255,0.15);--purple-border:rgba(199,125,255,0.5);
   --amber:#ff9e2c;--amber-bg:rgba(255,158,44,0.15);--amber-border:rgba(255,158,44,0.5);
+  --text:#e8edf8;
+  --red:#ff4d6a;--red-bg:rgba(255,77,106,0.12);--red-border:rgba(255,77,106,0.4);
 }
 *:focus-visible {
   outline: 2px solid var(--green);
@@ -1124,6 +1126,58 @@ function showGuidePopup() {
     '<button onclick="localStorage.removeItem(\'introShown\');document.getElementById(\'guide-popup\').style.display=\'none\'" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid var(--muted);background:transparent;color:var(--green);font-size:12px;cursor:pointer">Réafficher au prochain lancement</button></div>';
   document.body.appendChild(g);
 }
+function showConsentModal() {
+  var m = document.getElementById('consent-modal');
+  if (m) {m.style.display='block';return;}
+  m = document.createElement('div');
+  m.id='consent-modal';
+  m.style.cssText='display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;overflow-y:auto;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)';
+  m.innerHTML='<div style="max-width:600px;margin:40px auto;background:var(--s1);border-radius:20px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.8);animation:modalIn 0.3s ease-out">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">' +
+    '<h2 style="margin:0;font-size:22px;color:var(--amber)">⚖️ Avis de Consentement</h2>' +
+    '<button onclick="document.getElementById(\'consent-modal\').style.display=\'none\'" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--dim)">✕</button>' +
+    '</div>' +
+    '<div style="max-height:60vh;overflow-y:auto;margin-bottom:20px;padding-right:8px">' +
+    '<div style="margin-bottom:18px;padding:14px;background:var(--s2);border-radius:12px;border-left:4px solid var(--red);">' +
+    '<div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:6px">⚠️ AVIS MÉDICAL OBLIGATOIRE</div>' +
+    '<div style="font-size:13px;color:var(--text);line-height:1.7">' +
+    'Cette application utilise des fréquences binaurales pour la relaxation et le bien-être.<br><br>' +
+    '<b>IMPORTANT :</b><br>' +
+    '1. <b>Ne pas remplacer un traitement médical</b> - Consultez toujours un professionnel de santé.<br>' +
+    '2. <b>Ne pas utiliser si vous êtes sous traitement médical actif</b> sans avis médical.<br>' +
+    '3. <b>Ne pas utiliser pendant la conduite ou l\'utilisation de machines</b>.<br>' +
+    '4. <b>Ne pas utiliser pendant des activités nécessitant une attention soutenue</b>.<br>' +
+    '5. <b>Les fréquences ne remplacent pas une consultation médicale</b>.<br><br>' +
+    'Si vous avez des doutes, <b>parlez-en à votre médecin</b> avant d\'utiliser cette application.</div>' +
+    '</div>' +
+    '<div style="margin-bottom:18px;padding:14px;background:var(--s2);border-radius:12px;border-left:4px solid var(--green);">' +
+    '<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:6px">✅ Avis de Consentement de l\'Utilisateur</div>' +
+    '<div style="font-size:13px;color:var(--text);line-height:1.7">' +
+    'Je confirme avoir lu et compris les avertissements médicaux ci-dessus.<br><br>' +
+    '1. Je comprends que cette application n\'est <b>pas un substitut</b> à un traitement médical.<br>' +
+    '2. Je comprends que les fréquences binaurales sont <b>complémentaires</b> et non alternatives.<br>' +
+    '3. Je comprends que je dois <b>consulter un médecin</b> avant d\'utiliser cette application si je suis sous traitement.<br>' +
+    '4. Je comprends que je ne dois pas utiliser cette application pendant des activités dangereuses.<br>' +
+    '5. J\'accepte de ne pas tenir l\'application responsable des problèmes de santé.<br><br>' +
+    'En validant ce consentement, je certifie avoir l\'âge requis pour utiliser cette application.</div>' +
+    '</div>' +
+    '<div style="margin-bottom:18px;padding:14px;background:var(--s2);border-radius:12px;border-left:4px solid var(--blue);">' +
+    '<div style="font-size:13px;font-weight:600;color:var(--blue);margin-bottom:6px">🔒 Confidentialité</div>' +
+    '<div style="font-size:13px;color:var(--text);line-height:1.7">' +
+    'Aucune donnée personnelle n\'est collectée ni envoyée.<br>' +
+    'Les fréquences sont calculées localement sur votre appareil.<br>' +
+    'Les playlists sauvegardées sont stockées uniquement dans votre navigateur (localStorage).</div>' +
+    '</div>' +
+    '</div>' +
+    '<div style="display:flex;gap:10px">' +
+    '<button onclick="document.getElementById(\'consent-modal\').style.display=\'none\';localStorage.setItem(\'consentGiven\',\'true\');document.getElementById(\'consent-modal\').remove();" style="flex:1;padding:14px;border-radius:12px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:14px;font-weight:600;cursor:pointer">✅ J\'accepte</button>' +
+    '<button onclick="window.location.href=\'https://www.santepubliquefrance.fr/\';" style="flex:1;padding:14px;border-radius:12px;border:1px solid var(--red-border);background:var(--red-bg);color:var(--red);font-size:14px;font-weight:600;cursor:pointer">❌ Refuser et quitter</button>' +
+    '</div>' +
+    '</div>';
+  document.body.appendChild(m);
+  m.style.display='block';
+}
+
 function checkFirstVisit() {
   if (!localStorage.getItem('introShown')) {
     localStorage.setItem('introShown','true');
@@ -1137,10 +1191,13 @@ function checkFirstVisit() {
       '<div style="margin-bottom:6px"><span style="color:var(--green)">2.</span> Mets ton casque' +
       '<br><span style="font-size:12px;color:var(--muted)">Indispensable pour l\'effet binaural</span></div>' +
       '<div><span style="color:var(--green)">3.</span> Appuie sur Lancer' +
-      '<br><span style="font-size:12px;color:var(--muted)">R&egrave;gle le minuteur avant</span></div></div>' +
+      '<br><span style="font-size:12px;color:var(--muted)">R&eacute;gle le minuteur avant</span></div></div>' +
       '<button onclick="this.parentElement.remove()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:14px;font-weight:600;cursor:pointer;margin-top:6px">' + String.fromCodePoint(0x1F44D) + ' Compris</button>';
     document.body.appendChild(b);
     setTimeout(function(){var e=document.getElementById('intro-banner');if(e)e.remove();},120000);
+  }
+  if (!localStorage.getItem('consentGiven')) {
+    setTimeout(showConsentModal, 500);
   }
 }
 
@@ -1810,11 +1867,13 @@ function buildSymptomes(){
       s.s2.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title' style='color:var(--text)'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
-      // Attach click handlers via JS to avoid JSON escaping issues
-      var btns=card.querySelectorAll('.proto-freq-btn.s1');
-      if(btns.length>0)btns[0].onclick=function(){launchSympSequence(s.s1,'s1',s.s);};
-      var btns2=card.querySelectorAll('.proto-freq-btn.s2');
-      if(btns2.length>0)btns2[0].onclick=function(){launchSympSequence(s.s2,'s2',s.s);};
+      // Attach click handlers via JS — use IIFE closure to capture correct s per symptom
+      (function(symItem){
+        var btns=card.querySelectorAll('.proto-freq-btn.s1');
+        if(btns.length>0)btns[0].onclick=function(){launchSympSequence(symItem.s1,'s1',symItem.s);};
+        var btns2=card.querySelectorAll('.proto-freq-btn.s2');
+        if(btns2.length>0)btns2[0].onclick=function(){launchSympSequence(symItem.s2,'s2',symItem.s);};
+      })(s);
       contenuEl.appendChild(card);
     });
     secEl.appendChild(titreEl);
