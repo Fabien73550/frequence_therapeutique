@@ -15,12 +15,11 @@
 :root{
   --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
   --border:#242a3d;--border2:#2e3650;
-  --muted:#a8b8d8;--dim:#7a8caf;
+  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
   --green:#00ffba;--green-bg:rgba(0,255,186,0.12);--green-border:rgba(0,255,186,0.4);
   --blue:#3db5ff;--blue-bg:rgba(61,181,255,0.12);--blue-border:rgba(61,181,255,0.4);
   --purple:#c77dff;--purple-bg:rgba(199,125,255,0.15);--purple-border:rgba(199,125,255,0.5);
   --amber:#ff9e2c;--amber-bg:rgba(255,158,44,0.15);--amber-border:rgba(255,158,44,0.5);
-  --text:#e8edf8;
   --red:#ff4d6a;--red-bg:rgba(255,77,106,0.12);--red-border:rgba(255,77,106,0.4);
 }
 *:focus-visible {
@@ -153,13 +152,13 @@ select option{background:var(--s2)}
     <div class="freq-sep"></div>
     <div class="freq-box"><div class="freq-num" id="f-right">433.2</div><div class="freq-lbl">droite Hz</div></div>
   </div>
-  <div class="card"><div class="card-label">Recherche fréquence</div>
-  <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+  <div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+    <div class="card-label" style="margin-bottom:0;white-space:nowrap">Recherche fréquence</div>
     <input type="number" id="bin-hz-input" min="20" max="20000" value="432"
-      style="width:110px;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center"
+      style="width:100px;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center"
       oninput="onBinInput()">
     <span style="font-size:13px;color:var(--muted)">Hz</span>
-    <button onclick="loadFreq(parseInt(document.getElementById('bin-hz-input').value)||432, Math.round(Math.min(45,Math.max(10,6000/(parseInt(document.getElementById('bin-hz-input').value)||432)))), (parseInt(document.getElementById('bin-hz-input').value)||432)+' Hz')" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer;font-weight:500">▶ Charger</button>
   </div>
   <input type="range" id="bin-slider" min="20" max="20000" value="432" step="1"
     style="width:100%;accent-color:var(--green);margin-bottom:6px" oninput="onBinSlider()">
@@ -267,13 +266,13 @@ select option{background:var(--s2)}
 <div class="play-bar">
   <div class="play-bar-info">
     <div class="play-bar-freq" id="pb-freq">Racine - 432 Hz - D 1.2 Hz</div>
-    <div class="play-bar-timer inactive" id="pb-timer">13:00</div>
   </div>
-  <div style="display:flex;gap:6px">
+  <div style="display:flex;gap:6px;align-items:center">
     <button id="pause-btn" onclick="togglePause()"
       style="display:none;padding:12px 14px;border-radius:12px;border:1.5px solid var(--green-border);background:var(--green-bg);color:var(--green);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">
       ⏸ Pause
     </button>
+    <div class="play-bar-timer inactive" id="pb-timer">13:00</div>
     <button class="play-btn" id="play-btn" onclick="togglePlay()">
       <span id="play-icon">▶</span><span id="play-label">Lancer</span>
     </button>
@@ -601,7 +600,23 @@ const PROTOCOLES=[
   {nom:"Asthme Allergies THQV",s1:[{n:"Cuivre",hz:3030.839991,d:10},{n:"Histamine",hz:5301.322902,d:10},{n:"Zinc",hz:3118.313016,d:10}],s2:[{n:"Silicium",hz:1339.543899,d:10},{n:"Selenium",hz:3766.014000,d:10}],note:"Source THQV"},
   {nom:"Thyroïde THQV",s1:[{n:"Iode",hz:6052.735701,d:10},{n:"Zinc",hz:3118.313016,d:10},{n:"Selenium",hz:3766.014000,d:10}],s2:[{n:"Manganese",hz:2620.281744,d:10},{n:"Hypothalamus",hz:999,d:10}],note:"Source THQV"},
   {nom:"Hypertension THQV",s1:[{n:"Potassium",hz:1864.801737,d:10},{n:"Magnesium",hz:1159.232148,d:10},{n:"Sodium",hz:1096.501932,d:10}],s2:[{n:"Vanadium",hz:2429.665686,d:10},{n:"CoQ10",hz:2573.574066,d:10}],note:"Source THQV"},
-  {nom:"Cognitif Alzheimer THQV",s1:[{n:"Phosphore",hz:1477.300140,d:10},{n:"Acetylcholine",hz:3486.758535,d:10},{n:"Cuivre",hz:3030.839991,d:10}],s2:[{n:"Oxygene",hz:763.094781,d:10},{n:"Or",hz:9394.362477,d:10}],note:"Source THQV"}
+  {nom:"Cognitif Alzheimer THQV",s1:[{n:"Phosphore",hz:1477.300140,d:10},{n:"Acetylcholine",hz:3486.758535,d:10},{n:"Cuivre",hz:3030.839991,d:10}],s2:[{n:"Oxygene",hz:763.094781,d:10},{n:"Or",hz:9394.362477,d:10}],note:"Source THQV"},
+  // Nouveaux protocoles Lavoie/biochimiques
+  {nom:"Réveil Vitalité matinale",s1:[{n:"Hypothalamus",hz:999,d:10},{n:"Dopamine",hz:3652.976349,d:10},{n:"Noradrenaline",hz:4034.538045,d:10}],s2:[{n:"Tyrosine",hz:8641.952838,d:10},{n:"Phosphore",hz:1477.300140,d:10}],note:"Source Lavoie / Systeme nerveux"},
+  {nom:"Sommeil biochimique Lavoie",s1:[{n:"GABA",hz:4918.330341,d:10},{n:"Melatonine",hz:2769.661008,d:10}],s2:[{n:"Magnesium",hz:1159.232148,d:10},{n:"Tryptophane",hz:9740.716992,d:10}],note:"Source Lavoie / Systeme nerveux"},
+  {nom:"Anti-stress biochimique",s1:[{n:"Lithium",hz:662.124024,d:10},{n:"Magnesium",hz:1159.232148,d:10},{n:"GABA",hz:4918.330341,d:10}],s2:[{n:"Serotonine",hz:4202.186724,d:10},{n:"Helium",hz:763.619832,d:10}],note:"Source Lavoie / Systeme nerveux"},
+  {nom:"Traumatologie Fracture Entorse",s1:[{n:"Calcium",hz:1911.528738,d:10},{n:"Bore",hz:515.632941,d:12},{n:"Strontium",hz:4179.054546,d:10}],s2:[{n:"Proline",hz:5491.240470,d:10},{n:"Lysine",hz:6972.529770,d:10},{n:"Vitamine D",hz:4586.371668,d:10}],note:"Source Lavoie / Articulations"},
+  {nom:"Récupération musculaire Crampes",s1:[{n:"Eau H2O",hz:1388.000007,d:10},{n:"Magnesium",hz:1159.232148,d:10},{n:"Potassium",hz:1864.801737,d:10}],s2:[{n:"Calcium",hz:1911.528738,d:10},{n:"GABA",hz:4918.330341,d:10}],note:"Source Lavoie / Colonne Dos"},
+  {nom:"Circulation biochimique Lavoie",s1:[{n:"Eau H2O",hz:1388.000007,d:10},{n:"Fer",hz:2663.539155,d:10},{n:"Cuivre",hz:3030.839991,d:10}],s2:[{n:"Vanadium",hz:2429.665686,d:10},{n:"Potassium",hz:1864.801737,d:10},{n:"Vitamine C",hz:4200.040431,d:10}],note:"Source Lavoie / Cardiovasculaire"},
+  {nom:"Respiration Poumons",s1:[{n:"Oxygene",hz:763.094781,d:10},{n:"Fer",hz:2663.539155,d:10}],s2:[{n:"Cuivre",hz:3030.839991,d:10},{n:"Selenium",hz:3766.014000,d:10},{n:"Helium",hz:763.619832,d:10}],note:"Source Lavoie / Organes"},
+  {nom:"Énergie Performance physique",s1:[{n:"Fer",hz:2663.539155,d:10},{n:"CoQ10",hz:2573.574066,d:10},{n:"Chrome",hz:2479.965057,d:10}],s2:[{n:"Leucine",hz:6256.400463,d:10},{n:"Valine",hz:5587.389252,d:10}],note:"Source Lavoie / Recuperation"},
+  {nom:"Détox profonde Lavoie",s1:[{n:"Eau H2O",hz:1388.000007,d:10},{n:"Soufre",hz:1529.346996,d:10},{n:"Glutathion",hz:3664.423197,d:10}],s2:[{n:"Molybdene",hz:4576.355667,d:10},{n:"Methionine",hz:7116.497766,d:10},{n:"Carbone",hz:572.852898,d:10}],note:"Source Lavoie / Bien-etre quotidien"},
+  {nom:"Mémoire biochimique",s1:[{n:"Acetylcholine",hz:3486.758535,d:10},{n:"Phosphore",hz:1477.300140,d:10}],s2:[{n:"Or",hz:4697.181234,d:10},{n:"Lanthane",hz:6625.125945,d:10},{n:"Ac. glutamique",hz:7017.406200,d:10}],note:"Source Lavoie / Bien-etre quotidien"},
+  {nom:"Défenses naturelles Immunité",s1:[{n:"Zinc",hz:3118.313016,d:10},{n:"Selenium",hz:3766.014000,d:10},{n:"Thymus",hz:2442.000006,d:10}],s2:[{n:"Vitamine C",hz:4200.040431,d:10},{n:"Vitamine D",hz:4586.371668,d:10}],note:"Source Lavoie / Bien-etre quotidien"},
+  // Routines Cure
+  {nom:"Cure Immunité Express",s1:[{n:"Eau H2O",hz:1388.000007,d:10},{n:"Vitamine C",hz:4200.040431,d:10}],s2:[{n:"Zinc",hz:3118.313016,d:10},{n:"Selenium",hz:3766.014000,d:10}],note:"Routine Cure / Vitamine+Mineral - synergie immunite documentee"},
+  {nom:"Cure Thyroïde Énergie",s1:[{n:"Eau H2O",hz:1388.000007,d:10},{n:"Vitamine C",hz:4200.040431,d:10}],s2:[{n:"Tyrosine",hz:8641.952838,d:10},{n:"Selenium",hz:3766.014000,d:10}],note:"Routine Cure / Vitamine+AA+Mineral - precurseurs thyroidiens"},
+  {nom:"Cure Peau Os Réparation",s1:[{n:"Eau H2O",hz:1388.000007,d:10},{n:"Vitamine D",hz:4586.371668,d:10},{n:"Glutathion",hz:3664.423197,d:10}],s2:[{n:"Lysine",hz:6972.529770,d:10},{n:"Zinc",hz:3118.313016,d:10},{n:"Or",hz:4697.181234,d:10}],note:"Routine Cure / Vitamine+AA+Mineral+Oligo - collagene et reparation"}
 ];
 
 const SYMPTOMES={
@@ -610,35 +625,44 @@ const SYMPTOMES={
     {s:"Dos / Lombaires",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:5301.322902,d:10}],s2:[{hz:1339.543899,d:10},{hz:1159.232148,d:10},{hz:1911.528738,d:10}]},
     {s:"Douleurs musculaires",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:1159.232148,d:10},{hz:2663.539155,d:10},{hz:763.094781,d:10}]},
     {s:"Migraine",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:1096.501932,d:10}],s2:[{hz:1159.232148,d:10},{hz:1864.801737,d:10},{hz:4202.186724,d:10}]},
-    {s:"Sciatique",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:5301.322902,d:10}],s2:[{hz:1339.543899,d:10},{hz:1159.232148,d:10},{hz:1911.528738,d:10}]}
+    {s:"Sciatique",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:5301.322902,d:10}],s2:[{hz:1339.543899,d:10},{hz:1159.232148,d:10},{hz:1911.528738,d:10}]},
+    {s:"Entorse / Foulure",s1:[{hz:515.632941,d:12},{hz:1911.528738,d:10},{hz:1339.543899,d:10}],s2:[{hz:1529.346996,d:10},{hz:5491.240470,d:10}]},
+    {s:"Fracture consolidation",s1:[{hz:1911.528738,d:10},{hz:515.632941,d:12},{hz:4179.054546,d:10}],s2:[{hz:1477.300140,d:10},{hz:4586.371668,d:10}]},
+    {s:"Tendinite",s1:[{hz:1529.346996,d:10},{hz:1339.543899,d:10}],s2:[{hz:3030.839991,d:10},{hz:3766.014000,d:10}]}
   ],
   "Fatigue":[
     {s:"Fatigue générale",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:763.094781,d:10},{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:1477.300140,d:10}]},
     {s:"Fatigue matinale",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:1159.232148,d:10},{hz:999,d:10},{hz:6052.735701,d:10}]},
     {s:"Épuisement nerveux",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]},
-    {s:"Burn-out",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:3652.976349,d:10}]}
+    {s:"Burn-out",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:3652.976349,d:10}]},
+    {s:"Fatigue musculaire post-effort",s1:[{hz:1388.000007,d:10},{hz:6256.400463,d:10}],s2:[{hz:5587.389252,d:10},{hz:2663.539155,d:10},{hz:2573.574066,d:10}]}
   ],
   "Sommeil":[
     {s:"Endormissement difficile",s1:[{hz:1529.346996,d:10},{hz:6052.735701,d:10}],s2:[{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:6262.047576,d:10}]},
     {s:"Réveils nocturnes",s1:[{hz:1529.346996,d:10},{hz:832.000005,d:10}],s2:[{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:999,d:10},{hz:763.094781,d:10}]},
-    {s:"Sommeil non réparateur",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:763.094781,d:10},{hz:4918.330341,d:10}]}
+    {s:"Sommeil non réparateur",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:763.094781,d:10},{hz:4918.330341,d:10}]},
+    {s:"Décalage horaire Jet lag",s1:[{hz:2769.661008,d:10},{hz:1296,d:10}],s2:[{hz:4918.330341,d:10},{hz:999,d:10}]}
   ],
   "Mental":[
     {s:"Stress chronique",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]},
     {s:"Anxiété / Angoisse",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:2663.539155,d:10},{hz:4918.330341,d:10},{hz:1159.232148,d:10},{hz:4202.186724,d:10}]},
     {s:"Déprime passagère",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:1477.300140,d:10}],s2:[{hz:3652.976349,d:10},{hz:4202.186724,d:10},{hz:3118.313016,d:10},{hz:4697.181234,d:10}]},
     {s:"Manque concentration",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.094781,d:10}],s2:[{hz:1477.300140,d:10},{hz:3486.758535,d:10},{hz:4697.181234,d:10}]},
-    {s:"Irritabilité",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:1159.232148,d:10},{hz:2663.539155,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]}
+    {s:"Irritabilité",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:1159.232148,d:10},{hz:2663.539155,d:10},{hz:4918.330341,d:10},{hz:4202.186724,d:10}]},
+    {s:"Choc émotionnel Trauma léger",s1:[{hz:662.124024,d:10},{hz:4918.330341,d:10}],s2:[{hz:763.619832,d:10},{hz:4202.186724,d:10}]}
   ],
   "Immunite":[
     {s:"Rhume / Grippe",s1:[{hz:1529.346996,d:10},{hz:2442.000006,d:10},{hz:832.000005,d:10}],s2:[{hz:3118.313016,d:10},{hz:3030.839991,d:10},{hz:3766.014000,d:10},{hz:4697.181234,d:10}]},
     {s:"Fatigue post-virale",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:2663.539155,d:10}],s2:[{hz:763.094781,d:10},{hz:1159.232148,d:10},{hz:2573.574066,d:10},{hz:3766.014000,d:10}]},
-    {s:"Allergies saisonnières",s1:[{hz:1529.346996,d:10},{hz:5301.322902,d:10},{hz:832.000005,d:10}],s2:[{hz:3030.839991,d:10},{hz:3118.313016,d:10},{hz:3766.014000,d:10},{hz:1339.543899,d:10}]}
+    {s:"Allergies saisonnières",s1:[{hz:1529.346996,d:10},{hz:5301.322902,d:10},{hz:832.000005,d:10}],s2:[{hz:3030.839991,d:10},{hz:3118.313016,d:10},{hz:3766.014000,d:10},{hz:1339.543899,d:10}]},
+    {s:"Cicatrisation lente",s1:[{hz:4200.040431,d:10},{hz:3118.313016,d:10}],s2:[{hz:3030.839991,d:10},{hz:5491.240470,d:10},{hz:6972.529770,d:10}]},
+    {s:"Inflammation chronique légère",s1:[{hz:1529.346996,d:10},{hz:3766.014000,d:10}],s2:[{hz:3030.839991,d:10},{hz:1339.543899,d:10}]}
   ],
   "Cognitif":[
     {s:"Perte de mémoire",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.094781,d:10}],s2:[{hz:1477.300140,d:10},{hz:3486.758535,d:10},{hz:3030.839991,d:10},{hz:4697.181234,d:10}]},
     {s:"Brouillard mental",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.094781,d:10}],s2:[{hz:1477.300140,d:10},{hz:3486.758535,d:10},{hz:1159.232148,d:10}]},
-    {s:"TDAH",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:3652.976349,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:1477.300140,d:10}]}
+    {s:"TDAH",s1:[{hz:1529.346996,d:10},{hz:831.6,d:10},{hz:763.619832,d:10}],s2:[{hz:3652.976349,d:10},{hz:1159.232148,d:10},{hz:4918.330341,d:10},{hz:1477.300140,d:10}]},
+    {s:"Surcharge mentale Surmenage",s1:[{hz:3486.758535,d:10},{hz:1477.300140,d:10}],s2:[{hz:1159.232148,d:10},{hz:4918.330341,d:10}]}
   ]
 };
 
@@ -1126,98 +1150,96 @@ function showGuidePopup() {
     '<button onclick="localStorage.removeItem(\'introShown\');document.getElementById(\'guide-popup\').style.display=\'none\'" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid var(--muted);background:transparent;color:var(--green);font-size:12px;cursor:pointer">Réafficher au prochain lancement</button></div>';
   document.body.appendChild(g);
 }
-function showConsentModal() {
-  var m = document.getElementById('consent-modal');
-  if (m) {m.style.display='block';return;}
-  m = document.createElement('div');
-  m.id='consent-modal';
-  m.style.cssText='display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;overflow-y:auto;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)';
-  m.innerHTML='<div style="max-width:600px;margin:40px auto;background:var(--s1);border-radius:20px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.8);animation:modalIn 0.3s ease-out">' +
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">' +
-    '<h2 style="margin:0;font-size:22px;color:var(--amber)">⚖️ Avis de Consentement</h2>' +
-    '<button onclick="document.getElementById(\'consent-modal\').style.display=\'none\'" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--dim)">✕</button>' +
-    '</div>' +
-    '<div style="max-height:60vh;overflow-y:auto;margin-bottom:20px;padding-right:8px">' +
-    '<div style="margin-bottom:18px;padding:14px;background:var(--s2);border-radius:12px;border-left:4px solid var(--red);">' +
-    '<div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:6px">⚠️ AVIS MÉDICAL OBLIGATOIRE</div>' +
-    '<div style="font-size:13px;color:var(--text);line-height:1.7">' +
-    'Cette application utilise des fréquences binaurales pour la relaxation et le bien-être.<br><br>' +
-    '<b>IMPORTANT :</b><br>' +
-    '1. <b>Ne pas remplacer un traitement médical</b> - Consultez toujours un professionnel de santé.<br>' +
-    '2. <b>Ne pas utiliser si vous êtes sous traitement médical actif</b> sans avis médical.<br>' +
-    '3. <b>Ne pas utiliser pendant la conduite ou l\'utilisation de machines</b>.<br>' +
-    '4. <b>Ne pas utiliser pendant des activités nécessitant une attention soutenue</b>.<br>' +
-    '5. <b>Les fréquences ne remplacent pas une consultation médicale</b>.<br><br>' +
-    'Si vous avez des doutes, <b>parlez-en à votre médecin</b> avant d\'utiliser cette application.</div>' +
-    '</div>' +
-    '<div style="margin-bottom:18px;padding:14px;background:var(--s2);border-radius:12px;border-left:4px solid var(--green);">' +
-    '<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:6px">✅ Avis de Consentement de l\'Utilisateur</div>' +
-    '<div style="font-size:13px;color:var(--text);line-height:1.7">' +
-    'Je confirme avoir lu et compris les avertissements médicaux ci-dessus.<br><br>' +
-    '1. Je comprends que cette application n\'est <b>pas un substitut</b> à un traitement médical.<br>' +
-    '2. Je comprends que les fréquences binaurales sont <b>complémentaires</b> et non alternatives.<br>' +
-    '3. Je comprends que je dois <b>consulter un médecin</b> avant d\'utiliser cette application si je suis sous traitement.<br>' +
-    '4. Je comprends que je ne dois pas utiliser cette application pendant des activités dangereuses.<br>' +
-    '5. J\'accepte de ne pas tenir l\'application responsable des problèmes de santé.<br><br>' +
-    'En validant ce consentement, je certifie avoir l\'âge requis pour utiliser cette application.</div>' +
-    '</div>' +
-    '<div style="margin-bottom:18px;padding:14px;background:var(--s2);border-radius:12px;border-left:4px solid var(--blue);">' +
-    '<div style="font-size:13px;font-weight:600;color:var(--blue);margin-bottom:6px">🔒 Confidentialité</div>' +
-    '<div style="font-size:13px;color:var(--text);line-height:1.7">' +
-    'Aucune donnée personnelle n\'est collectée ni envoyée.<br>' +
-    'Les fréquences sont calculées localement sur votre appareil.<br>' +
-    'Les playlists sauvegardées sont stockées uniquement dans votre navigateur (localStorage).</div>' +
-    '</div>' +
-    '</div>' +
-    '<div style="display:flex;gap:10px">' +
-    '<button onclick="document.getElementById(\'consent-modal\').style.display=\'none\';localStorage.setItem(\'consentGiven\',\'true\');document.getElementById(\'consent-modal\').remove();" style="flex:1;padding:14px;border-radius:12px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:14px;font-weight:600;cursor:pointer">✅ J\'accepte</button>' +
-    '<button onclick="window.location.href=\'https://www.santepubliquefrance.fr/\';" style="flex:1;padding:14px;border-radius:12px;border:1px solid var(--red-border);background:var(--red-bg);color:var(--red);font-size:14px;font-weight:600;cursor:pointer">❌ Refuser et quitter</button>' +
-    '</div>' +
-    '</div>';
-  document.body.appendChild(m);
-  m.style.display='block';
+function showWelcomeBanner() {
+  var b = document.createElement('div');
+  b.id='intro-banner';
+  b.style.cssText='position:fixed;bottom:80px;left:10px;right:10px;background:#1c2235;border:1px solid var(--border);color:var(--green);padding:16px 18px;border-radius:14px;z-index:999;font-size:13px;max-width:360px;margin:0 auto;box-shadow:0 8px 30px rgba(0,0,0,0.6);animation:fadeIn 0.3s';
+  b.innerHTML='<div style="font-size:15px;font-weight:600;color:var(--green);margin-bottom:10px">Bienvenue ' + String.fromCodePoint(0x1F44B) + '</div>' +
+    '<div style="margin-bottom:12px;line-height:1.6;font-size:13.5px;color:var(--muted)">' +
+    'Un guide d\'aide est disponible sur chaque page : appuie sur le bouton ' +
+    '<span style="color:var(--amber);font-weight:600">' + String.fromCodePoint(0x2753) + ' Aide</span> en haut &agrave; droite ' +
+    'pour tout savoir sur l\'onglet en cours.</div>' +
+    '<button onclick="this.parentElement.remove()" style="width:100%;padding:11px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:14px;font-weight:600;cursor:pointer">' + String.fromCodePoint(0x1F44D) + ' Compris</button>';
+  document.body.appendChild(b);
+  setTimeout(function(){var e=document.getElementById('intro-banner');if(e)e.remove();},120000);
 }
 
 function checkFirstVisit() {
-  if (!localStorage.getItem('introShown')) {
+  if (localStorage.getItem('introShown')) return;
+  // Premiere visite : on affiche d'abord le consentement medical.
+  // Le banner de bienvenue s'affiche apres acceptation du consentement.
+  var consentDeja = false;
+  try { consentDeja = (localStorage.getItem('consentement_medical')==='ok'); } catch(e){}
+  if (consentDeja) {
     localStorage.setItem('introShown','true');
-    var b = document.createElement('div');
-    b.id='intro-banner';
-    b.style.cssText='position:fixed;bottom:80px;left:10px;right:10px;background:#1c2235;border:1px solid var(--border);color:var(--green);padding:14px 16px;border-radius:14px;z-index:999;font-size:13px;max-width:360px;box-shadow:0 8px 30px rgba(0,0,0,0.6);animation:fadeIn 0.3s';
-    b.innerHTML='<div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:8px">Bienvenue ' + String.fromCodePoint(0x1F44B) + '</div>' +
-      '<div style="margin-bottom:8px;line-height:1.5">' +
-      '<div style="margin-bottom:6px"><span style="color:var(--green)">1.</span> Choisis une fr&eacute;quence' +
-      '<br><span style="font-size:12px;color:var(--muted)">Binaural, Min&eacute;raux, Protocoles, Sympt&ocirc;mes</span></div>' +
-      '<div style="margin-bottom:6px"><span style="color:var(--green)">2.</span> Mets ton casque' +
-      '<br><span style="font-size:12px;color:var(--muted)">Indispensable pour l\'effet binaural</span></div>' +
-      '<div><span style="color:var(--green)">3.</span> Appuie sur Lancer' +
-      '<br><span style="font-size:12px;color:var(--muted)">R&eacute;gle le minuteur avant</span></div></div>' +
-      '<button onclick="this.parentElement.remove()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:14px;font-weight:600;cursor:pointer;margin-top:6px">' + String.fromCodePoint(0x1F44D) + ' Compris</button>';
-    document.body.appendChild(b);
-    setTimeout(function(){var e=document.getElementById('intro-banner');if(e)e.remove();},120000);
+    showWelcomeBanner();
+    return;
   }
-  if (!localStorage.getItem('consentGiven')) {
-    setTimeout(showConsentModal, 500);
-  }
+  showConsentModal(function(){
+    localStorage.setItem('introShown','true');
+    showWelcomeBanner();
+  });
+}
+
+function showConsentModal(onAccept) {
+  var ov = document.createElement('div');
+  ov.id='consent-modal';
+  ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:1100;overflow-y:auto;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)';
+  ov.innerHTML=
+    '<div style="max-width:480px;margin:30px auto;background:var(--s1);border:1px solid var(--amber-border);border-radius:20px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:modalIn 0.3s ease-out">' +
+    '<div style="text-align:center;font-size:38px;margin-bottom:8px">' + String.fromCodePoint(0x26A0,0xFE0F) + '</div>' +
+    '<h2 style="margin:0 0 16px;font-size:21px;color:var(--amber);text-align:center;font-weight:600">Avertissement important</h2>' +
+    '<p style="font-size:14px;color:var(--text);line-height:1.6;margin-bottom:14px">Cette application propose des fr&eacute;quences sonores &agrave; vis&eacute;e de <b>bien-&ecirc;tre et de relaxation</b>.</p>' +
+    '<p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px">Elle <b style="color:var(--amber)">n\'est pas un dispositif m&eacute;dical</b> et ne remplace en aucun cas un avis, un diagnostic ou un traitement m&eacute;dical. En cas de probl&egrave;me de sant&eacute;, consultez un professionnel de sant&eacute; qualifi&eacute;.</p>' +
+    '<p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:18px">D&eacute;conseill&eacute; en cas d\'&eacute;pilepsie, de port d\'un pacemaker, de grossesse, ou pour les jeunes enfants, sauf avis m&eacute;dical. N\'utilisez pas en conduisant ou en manipulant des machines.</p>' +
+    '<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:18px">' +
+    '<input type="checkbox" id="consent-check" style="margin-top:2px;width:20px;height:20px;flex-shrink:0;accent-color:var(--green);cursor:pointer">' +
+    '<span style="font-size:13.5px;color:var(--text);line-height:1.5">J\'ai lu et compris cet avertissement. J\'utilise cette application &agrave; des fins de bien-&ecirc;tre, sous ma propre responsabilit&eacute;.</span></label>' +
+    '<button id="consent-btn" disabled style="width:100%;padding:15px;border-radius:14px;border:1.5px solid var(--green-border);background:var(--green-bg);color:var(--green);font-family:\'Outfit\',sans-serif;font-size:16px;font-weight:600;cursor:not-allowed;opacity:0.4;transition:all 0.2s ease">Commencer</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+  var chk=document.getElementById('consent-check');
+  var btn=document.getElementById('consent-btn');
+  chk.addEventListener('change',function(){
+    btn.disabled=!chk.checked;
+    btn.style.opacity=chk.checked?'1':'0.4';
+    btn.style.cursor=chk.checked?'pointer':'not-allowed';
+  });
+  btn.addEventListener('click',function(){
+    if(!chk.checked)return;
+    try{localStorage.setItem('consentement_medical','ok');}catch(e){}
+    ov.remove();
+    if(typeof onAccept==='function')onAccept();
+  });
 }
 
 function filterSympList(query){
-  var cards=document.querySelectorAll(".proto-card");
+  var cards=document.querySelectorAll("#symp-list .proto-card");
   var q=query.toLowerCase();
   cards.forEach(function(card){
-    var title=card.querySelector(".proto-title")?card.querySelector(".proto-title").textContent.toLowerCase():"";
-    var matches=title.includes(q)||q==="";
-    card.style.display=matches?"":"none";
+    var text=card.textContent.toLowerCase();
+    card.style.display=text.includes(q)||q===""?"":"none";
+  });
+  var sections=document.querySelectorAll("#symp-list > div");
+  sections.forEach(function(sec){
+    var hasVisible=false;
+    sec.querySelectorAll(".proto-card").forEach(function(c){if(c.style.display!=="none")hasVisible=true;});
+    sec.style.display=hasVisible?"":"none";
   });
 }
 
 function filterProtoList(query){
-  var cards=document.querySelectorAll(".proto-card");
+  var cards=document.querySelectorAll("#proto-list .proto-card");
   var q=query.toLowerCase();
   cards.forEach(function(card){
-    var title=card.querySelector(".proto-title")?card.querySelector(".proto-title").textContent.toLowerCase():"";
-    var matches=title.includes(q)||q==="";
-    card.style.display=matches?"":"none";
+    var text=card.textContent.toLowerCase();
+    card.style.display=text.includes(q)||q===""?"":"none";
+  });
+  var sections=document.querySelectorAll("#proto-list > div");
+  sections.forEach(function(sec){
+    var hasVisible=false;
+    sec.querySelectorAll(".proto-card").forEach(function(c){if(c.style.display!=="none")hasVisible=true;});
+    sec.style.display=hasVisible?"":"none";
   });
 }
 
@@ -1381,10 +1403,17 @@ function togglePlay(){if(playing)stopAudio();else startAudio();}
 
 function startAudio(){
   stopLiveTone();
+  // Indicateur de chargement
+  var btn=document.getElementById("play-btn");
+  btn.innerHTML="<span>⏳</span><span>Démarrage...</span>";
+  btn.disabled=true;
+  setTimeout(function(){
   if(audioCtx){audioCtx.close();audioCtx=null;}
   audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   const merger=audioCtx.createChannelMerger(2);
-  gainNode=audioCtx.createGain();gainNode.gain.value=0.25;
+  gainNode=audioCtx.createGain();
+  gainNode.gain.setValueAtTime(0,audioCtx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+2);
   leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
   leftOsc.type="sine";rightOsc.type="sine";
   leftOsc.frequency.value=baseHz;rightOsc.frequency.value=baseHz+diff;
@@ -1395,21 +1424,29 @@ function startAudio(){
   merger.connect(gainNode);gainNode.connect(audioCtx.destination);
   leftOsc.start();rightOsc.start();
   playing=true;
+  document.getElementById("play-btn").disabled=false;
   document.getElementById("play-btn").className="play-btn playing";
   document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arrêter</span>";
   var pb=document.getElementById("pause-btn");
   pb.style.display="flex";pb.innerHTML="\u23f8 Pause";
   pb.style.borderColor="var(--green-border)";pb.style.background="var(--green-bg)";pb.style.color="var(--green)";
   paused=false;
+  updateMediaSession();
   if(timerMin>0){
     secondsLeft=timerMin*60;updateTimerDisplay();
     timerInterval=setInterval(function(){secondsLeft--;saveSession();updateTimerDisplay();if(secondsLeft<=0)stopAudio();},1000);
   }
+  },80);
 }
 
 function stopAudio(){
-  if(leftOsc){leftOsc.stop();leftOsc=null;}
-  if(rightOsc){rightOsc.stop();rightOsc=null;}
+  if(gainNode&&audioCtx){
+    gainNode.gain.setValueAtTime(gainNode.gain.value,audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0,audioCtx.currentTime+1.5);
+  }
+  setTimeout(function(){
+  if(leftOsc){try{leftOsc.stop();}catch(e){}leftOsc=null;}
+  if(rightOsc){try{rightOsc.stop();}catch(e){}rightOsc=null;}
   try{localStorage.removeItem("ft_s");}catch(e){}
   if(audioCtx){audioCtx.close();audioCtx=null;}
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
@@ -1419,6 +1456,34 @@ function stopAudio(){
   document.getElementById("pause-btn").style.display="none";
   paused=false;pausedSeconds=0;
   secondsLeft=0;updateTimerDisplay();updateVoyageBtn();
+  if('mediaSession' in navigator)navigator.mediaSession.playbackState='none';
+  },1500);
+}
+function updateMediaSession(){
+  if(!('mediaSession' in navigator))return;
+  navigator.mediaSession.metadata=new MediaMetadata({
+    title:currentLabel||'Fréquence Thérapeutique',
+    artist:'Fréquences Thérapeutiques Binaural X',
+    album:seqQueue&&seqQueue.length>0?seqProtoName:'Session libre',
+  });
+  navigator.mediaSession.playbackState='playing';
+  navigator.mediaSession.setActionHandler('play',function(){
+    if(paused)togglePause(document.getElementById('pause-btn'));
+    else if(!playing)startAudio();
+  });
+  navigator.mediaSession.setActionHandler('pause',function(){
+    if(playing&&!paused)togglePause(document.getElementById('pause-btn'));
+  });
+  navigator.mediaSession.setActionHandler('stop',function(){stopAudio();});
+  navigator.mediaSession.setActionHandler('nexttrack',function(){
+    if(seqQueue&&seqQueue.length>0&&seqIndex<seqQueue.length-1){
+      if(leftOsc){try{leftOsc.stop();}catch(e){}leftOsc=null;}
+      if(rightOsc){try{rightOsc.stop();}catch(e){}rightOsc=null;}
+      if(audioCtx){audioCtx.close();audioCtx=null;}
+      if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+      seqIndex++;setTimeout(playNextInSequence,300);
+    }
+  });
 }
 var favs=[];
 try {
@@ -1591,8 +1656,9 @@ function buildMineraux(){
         bar.classList.add("show");
         document.getElementById("sel-bar-min-txt").textContent=m.nom+" — "+m.hz+" Hz — "+calcD+" min charge";
       };
-      listEl.appendChild(el);
+      itemsContainer.appendChild(el);
     });
+    listEl.appendChild(itemsContainer);
   }
   renderMin(activeCat);
 }
@@ -1602,19 +1668,20 @@ function buildProtocoles(){
   var searchHTML='<div style="margin-bottom:12px;position:sticky;top:0;background:var(--bg);z-index:10;padding-top:4px"><input type="text" id="proto-search" placeholder="🔍 Chercher un protocole... (fatigue, stress, etc)" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:14px;font-family:\'Outfit\',sans-serif;outline:none" oninput="filterProtoList(this.value)"></div>';
   listEl.innerHTML=searchHTML;
   const SECTIONS=[
-    {titre:"\u{1F9E0} Syst\u00e8me nerveux",noms:["Anxiété Stress","Dépression légère","Mémoire Concentration","Sommeil profond"]},
+    {titre:"\u{1F9E0} Syst\u00e8me nerveux",noms:["Anxiété Stress","Dépression légère","Mémoire Concentration","Sommeil profond","Réveil Vitalité matinale","Sommeil biochimique Lavoie","Anti-stress biochimique"]},
     {titre:"\u{1F4AA} Corps physique",sous:[
-      {sous_titre:"Articulations",noms:["Arthrite général"]},
-      {sous_titre:"Colonne & Dos",noms:["Dos Lombaires"]},
-      {sous_titre:"Cardiovasculaire",noms:["Circulation sanguine","Circulation pelvienne"]},
-      {sous_titre:"Organes",noms:["Reins support","Lymphe drainage","Digestion Colon"]},
-      {sous_titre:"R\u00e9cup\u00e9ration",noms:["Récupération post-effort","Régénération tissulaire"]}
+      {sous_titre:"Articulations",noms:["Arthrite général","Traumatologie Fracture Entorse"]},
+      {sous_titre:"Colonne & Dos",noms:["Dos Lombaires","Récupération musculaire Crampes"]},
+      {sous_titre:"Cardiovasculaire",noms:["Circulation sanguine","Circulation pelvienne","Circulation biochimique Lavoie"]},
+      {sous_titre:"Organes",noms:["Reins support","Lymphe drainage","Digestion Colon","Respiration Poumons"]},
+      {sous_titre:"R\u00e9cup\u00e9ration",noms:["Récupération post-effort","Régénération tissulaire","Énergie Performance physique"]}
     ]},
     {titre:"\u{1F441} Yeux & Vision",noms:["Yeux Vision"]},
     {titre:"\u26A1 Vitalit\u00e9",noms:["Vitalité générale","Fatigue CAFL"]},
-    {titre:"\u{1F33F} Bien-\u00eatre quotidien",noms:["Relaxation","Insomnie CAFL","Détox assist","Foie support CAFL","Concentration mentale CAFL"]},
+    {titre:"\u{1F33F} Bien-\u00eatre quotidien",noms:["Relaxation","Insomnie CAFL","Détox assist","Foie support CAFL","Concentration mentale CAFL","Détox profonde Lavoie","Mémoire biochimique","Défenses naturelles Immunité"]},
     {titre:"\u{1F52C} Prostate",noms:["Prostate général","Prostate hyperplasie","Prostatite"]},
     {titre:"\u{1F9EC} Protocoles THQV",noms:["Fatigue Fibromyalgie THQV","Anxiété Burn-out THQV","Dépression THQV","Insomnie THQV","Diabète type 2 THQV","Cancer soutien THQV","Arthrose THQV","Ostéoporose THQV","Asthme Allergies THQV","Thyroïde THQV","Hypertension THQV","Cognitif Alzheimer THQV"]},
+    {titre:"\u{1F9EA} Routines Cure",noms:["Cure Immunité Express","Cure Thyroïde Énergie","Cure Peau Os Réparation"]},
     {titre:"\u{1F48A} Protocoles th\u00e9rapeutiques",reste:true}
   ];
   var done=new Set();
@@ -1743,11 +1810,13 @@ function playNextInSequence(){
           }
 
           if(found && found.s2 && found.s2.length > 0){
-            if(isSymp){
-              launchSympSequence(found.s2, 's2', found.s);
-            } else {
-              launchSequence(pIdx, 's2');
-            }
+            setTimeout(function(){
+              if(isSymp){
+                launchSympSequence(found.s2, 's2', found.s);
+              } else {
+                launchSequence(pIdx, 's2');
+              }
+            },1600);
             return;
           }
           alert("Nettoyage S1 terminé — "+seqProtoName+"\n\nBois de l’eau dans les 24-48h avant le S2.");
@@ -1782,7 +1851,9 @@ function startAudioSequence(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   const merger=audioCtx.createChannelMerger(2);
-  gainNode=audioCtx.createGain();gainNode.gain.value=0.25;
+  gainNode=audioCtx.createGain();
+  gainNode.gain.setValueAtTime(0,audioCtx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+2);
   leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
   leftOsc.type="sine";rightOsc.type="sine";
   leftOsc.frequency.value=baseHz;rightOsc.frequency.value=baseHz+diff;
@@ -1794,6 +1865,7 @@ function startAudioSequence(){
   leftOsc.start();rightOsc.start();
   playing=true;
   updateVoyageBtn();
+  updateMediaSession();
   document.getElementById("play-btn").className="play-btn playing";
   document.getElementById("play-btn").innerHTML="<span class='pulse'></span><span>Arrêter</span>";
   var pb=document.getElementById("pause-btn");
@@ -1814,7 +1886,7 @@ function startAudioSequence(){
 }
 
 function launchSympSequence(list,type,nom){
-  if(playing){if(!confirm("Session en cours. Arret ?"))return;stopAudio();}
+  if(playing){if(!confirm("Session en cours. Arrêter ?"))return;stopAudio();}
   seqQueue=list.map(function(item){return{n:item.hz+" Hz",hz:item.hz,d:item.d};});
   seqType=type;seqProtoName=nom;seqIndex=0;
   playNextInSequence();
@@ -1855,23 +1927,23 @@ function buildSymptomes(){
       bodyHTML+="<div class='proto-section'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
       bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 \u2014 Nettoyage</div>";
-      bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px'>Lancer S1</button>";
+      bodyHTML+="<button class='proto-freq-btn s1 symp-launch-s1' style='font-size:11px'>Lancer S1</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
       s.s1.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s1'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       bodyHTML+="<div class='proto-section' style='margin-top:8px'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
       bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 \u2014 R\u00e9paration</div>";
-      bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px'>Lancer S2</button>";
+      bodyHTML+="<button class='proto-freq-btn s2 symp-launch-s2' style='font-size:11px'>Lancer S2</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
       s.s2.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
-      card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title' style='color:var(--text)'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
-      // Attach click handlers via JS — use IIFE closure to capture correct s per symptom
+      card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
+      // Attach click handlers via JS — IIFE closure pour capturer le bon 's' à chaque itération
       (function(symItem){
-        var btns=card.querySelectorAll('.proto-freq-btn.s1');
+        var btns=card.querySelectorAll('.symp-launch-s1');
         if(btns.length>0)btns[0].onclick=function(){launchSympSequence(symItem.s1,'s1',symItem.s);};
-        var btns2=card.querySelectorAll('.proto-freq-btn.s2');
+        var btns2=card.querySelectorAll('.symp-launch-s2');
         if(btns2.length>0)btns2[0].onclick=function(){launchSympSequence(symItem.s2,'s2',symItem.s);};
       })(s);
       contenuEl.appendChild(card);
