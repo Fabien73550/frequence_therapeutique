@@ -20,7 +20,6 @@
   --blue:#3db5ff;--blue-bg:rgba(61,181,255,0.12);--blue-border:rgba(61,181,255,0.4);
   --purple:#c77dff;--purple-bg:rgba(199,125,255,0.15);--purple-border:rgba(199,125,255,0.5);
   --amber:#ff9e2c;--amber-bg:rgba(255,158,44,0.15);--amber-border:rgba(255,158,44,0.5);
-  --red:#ff4d6a;--red-bg:rgba(255,77,106,0.12);--red-border:rgba(255,77,106,0.4);
 }
 *:focus-visible {
   outline: 2px solid var(--green);
@@ -265,7 +264,7 @@ select option{background:var(--s2)}
 
 <div class="play-bar">
   <div class="play-bar-info">
-    <div class="play-bar-freq" id="pb-freq">Racine - 432 Hz - D 1.2 Hz</div>
+    <div class="play-bar-freq" id="pb-freq" onclick="openPlayer()" style="cursor:pointer" title="Ouvrir le lecteur">Racine - 432 Hz - D 1.2 Hz</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center">
     <button id="pause-btn" onclick="togglePause()"
@@ -1387,7 +1386,7 @@ function updateDisplays(){
 
 function updateTimerDisplay(){
   const el=document.getElementById("pb-timer");
-  if(timerMin===0){el.className="play-bar-timer inactive";el.textContent="--:--";return;}
+  if(timerMin===0){el.className="play-bar-timer inactive";el.textContent="--:--";updatePlayerDisplay();return;}
   const s=(playing||paused)?secondsLeft:timerMin*60;
   const m=Math.floor(s/60),sec=s%60;
   el.className="play-bar-timer"+(playing?" playing":"");
@@ -1398,6 +1397,7 @@ function updateTimerDisplay(){
   } else {
     el.textContent=timeStr;
   }
+  updatePlayerDisplay();
 }
 function togglePlay(){if(playing)stopAudio();else startAudio();}
 
@@ -1777,7 +1777,7 @@ function launchSequence(pi,type){
   if(playing){if(!confirm("Session en cours. Arrêter et lancer la séquence ?"))return;stopAudio();}
   const p=PROTOCOLES[pi];
   seqQueue=type==="s1"?p.s1.slice():p.s2.slice();
-  seqType=type;seqProtoName=p.nom;seqIndex=0;
+  seqType=type;seqProtoName=p.nom;seqIndex=0;openPlayer();
   playNextInSequence();
 }
 
@@ -1939,13 +1939,11 @@ function buildSymptomes(){
       s.s2.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
-      // Attach click handlers via JS — IIFE closure pour capturer le bon 's' à chaque itération
-      (function(symItem){
-        var btns=card.querySelectorAll('.symp-launch-s1');
-        if(btns.length>0)btns[0].onclick=function(){launchSympSequence(symItem.s1,'s1',symItem.s);};
-        var btns2=card.querySelectorAll('.symp-launch-s2');
-        if(btns2.length>0)btns2[0].onclick=function(){launchSympSequence(symItem.s2,'s2',symItem.s);};
-      })(s);
+      // Attach click handlers via JS to avoid JSON escaping issues
+      var btns=card.querySelectorAll('.symp-launch-s1');
+      if(btns.length>0)btns[0].onclick=function(){launchSympSequence(s.s1,'s1',s.s);};
+      var btns2=card.querySelectorAll('.symp-launch-s2');
+      if(btns2.length>0)btns2[0].onclick=function(){launchSympSequence(s.s2,'s2',s.s);};
       contenuEl.appendChild(card);
     });
     secEl.appendChild(titreEl);
@@ -2048,6 +2046,69 @@ if('serviceWorker' in navigator){
     if(persoBtn)showPage('perso',persoBtn);
   }
 })();
+
+function openPlayer(){
+  var p=document.getElementById('page-player');
+  p.style.display='flex';
+  updatePlayerDisplay();
+}
+function closePlayer(){
+  document.getElementById('page-player').style.display='none';
+}
+function updatePlayerDisplay(){
+  if(document.getElementById('page-player').style.display==='none')return;
+  // Proto name
+  document.getElementById('player-proto-name').textContent=seqProtoName||currentLabel||'—';
+  // Seq label (S1/S2)
+  var seqLbl='';
+  if(seqType==='proto_s1')seqLbl='S1';
+  else if(seqType==='proto_s2')seqLbl='S2';
+  else if(seqType==='playlist')seqLbl=seqProtoName;
+  else seqLbl=seqType||'';
+  document.getElementById('player-seq-label').textContent=seqLbl;
+  // Current freq name + action
+  if(seqQueue&&seqQueue.length>0&&seqIndex<seqQueue.length){
+    var cur=seqQueue[seqIndex];
+    document.getElementById('player-freq-name').textContent=(cur.n||cur.nom||'')+(cur.hz?' — '+cur.hz+' Hz':'');
+    document.getElementById('player-freq-action').textContent=cur.action||'';
+    var pos=(seqIndex+1)+' / '+seqQueue.length;
+    document.getElementById('player-progress-label').textContent=pos;
+    var pct=((seqIndex)/seqQueue.length)*100;
+    document.getElementById('player-progress-bar').style.width=pct+'%';
+  } else {
+    document.getElementById('player-freq-name').textContent=currentLabel||'—';
+    document.getElementById('player-freq-action').textContent='';
+    document.getElementById('player-progress-label').textContent='';
+  }
+  // Timer
+  var s=(playing||paused)?secondsLeft:timerMin*60;
+  var m=Math.floor(s/60),sec=s%60;
+  document.getElementById('player-timer-big').textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+  // Pause btn
+  var pb=document.getElementById('player-pause-btn');
+  if(pb)pb.textContent=paused?'▶ Reprendre':'⏸ Pause';
+}
 </script>
+
+<div id="page-player" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:300;overflow-y:auto;padding:0;flex-direction:column">
+  <div style="padding:20px 20px 0 20px;display:flex;align-items:center;justify-content:space-between">
+    <button onclick="closePlayer()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer">← Retour</button>
+    <span id="player-seq-label" style="font-size:12px;color:var(--muted)">S1</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;text-align:center;min-height:60vh">
+    <div id="player-proto-name" style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px">—</div>
+    <div id="player-freq-name" style="font-size:16px;color:var(--blue);font-weight:500;margin-bottom:4px">—</div>
+    <div id="player-freq-action" style="font-size:13px;color:var(--muted);margin-bottom:32px;min-height:18px">—</div>
+    <div id="player-timer-big" style="font-size:64px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);letter-spacing:2px;margin-bottom:8px">--:--</div>
+    <div id="player-progress-label" style="font-size:13px;color:var(--muted);margin-bottom:32px">— / —</div>
+    <div style="width:100%;max-width:320px;height:4px;background:var(--border);border-radius:4px;margin-bottom:40px;overflow:hidden">
+      <div id="player-progress-bar" style="height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 1s linear"></div>
+    </div>
+    <div style="display:flex;gap:16px;align-items:center">
+      <button id="player-pause-btn" onclick="togglePause()" style="padding:16px 32px;border-radius:16px;border:1.5px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:16px;font-weight:500;cursor:pointer;min-width:120px">⏸ Pause</button>
+      <button onclick="stopAudio();closePlayer()" style="padding:16px 24px;border-radius:16px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:16px;cursor:pointer">⏹</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
