@@ -679,6 +679,13 @@ function restoreSession(){try{var s=localStorage.getItem("ft_s");if(!s)return;va
   var bar=document.getElementById("resume-bar");
   document.getElementById("resume-text").textContent="Reprendre : "+(d.lb||"session")+" ("+Math.floor(d.sl/60)+"min)";
   bar.style.display="flex";
+  // Also show in player if open
+  var pp=document.getElementById('page-player');
+  var pro=document.getElementById('player-resume-overlay');
+  if(pp&&pp.style.display!=='none'&&pro){
+    document.getElementById('player-resume-name').textContent=(d.lb||'session')+' ('+Math.floor(d.sl/60)+'min)';
+    pro.style.display='flex';
+  }
 }catch(e){}}
 
 var pendingSession=null;
@@ -690,8 +697,12 @@ function doResume(){
   seqQueue=d.sq||[];seqIndex=d.si||0;seqType=d.st||"";seqProtoName=d.sp||"";seqEveilDiffs=d.sd||[];
   timerMin=Math.ceil(d.sl/60);
   document.getElementById("resume-bar").style.display="none";
+  // Also hide player resume overlay if present
+  var pr=document.getElementById("player-resume-overlay");
+  if(pr)pr.style.display="none";
   updateDisplays();updateTimerDisplay();
   if(seqType&&seqQueue.length>0){
+    openPlayer();
     startAudioSequence();
   } else {
     startAudio();
@@ -2102,12 +2113,14 @@ function updatePlayerDisplay(){
   // Arc progress (circumference 464.9)
   var arc=document.getElementById('player-clock-arc');
   if(arc){var pct=s/total;arc.style.strokeDashoffset=(464.9*(1-pct)).toFixed(1);}
-  // Minute hand (based on seconds left)
+  // Minute hand (based on elapsed time)
+  var elapsed=total-s;
+  var elMin=Math.floor(elapsed/60);var elSec=elapsed%60;
   var minHand=document.getElementById('player-clock-min');
-  if(minHand){var minAngle=(m%60)/60*360;var mr=minAngle*Math.PI/180;var mx=80+58*Math.sin(mr);var my=80-58*Math.cos(mr);minHand.setAttribute('x2',mx.toFixed(1));minHand.setAttribute('y2',my.toFixed(1));}
+  if(minHand){var minAngle=(elMin%60)/60*360;var mr=minAngle*Math.PI/180;var mx=80+58*Math.sin(mr);var my=80-58*Math.cos(mr);minHand.setAttribute('x2',mx.toFixed(1));minHand.setAttribute('y2',my.toFixed(1));}
   // Second hand
   var secHand=document.getElementById('player-clock-sec');
-  if(secHand){var secAngle=sec/60*360;var sr=secAngle*Math.PI/180;var sx=80+62*Math.sin(sr);var sy=80-62*Math.cos(sr);secHand.setAttribute('x2',sx.toFixed(1));secHand.setAttribute('y2',sy.toFixed(1));}
+  if(secHand){var secAngle=elSec/60*360;var sr=secAngle*Math.PI/180;var sx=80+62*Math.sin(sr);var sy=80-62*Math.cos(sr);secHand.setAttribute('x2',sx.toFixed(1));secHand.setAttribute('y2',sy.toFixed(1));}
   // Pause btn
   var pb=document.getElementById('player-pause-btn');
   if(pb)pb.textContent=paused?'▶ Reprendre':'⏸ Pause';
@@ -2118,6 +2131,12 @@ function updatePlayerDisplay(){
   <div style="padding:20px 20px 0 20px;display:flex;align-items:center;justify-content:space-between">
     <button onclick="closePlayer()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer">← Retour</button>
     <span id="player-seq-label" style="font-size:12px;color:var(--muted)">S1</span>
+  </div>
+  <div id="player-resume-overlay" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:10;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px">
+    <div style="font-size:40px;margin-bottom:16px">⏸</div>
+    <div id="player-resume-name" style="font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px">—</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:32px">Session interrompue</div>
+    <button onclick="doResume()" style="padding:16px 32px;border-radius:16px;border:1.5px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:16px;font-weight:600;cursor:pointer">▶ Reprendre</button>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;text-align:center;min-height:60vh">
     <div id="player-proto-name" style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px">—</div>
