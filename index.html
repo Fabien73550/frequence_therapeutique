@@ -921,11 +921,34 @@ function onCustomInput(){
 var playlists={matin:[],soir:[]};
 function savePlaylist(slot){try{localStorage.setItem("ft_playlist_"+slot,JSON.stringify(playlists[slot]));}catch(e){}}
 function loadPlaylist(){try{["matin","soir"].forEach(function(s){var d=localStorage.getItem("ft_playlist_"+s);if(d)playlists[s]=JSON.parse(d);});}catch(e){}}
-function addToPlaylist(slot){
-  var hz=parseInt(document.getElementById("bin-hz-input").value)||baseHz;
-  var d=Math.round(Math.max(10,Math.min(45,6000/hz)));
-  playlists[slot].push({hz:hz,d:d,nom:hz+" Hz"});
-  savePlaylist(slot);renderPlaylist(slot);
+function addToPlaylist(hzOrSlot, d, nom, slot){
+  // Deux modes : addToPlaylist(slot) depuis Binaural, ou addToPlaylist(hz,d,nom,slot) depuis Minéraux etc.
+  if(typeof hzOrSlot === "string"){
+    // Mode Binaural : addToPlaylist("matin")
+    var s=hzOrSlot;
+    var hz=parseInt(document.getElementById("bin-hz-input").value)||baseHz;
+    var dur=Math.round(Math.max(10,Math.min(45,6000/hz)));
+    playlists[s].push({hz:hz,d:dur,nom:hz+" Hz"});
+    savePlaylist(s);renderPlaylist(s);
+  } else {
+    // Mode Minéraux/Protocoles : addToPlaylist(hz, d, nom, slot)
+    var s=slot||"matin";
+    playlists[s].push({hz:hzOrSlot,d:d||10,nom:nom||hzOrSlot+" Hz"});
+    savePlaylist(s);renderPlaylist(s);
+    showToast((nom||hzOrSlot+" Hz")+" → "+(s==="matin"?"☀️ Matin":"🌙 Soir"));
+  }
+}
+
+function showToast(msg){
+  var t=document.getElementById("toast-msg");
+  if(!t){
+    t=document.createElement("div");
+    t.id="toast-msg";
+    t.style.cssText="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--amber);color:#000;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s";
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;t.style.opacity="1";
+  clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity="0";},2000);
 }
 function addFreqToPlaylist(hz,d,nom,slot,action){
   if(!slot)slot="matin";
