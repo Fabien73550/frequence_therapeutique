@@ -132,6 +132,13 @@ select option{background:var(--s2)}
 .playlist-item:active{cursor:grabbing;background:var(--s3);border-radius:8px;transform:scale(1.02);box-shadow:0 4px 16px rgba(0,0,0,0.4);z-index:10}
 .playlist-item.dragging{opacity:0.4;transform:scale(0.97)}
 .playlist-item.drag-over{border-top:2px solid var(--green);margin-top:-1px}
+.add-btn{padding:4px 8px;border-radius:6px;border:none;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.add-btn.matin{background:var(--amber);color:#000}
+.add-btn.matin:hover{opacity:0.8;transform:scale(1.05)}
+.add-btn.matin:active{transform:scale(0.95)}
+.add-btn.soir{background:var(--green);color:#000}
+.add-btn.soir:hover{opacity:0.8;transform:scale(1.05)}
+.add-btn.soir:active{transform:scale(0.95)}
 </style>
 </head>
 <body>
@@ -1838,20 +1845,21 @@ function buildMineraux(){
 
   // Combos définis
   var COMBOS=[
-    {nom:"🔋 Boost Énergie Matin",desc:"B1 + B2 + B3 + B6 + Magnésium + CoQ10",noms:["Vitamine B1 (thiamine)","Vitamine B2 (riboflavine)","Vitamine B3 (niacine)","Vitamine B6 (pyridoxine)","Magnésium","CoQ10"]},
     {nom:"😴 Anti-Fatigue Chronique",desc:"B12 + B9 + Fer + Zinc + D3",noms:["Vitamine B12 (cobalamine)","Vitamine B9 (folique)","Fer","Zinc","Vitamine D3 (cholécalciférol)"]},
+    {nom:"😌 Anti-Stress",desc:"Magnésium + B5 + Glycine + Tryptophane",noms:["Magnésium","Vitamine B5 (pantothénique)","Glycine","Tryptophane"]},
+    {nom:"🧬 Antioxydant Puissant",desc:"ALA + Glutathion + Vit C + E + Resvératrol + Quercétine",noms:["Ac. alpha-lipoïque","Glutathion","Vitamine C","Vitamine E (tocophérol)","Resvératrol","Quercétine"]},
+    {nom:"🔗 Articulations",desc:"Ac. hyaluronique + Proline + Lysine + Vit C + Zinc",noms:["Ac. hyaluronique","Proline","Lysine","Vitamine C","Zinc"]},
+    {nom:"🔋 Boost Énergie Matin",desc:"B1 + B2 + B3 + B6 + Magnésium + CoQ10",noms:["Vitamine B1 (thiamine)","Vitamine B2 (riboflavine)","Vitamine B3 (niacine)","Vitamine B6 (pyridoxine)","Magnésium","CoQ10"]},
+    {nom:"❤️ Cardio & Circulation",desc:"Magnésium + K2 + CoQ10 + B9 + B12 + Taurine",noms:["Magnésium","Vitamine K2 (ménaquinone)","CoQ10","Vitamine B9 (folique)","Vitamine B12 (cobalamine)","Taurine"]},
+    {nom:"🐟 Cerveau & Oméga-3",desc:"EPA + DHA + B12 + B9 + Magnésium",noms:["EPA (Oméga-3)","DHA (Oméga-3)","Vitamine B12 (cobalamine)","Vitamine B9 (folique)","Magnésium"]},
+    {nom:"🧬 Cure Vitalité Cellulaire",desc:"A + B1 + B5 + B7 + E + Magnésium + Sélénium + Zinc",noms:["Vitamine A (rétinol)","Vitamine B1 (thiamine)","Vitamine B5 (pantothénique)","Vitamine B7 (biotine)","Vitamine E (tocophérol)","Magnésium","Sélénium","Zinc"]},
+    {nom:"🌿 Détox Foie",desc:"Glutathion + Méthionine + Cystéine + NAC + Sélénium",noms:["Glutathion","Méthionine","Cystéine","NAC (N-acétyl cystéine)","Sélénium"]},
     {nom:"🛡️ Immunité Défenses",desc:"Vitamine C + D3 + Zinc + Sélénium + K2",noms:["Vitamine C","Vitamine D3 (cholécalciférol)","Zinc","Sélénium","Vitamine K2 (ménaquinone)"]},
     {nom:"🧠 Mémoire & Focus",desc:"B6 + B9 + B12 + Magnésium + Zinc",noms:["Vitamine B6 (pyridoxine)","Vitamine B9 (folique)","Vitamine B12 (cobalamine)","Magnésium","Zinc"]},
-    {nom:"😌 Anti-Stress",desc:"Magnésium + B5 + Glycine + Tryptophane",noms:["Magnésium","Vitamine B5 (pantothénique)","Glycine","Tryptophane"]},
-    {nom:"💪 Récupération Musculaire",desc:"Leucine + Isoleucine + Valine + Magnésium + B6",noms:["Leucine","Isoleucine","Valine","Magnésium","Vitamine B6 (pyridoxine)"]},
     {nom:"🦴 Os Solides",desc:"D3 + K2 + Calcium + Magnésium + B9",noms:["Vitamine D3 (cholécalciférol)","Vitamine K2 (ménaquinone)","Calcium","Magnésium","Vitamine B9 (folique)"]},
-    {nom:"🔗 Articulations",desc:"Ac. hyaluronique + Proline + Lysine + Vit C + Zinc",noms:["Ac. hyaluronique","Proline","Lysine","Vitamine C","Zinc"]},
-    {nom:"❤️ Cardio & Circulation",desc:"Magnésium + K2 + CoQ10 + B9 + B12 + Taurine",noms:["Magnésium","Vitamine K2 (ménaquinone)","CoQ10","Vitamine B9 (folique)","Vitamine B12 (cobalamine)","Taurine"]},
-    {nom:"🌿 Détox Foie",desc:"Glutathion + Méthionine + Cystéine + NAC + Sélénium",noms:["Glutathion","Méthionine","Cystéine","NAC (N-acétyl cystéine)","Sélénium"]},
+    {nom:"💪 Récupération Musculaire",desc:"Leucine + Isoleucine + Valine + Magnésium + B6",noms:["Leucine","Isoleucine","Valine","Magnésium","Vitamine B6 (pyridoxine)"]},
     {nom:"🌙 Sommeil Profond",desc:"Glycine + Magnésium + B6 + Tryptophane + Mélatonine",noms:["Glycine","Magnésium","Vitamine B6 (pyridoxine)","Tryptophane","Mélatonine"]},
-    {nom:"⚖️ Thyroïde & Hormones",desc:"Iode + Sélénium + Zinc + Tyrosine",noms:["Iode","Sélénium","Zinc","Tyrosine"]},
-    {nom:"🧬 Antioxydant Puissant",desc:"ALA + Glutathion + Vit C + E + Resvératrol + Quercétine",noms:["Ac. alpha-lipoïque","Glutathion","Vitamine C","Vitamine E (tocophérol)","Resvératrol","Quercétine"]},
-    {nom:"🐟 Cerveau & Oméga-3",desc:"EPA + DHA + B12 + B9 + Magnésium",noms:["EPA (Oméga-3)","DHA (Oméga-3)","Vitamine B12 (cobalamine)","Vitamine B9 (folique)","Magnésium"]}
+    {nom:"⚖️ Thyroïde & Hormones",desc:"Iode + Sélénium + Zinc + Tyrosine",noms:["Iode","Sélénium","Zinc","Tyrosine"]}
   ];
 
   function renderMinItem(m, container){
@@ -1909,9 +1917,20 @@ function buildMineraux(){
         COMBOS.forEach(function(combo){
           var card=document.createElement("div");
           card.style.cssText="padding:12px 14px;border-bottom:1px solid var(--border)";
+          var titleRow=document.createElement("div");
+          titleRow.style.cssText="display:flex;align-items:center;gap:6px;margin-bottom:4px";
           var title=document.createElement("div");
-          title.style.cssText="font-weight:700;color:var(--text);margin-bottom:4px";
+          title.style.cssText="font-weight:700;color:var(--text);flex:1";
           title.textContent=combo.nom;
+          var btnM=document.createElement("button");
+          btnM.style.cssText="padding:4px 8px;border-radius:6px;border:none;background:var(--amber);color:#000;font-size:10px;font-weight:600;cursor:pointer";
+          btnM.textContent="+M";
+          btnM.onclick=function(){combo.noms.forEach(function(nom){var m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"matin");});};
+          var btnS=document.createElement("button");
+          btnS.style.cssText="padding:4px 8px;border-radius:6px;border:none;background:var(--green);color:#000;font-size:10px;font-weight:600;cursor:pointer";
+          btnS.textContent="+S";
+          btnS.onclick=function(){combo.noms.forEach(function(nom){var m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"soir");});};
+          titleRow.appendChild(title);titleRow.appendChild(btnM);titleRow.appendChild(btnS);
           var desc=document.createElement("div");
           desc.style.cssText="font-size:12px;color:var(--muted);margin-bottom:8px";
           desc.textContent=combo.desc;
@@ -1924,16 +1943,9 @@ function buildMineraux(){
             btn.style.cssText="padding:4px 8px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:11px;cursor:pointer";
             btn.textContent=nom.split(" (")[0]+" — "+m.hz+" Hz";
             btn.onclick=function(){loadFreq(m.hz,m.duree,m.nom);openPlayer();};
-            var btnM=document.createElement("button");
-            btnM.style.cssText="padding:3px 6px;border-radius:6px;border:none;background:var(--amber);color:#000;font-size:10px;cursor:pointer;margin-left:3px";
-            btnM.textContent="+M";
-            btnM.onclick=function(){addToPlaylist(m.hz,m.duree,m.nom,"matin");};
-            var wrap=document.createElement("div");
-            wrap.style.cssText="display:flex;align-items:center;gap:2px";
-            wrap.appendChild(btn);wrap.appendChild(btnM);
-            freqRow.appendChild(wrap);
+            freqRow.appendChild(btn);
           });
-          card.appendChild(title);card.appendChild(desc);card.appendChild(freqRow);
+          card.appendChild(titleRow);card.appendChild(desc);card.appendChild(freqRow);
           body.appendChild(card);
         });
       });
