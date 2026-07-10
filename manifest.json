@@ -8,18 +8,31 @@
   "background_color": "#080b12",
   "theme_color": "#080b12",
   "lang": "fr",
+  "categories": ["health", "lifestyle", "music"],
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23080b12' rx='32'/%3E%3Ccircle cx='96' cy='96' r='50' fill='none' stroke='%2300ffba' stroke-width='6'/%3E%3Ccircle cx='96' cy='96' r='30' fill='none' stroke='%233db5ff' stroke-width='4'/%3E%3C/svg%3E",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23080b12' rx='80'/%3E%3Ccircle cx='256' cy='256' r='130' fill='none' stroke='%2300ffba' stroke-width='16'/%3E%3Ccircle cx='256' cy='256' r='80' fill='none' stroke='%233db5ff' stroke-width='10'/%3E%3C/svg%3E",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

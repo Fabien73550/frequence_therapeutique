@@ -258,7 +258,9 @@ select option{background:var(--s2)}
 .icon-svg{display:inline-block;width:20px;height:20px;stroke:currentColor;
   fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
   vertical-align:middle;flex-shrink:0}
-.nav-icon-svg{width:22px;height:22px;margin-bottom:2px}
+.nav-icon-svg{width:22px;height:22px;margin-bottom:2px;
+  stroke:currentColor;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
 
 /* ============================================================
    BARRE DE NAVIGATION — 5 onglets + bouton Plus

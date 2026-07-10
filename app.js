@@ -2135,27 +2135,80 @@ document.addEventListener('click', function(e) {
 // VOLUME MASTER — slider global
 // ============================================================
 let masterVolume = 0.25; // 0 à 1
+
+// Synchronise tous les sliders de volume (player + panneau flottant)
+function syncVolumeUI() {
+  const pct = Math.round(masterVolume * 100);
+  const sliders = [
+    {slider: document.getElementById('volume-slider'),     label: document.getElementById('volume-value')},
+    {slider: document.getElementById('volume-slider-bar'), label: document.getElementById('volume-value-bar')}
+  ];
+  sliders.forEach(function(s) {
+    if (s.slider && s.slider.value != pct) s.slider.value = pct;
+    if (s.label) s.label.textContent = pct + '%';
+  });
+  // Mettre à jour l'icône du bouton volume (mute si 0%)
+  const volBtn = document.getElementById('volume-btn');
+  if (volBtn) {
+    const svg = volBtn.querySelector('svg');
+    if (svg) {
+      if (masterVolume === 0) {
+        // Icône muted
+        svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+      } else {
+        // Icône normale avec ondes
+        svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+      }
+    }
+  }
+}
+
+// Ouvrir/fermer le panneau volume flottant
+function toggleVolumePanel(e) {
+  if (e) e.stopPropagation();
+  const panel = document.getElementById('volume-panel');
+  if (panel) {
+    const isOpen = panel.style.display !== 'none';
+    panel.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) syncVolumeUI();
+  }
+}
+
+// Fermer le panneau si on clique ailleurs
+document.addEventListener('click', function(e) {
+  const panel = document.getElementById('volume-panel');
+  const volBtn = document.getElementById('volume-btn');
+  if (panel && panel.style.display !== 'none' &&
+      !panel.contains(e.target) &&
+      !(volBtn && volBtn.contains(e.target))) {
+    panel.style.display = 'none';
+  }
+});
+
 function setupVolumeSlider() {
-  const slider = document.getElementById('volume-slider');
-  const valueLabel = document.getElementById('volume-value');
-  if (!slider) return;
   // Charger la valeur sauvegardée
   try {
     const saved = localStorage.getItem('ft_volume');
     if (saved !== null) {
       masterVolume = parseFloat(saved);
-      slider.value = Math.round(masterVolume * 100);
     }
   } catch(e) {}
-  if (valueLabel) valueLabel.textContent = Math.round(masterVolume * 100) + '%';
-  slider.addEventListener('input', function() {
-    masterVolume = parseInt(slider.value) / 100;
-    if (valueLabel) valueLabel.textContent = slider.value + '%';
-    // Appliquer au gainNode actuel si on est en train de jouer
-    if (gainNode && audioCtx) {
-      try { gainNode.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.05); } catch(e) {}
-    }
-    try { localStorage.setItem('ft_volume', masterVolume.toString()); } catch(e) {}
+  syncVolumeUI();
+
+  // Attacher les listeners sur les deux sliders
+  const sliderIds = ['volume-slider', 'volume-slider-bar'];
+  sliderIds.forEach(function(id) {
+    const slider = document.getElementById(id);
+    if (!slider) return;
+    slider.addEventListener('input', function() {
+      masterVolume = parseInt(slider.value) / 100;
+      // Appliquer au gainNode actuel si on est en train de jouer
+      if (gainNode && audioCtx) {
+        try { gainNode.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.05); } catch(e) {}
+      }
+      try { localStorage.setItem('ft_volume', masterVolume.toString()); } catch(e) {}
+      syncVolumeUI();
+    });
   });
 }
 
