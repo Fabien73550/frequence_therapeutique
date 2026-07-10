@@ -1,22 +1,25 @@
 {
-  "name": "Fréquences Thérapeutiques",
-  "short_name": "Fréquences",
-  "description": "Générateur de fréquences thérapeutiques Marc-Alain  Lavoie",
-  "start_url": "/",
+  "name": "Fréquences Thérapeutiques Binaural X",
+  "short_name": "Fréquences ThQV",
+  "description": "Générateur de fréquences thérapeutiques binaurales — Marc-Alain Lavoie · Naturasounds",
+  "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#080b12",
   "theme_color": "#080b12",
-  "orientation": "portrait",
+  "lang": "fr",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23080b12' rx='32'/%3E%3Ccircle cx='96' cy='96' r='50' fill='none' stroke='%2300ffba' stroke-width='6'/%3E%3Ccircle cx='96' cy='96' r='30' fill='none' stroke='%233db5ff' stroke-width='4'/%3E%3C/svg%3E",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23080b12' rx='80'/%3E%3Ccircle cx='256' cy='256' r='130' fill='none' stroke='%2300ffba' stroke-width='16'/%3E%3Ccircle cx='256' cy='256' r='80' fill='none' stroke='%233db5ff' stroke-width='10'/%3E%3C/svg%3E",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
- }
+}
