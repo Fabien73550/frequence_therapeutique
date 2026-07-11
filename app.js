@@ -2045,28 +2045,103 @@ function closePlayer(){
 function updatePlayerDisplay(){
   let pgPlayer=document.getElementById('page-player');
   if(!pgPlayer||pgPlayer.style.display==='none')return;
-  // Proto name
-  document.getElementById('player-proto-name').textContent=seqProtoName||currentLabel||'—';
-  // Seq label (S1/S2)
-  let seqLbl='';
-  if(seqType==='proto_s1')seqLbl='S1';
-  else if(seqType==='proto_s2')seqLbl='S2';
-  else if(seqType==='playlist')seqLbl=seqProtoName;
-  else seqLbl=seqType||'';
-  document.getElementById('player-seq-label').textContent=seqLbl;
-  // Current freq name + action
-  if(seqQueue&&seqQueue.length>0&&seqIndex<seqQueue.length){
-    let cur=seqQueue[seqIndex];
-    document.getElementById('player-freq-name').textContent=(cur.n||cur.nom||'')+(cur.hz?' — '+cur.hz+' Hz':'');
-    document.getElementById('player-freq-action').textContent=cur.action||'';
-    let pos=(seqIndex+1)+' / '+seqQueue.length;
-    document.getElementById('player-progress-label').textContent=pos;
-    let pct=((seqIndex)/seqQueue.length)*100;
-    document.getElementById('player-progress-bar').style.width=pct+'%';
+
+  // ===== Déterminer le type de séquence et le badge =====
+  let badgeText = 'SESSION';
+  let badgeColor = 'green';  // green | amber | purple | blue
+  let seqInfo = '';
+  let protoName = seqProtoName || currentLabel || '—';
+
+  if (seqType === 'playlist') {
+    if (seqProtoName === 'Playlist Matin') {
+      badgeText = 'PLAYLIST MATIN';
+      badgeColor = 'amber';
+    } else if (seqProtoName === 'Playlist Soir') {
+      badgeText = 'PLAYLIST SOIR';
+      badgeColor = 'purple';
+    } else {
+      badgeText = 'PLAYLIST';
+      badgeColor = 'green';
+    }
+  } else if (seqType === 's1') {
+    badgeText = 'PROTOCOLE · S1 NETTOYAGE';
+    badgeColor = 'amber';
+  } else if (seqType === 's2') {
+    badgeText = 'PROTOCOLE · S2 RÉPARATION';
+    badgeColor = 'green';
+  } else if (seqType === 'chakras') {
+    badgeText = 'VOYAGE DES CHAKRAS';
+    badgeColor = 'purple';
+  } else if (seqType === 'eveil') {
+    badgeText = 'SÉQUENCE ÉVEIL';
+    badgeColor = 'amber';
+  } else if (seqType === 'eveil_chakras') {
+    badgeText = 'VOYAGE ÉVEIL · GAMMA 40';
+    badgeColor = 'amber';
+  } else if (seqType === 'libre' || !seqType) {
+    badgeText = 'FRÉQUENCE LIBRE';
+    badgeColor = 'green';
+  }
+
+  // Position dans la séquence
+  if (seqQueue && seqQueue.length > 0) {
+    seqInfo = 'Fréquence ' + (seqIndex + 1) + ' / ' + seqQueue.length;
+  }
+
+  // ===== Mettre à jour le badge =====
+  let badgeEl = document.getElementById('player-seq-badge');
+  if (badgeEl) {
+    badgeEl.textContent = badgeText;
+    let colorMap = {
+      green:   {bg: 'var(--green-bg)',   color: 'var(--green)',   border: 'var(--green-border)'},
+      amber:   {bg: 'var(--amber-bg)',   color: 'var(--amber)',   border: 'var(--amber-border)'},
+      purple:  {bg: 'var(--purple-bg)',  color: 'var(--purple)',  border: 'var(--purple-border)'},
+      blue:    {bg: 'var(--blue-bg)',    color: 'var(--blue)',    border: 'var(--blue-border)'}
+    };
+    let c = colorMap[badgeColor] || colorMap.green;
+    badgeEl.style.background = c.bg;
+    badgeEl.style.color = c.color;
+    badgeEl.style.borderColor = c.border;
+  }
+
+  // ===== Titre = nom de la séquence =====
+  document.getElementById('player-proto-name').textContent = protoName;
+
+  // ===== Sous-titre = position =====
+  let seqInfoEl = document.getElementById('player-seq-info');
+  if (seqInfoEl) seqInfoEl.textContent = seqInfo;
+
+  // ===== Label compact en haut (S1/S2/etc.) =====
+  let seqLbl = '';
+  if (seqType === 's1') seqLbl = 'S1';
+  else if (seqType === 's2') seqLbl = 'S2';
+  else if (seqType === 'playlist') seqLbl = seqProtoName;
+  else seqLbl = seqType || '';
+  document.getElementById('player-seq-label').textContent = seqLbl;
+
+  // ===== Fréquence en cours (nom + détails) =====
+  if (seqQueue && seqQueue.length > 0 && seqIndex < seqQueue.length) {
+    let cur = seqQueue[seqIndex];
+    // Le nom de la fréquence en cours (le protocole/symptôme/minéral spécifique)
+    document.getElementById('player-freq-name').textContent = cur.n || cur.nom || '—';
+    // Détails : Hz + durée + action
+    let details = '';
+    if (cur.hz) details += cur.hz + ' Hz';
+    if (cur.d) details += (details ? ' · ' : '') + cur.d + ' min';
+    if (cur.action) details += (details ? ' · ' : '') + cur.action;
+    document.getElementById('player-freq-action').textContent = details || '—';
+    let pos = (seqIndex + 1) + ' / ' + seqQueue.length;
+    document.getElementById('player-progress-label').textContent = pos;
+    let pct = ((seqIndex) / seqQueue.length) * 100;
+    document.getElementById('player-progress-bar').style.width = pct + '%';
   } else {
-    document.getElementById('player-freq-name').textContent=currentLabel||'—';
-    document.getElementById('player-freq-action').textContent='';
-    document.getElementById('player-progress-label').textContent='';
+    // Mode fréquence libre (pas de séquence)
+    document.getElementById('player-freq-name').textContent = currentLabel || '—';
+    let details = '';
+    if (baseHz) details += baseHz + ' Hz';
+    if (timerMin) details += (details ? ' · ' : '') + timerMin + ' min';
+    document.getElementById('player-freq-action').textContent = details || '—';
+    document.getElementById('player-progress-label').textContent = '';
   }
   // Timer + analog clock
   let s=(playing||paused)?secondsLeft:timerMin*60;
@@ -2214,7 +2289,9 @@ function setupVolumeSlider() {
   sliderIds.forEach(function(id) {
     const slider = document.getElementById(id);
     if (!slider) return;
-    slider.addEventListener('input', function() {
+
+    // Handler commun
+    function onVolumeChange() {
       masterVolume = parseInt(slider.value) / 100;
       // Appliquer au gainNode actuel si on est en train de jouer
       if (gainNode && audioCtx) {
@@ -2222,8 +2299,29 @@ function setupVolumeSlider() {
       }
       try { localStorage.setItem('ft_volume', masterVolume.toString()); } catch(e) {}
       syncVolumeUI();
-    });
+    }
+
+    // Écouter plusieurs événements pour compatibilité maximale
+    slider.addEventListener('input', onVolumeChange);
+    slider.addEventListener('change', onVolumeChange);
+
+    // Empêcher le click-outside handler de fermer le panneau pendant l'interaction
+    slider.addEventListener('pointerdown', function(e) { e.stopPropagation(); });
+    slider.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+    slider.addEventListener('touchstart', function(e) { e.stopPropagation(); }, {passive: true});
   });
+}
+
+// Boutons +/- pour ajuster le volume (alternative au slider pour navigateurs difficiles)
+function adjustVolume(delta) {
+  let pct = Math.round(masterVolume * 100) + delta;
+  pct = Math.max(0, Math.min(100, pct));
+  masterVolume = pct / 100;
+  if (gainNode && audioCtx) {
+    try { gainNode.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.05); } catch(e) {}
+  }
+  try { localStorage.setItem('ft_volume', masterVolume.toString()); } catch(e) {}
+  syncVolumeUI();
 }
 
 // ============================================================
