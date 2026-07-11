@@ -42,7 +42,10 @@
 </head>
 <body>
 
-<!-- Bouton toggle thème clair/sombre -->
+<!-- Boutons fixes en haut à droite : Volume + Thème -->
+<button class="header-btn header-btn-volume" onclick="toggleVolumePanel(event)" id="header-volume-btn" title="Volume" aria-label="Réglage du volume">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+</button>
 <button class="theme-toggle" onclick="toggleTheme()" title="Changer de thème" aria-label="Basculer thème clair/sombre">
   <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>

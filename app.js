@@ -2145,20 +2145,32 @@ function syncVolumeUI() {
   ];
   sliders.forEach(function(s) {
     if (s.slider && s.slider.value != pct) s.slider.value = pct;
+    if (s.slider) s.slider.style.setProperty('--vol-pct', pct + '%');  // gradient track
     if (s.label) s.label.textContent = pct + '%';
   });
-  // Mettre à jour l'icône du bouton volume (mute si 0%)
+  // Mettre à jour l'icône du bouton volume dans la play-bar (mute si 0%)
   const volBtn = document.getElementById('volume-btn');
   if (volBtn) {
     const svg = volBtn.querySelector('svg');
     if (svg) {
       if (masterVolume === 0) {
-        // Icône muted
         svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
       } else {
-        // Icône normale avec ondes
         svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>';
       }
+    }
+  }
+  // Mettre à jour aussi le bouton header-volume (en haut à droite)
+  const headerVolBtn = document.getElementById('header-volume-btn');
+  if (headerVolBtn) {
+    if (masterVolume === 0) {
+      headerVolBtn.classList.add('muted');
+      const svg = headerVolBtn.querySelector('svg');
+      if (svg) svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+    } else {
+      headerVolBtn.classList.remove('muted');
+      const svg = headerVolBtn.querySelector('svg');
+      if (svg) svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>';
     }
   }
 }
@@ -2178,9 +2190,11 @@ function toggleVolumePanel(e) {
 document.addEventListener('click', function(e) {
   const panel = document.getElementById('volume-panel');
   const volBtn = document.getElementById('volume-btn');
+  const headerVolBtn = document.getElementById('header-volume-btn');
   if (panel && panel.style.display !== 'none' &&
       !panel.contains(e.target) &&
-      !(volBtn && volBtn.contains(e.target))) {
+      !(volBtn && volBtn.contains(e.target)) &&
+      !(headerVolBtn && headerVolBtn.contains(e.target))) {
     panel.style.display = 'none';
   }
 });
