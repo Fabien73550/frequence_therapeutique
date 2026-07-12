@@ -342,19 +342,19 @@ function onCustomInput(){
 let playlists={matin:[],soir:[]};
 function savePlaylist(slot){try{localStorage.setItem("ft_playlist_"+slot,JSON.stringify(playlists[slot]));}catch(e){}}
 function loadPlaylist(){try{["matin","soir"].forEach(function(s){let d=localStorage.getItem("ft_playlist_"+s);if(d)playlists[s]=JSON.parse(d);});}catch(e){}}
-function addToPlaylist(hzOrSlot, d, nom, slot){
-  // Deux modes : addToPlaylist(slot) depuis Binaural, ou addToPlaylist(hz,d,nom,slot) depuis Minéraux etc.
+function addToPlaylist(hzOrSlot, d, nom, slot, source){
+  // Deux modes : addToPlaylist(slot) depuis Binaural, ou addToPlaylist(hz,d,nom,slot,source) depuis Minéraux etc.
   if(typeof hzOrSlot === "string"){
     // Mode Binaural : addToPlaylist("matin")
     let s=hzOrSlot;
     let hz=parseInt(document.getElementById("bin-hz-input").value)||baseHz;
     let dur=Math.round(Math.max(10,Math.min(45,6000/hz)));
-    playlists[s].push({hz:hz,d:dur,nom:hz+" Hz"});
+    playlists[s].push({hz:hz,d:dur,nom:hz+" Hz",source:""});
     savePlaylist(s);renderPlaylist(s);
   } else {
-    // Mode Minéraux/Protocoles : addToPlaylist(hz, d, nom, slot)
+    // Mode Minéraux/Protocoles : addToPlaylist(hz, d, nom, slot, source)
     let s=slot||"matin";
-    playlists[s].push({hz:hzOrSlot,d:d||10,nom:nom||hzOrSlot+" Hz"});
+    playlists[s].push({hz:hzOrSlot,d:d||10,nom:nom||hzOrSlot+" Hz",source:source||""});
     savePlaylist(s);renderPlaylist(s);
     showToast((nom||hzOrSlot+" Hz")+" → "+(s==="matin"?"☀️ Matin":"🌙 Soir"));
   }
@@ -371,11 +371,11 @@ function showToast(msg){
   t.textContent=msg;t.style.opacity="1";
   clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity="0";},2000);
 }
-function addFreqToPlaylist(hz,d,nom,slot,action){
+function addFreqToPlaylist(hz,d,nom,slot,action,source){
   if(!slot)slot="matin";
-  playlists[slot].push({hz:hz,d:d,nom:nom,action:action||""});
+  playlists[slot].push({hz:hz,d:d,nom:nom,action:action||"",source:source||""});
   savePlaylist(slot);renderPlaylist(slot);
-  alert(nom+" ajouté à "+(slot==="matin"?"Matin":"Soir")+" ✓");
+  showToast(nom+" → "+(slot==="matin"?"☀️ Matin":"🌙 Soir"));
 }
 function renderPlaylist(slot){
   let el=document.getElementById("playlist-items-"+slot);
@@ -397,8 +397,9 @@ function renderPlaylist(slot){
     row.addEventListener("dragover",function(e){e.preventDefault();this.classList.add("drag-over");});
     row.addEventListener("dragleave",function(){this.classList.remove("drag-over");});
     row.addEventListener("drop",function(e){e.preventDefault();this.classList.remove("drag-over");let data=e.dataTransfer.getData("text/plain").split("|");let fromSlot=data[0],fromIdx=parseInt(data[1]);let toIdx=parseInt(this.dataset.index);if(fromSlot===slot&&fromIdx!==toIdx){let item=playlists[slot].splice(fromIdx,1)[0];playlists[slot].splice(toIdx,0,item);savePlaylist(slot);renderPlaylist(slot);}});
-    let actionStr=item.action?" <span style='font-size:13px;color:var(--muted)'>"+item.action+"</span>":"";
-    row.innerHTML="<div style='flex:1'><span style='font-family:JetBrains Mono,monospace;font-size:14px;font-weight:500;color:var(--blue)'>"+item.nom+"</span>"+actionStr+"</div><span style='font-size:11px;color:var(--muted);margin:0 8px'>"+item.d+"m</span><button onclick='removeFromPlaylist(\""+slot+"\","+i+")' style='font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer'>✕</button>";
+    let sourceStr=item.source?"<div style='font-size:11px;color:var(--amber);font-weight:600;margin-bottom:1px'>"+item.source+"</div>":"";
+    let freqStr="<div><span style='font-family:JetBrains Mono,monospace;font-size:13px;font-weight:500;color:var(--blue)'>"+item.nom+"</span></div>";
+    row.innerHTML="<div style='flex:1'>"+sourceStr+freqStr+"</div><span style='font-size:11px;color:var(--muted);margin:0 8px'>"+item.d+"m</span><button onclick='removeFromPlaylist(\""+slot+"\","+i+")' style='font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer'>✕</button>";
     el.appendChild(row);
   });
 }
@@ -1234,11 +1235,11 @@ function buildMineraux(){
           let btnM=document.createElement("button");
           btnM.style.cssText="padding:4px 8px;border-radius:6px;border:none;background:var(--amber);color:#000;font-size:10px;font-weight:600;cursor:pointer";
           btnM.textContent="+M";
-          btnM.onclick=function(){combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"matin");});};
+          btnM.onclick=function(){let src=combo.nom;combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"matin",src);});};
           let btnS=document.createElement("button");
           btnS.style.cssText="padding:4px 8px;border-radius:6px;border:none;background:var(--green);color:#000;font-size:10px;font-weight:600;cursor:pointer";
           btnS.textContent="+S";
-          btnS.onclick=function(){combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"soir");});};
+          btnS.onclick=function(){let src=combo.nom;combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"soir",src);});};
           titleRow.appendChild(title);titleRow.appendChild(btnM);titleRow.appendChild(btnS);
           let desc=document.createElement("div");
           desc.style.cssText="font-size:12px;color:var(--muted);margin-bottom:8px";
@@ -1375,7 +1376,7 @@ function buildProtocoles(){
     bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSequence("+pi+",\"s1\")'>Lancer S1</button>";
     bodyHTML+="</div><div class='proto-freq-row'>";
     p.s1.forEach(function(f){
-      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s1' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s1' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\",\"matin\",\"\",\""+p.nom+"\")'>+ PL</button></div>";
     });
     bodyHTML+="</div></div>";
     bodyHTML+="<div class='proto-section'>";
@@ -1384,7 +1385,7 @@ function buildProtocoles(){
     bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSequence("+pi+",\"s2\")'>Lancer S2</button>";
     bodyHTML+="</div><div class='proto-freq-row'>";
     p.s2.forEach(function(f){
-      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\")'>+ PL</button></div>";
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\",\"matin\",\"\",\""+p.nom+"\")'>+ PL</button></div>";
     });
     bodyHTML+="</div></div>";
     card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title' style='color:var(--text)'>"+p.nom+"</span><span class='proto-badge'>S1:"+durS1+"m S2:"+durS2+"m</span></div><div class='proto-body'>"+bodyHTML+"</div>";
@@ -2123,7 +2124,15 @@ function updatePlayerDisplay(){
   if (seqQueue && seqQueue.length > 0 && seqIndex < seqQueue.length) {
     let cur = seqQueue[seqIndex];
     // Le nom de la fréquence en cours (le protocole/symptôme/minéral spécifique)
-    document.getElementById('player-freq-name').textContent = cur.n || cur.nom || '—';
+    // Si la fréquence a une source (combo/protocole), l'afficher comme titre
+    let curNom = cur.n || cur.nom || '—';
+    let curSource = cur.source || '';
+    if(curSource){
+      document.getElementById('player-proto-name').textContent = curSource;
+      document.getElementById('player-freq-name').textContent = curNom;
+    } else {
+      document.getElementById('player-freq-name').textContent = curNom;
+    }
     // Détails : Hz + durée + action
     let details = '';
     if (cur.hz) details += cur.hz + ' Hz';
