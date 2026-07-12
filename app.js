@@ -386,6 +386,7 @@ function renderPlaylist(slot){
     el.innerHTML="<div style='font-size:12px;color:var(--dim);text-align:center;padding:12px 0'>Vide — ajoute des fréquences depuis Minéraux</div>";
     return;
   }
+  let lastSource="";
   playlists[slot].forEach(function(item,i){
     let row=document.createElement("div");
     row.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)";
@@ -397,9 +398,19 @@ function renderPlaylist(slot){
     row.addEventListener("dragover",function(e){e.preventDefault();this.classList.add("drag-over");});
     row.addEventListener("dragleave",function(){this.classList.remove("drag-over");});
     row.addEventListener("drop",function(e){e.preventDefault();this.classList.remove("drag-over");let data=e.dataTransfer.getData("text/plain").split("|");let fromSlot=data[0],fromIdx=parseInt(data[1]);let toIdx=parseInt(this.dataset.index);if(fromSlot===slot&&fromIdx!==toIdx){let item=playlists[slot].splice(fromIdx,1)[0];playlists[slot].splice(toIdx,0,item);savePlaylist(slot);renderPlaylist(slot);}});
-    let sourceStr=item.source?"<div style='font-size:11px;color:var(--amber);font-weight:600;margin-bottom:1px'>"+item.source+"</div>":"";
-    let freqStr="<div><span style='font-family:JetBrains Mono,monospace;font-size:13px;font-weight:500;color:var(--blue)'>"+item.nom+"</span></div>";
-    row.innerHTML="<div style='flex:1'>"+sourceStr+freqStr+"</div><span style='font-size:11px;color:var(--muted);margin:0 8px'>"+item.d+"m</span><button onclick='removeFromPlaylist(\""+slot+"\","+i+")' style='font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer'>✕</button>";
+    // Afficher titre de groupe seulement quand la source change
+    let itemSource=item.source||"";
+    if(itemSource && itemSource!==lastSource){
+      let groupHeader=document.createElement("div");
+      groupHeader.style.cssText="font-size:11px;color:var(--amber);font-weight:700;padding:8px 0 2px 0;letter-spacing:0.03em";
+      groupHeader.textContent="⬡ "+itemSource;
+      el.appendChild(groupHeader);
+      lastSource=itemSource;
+    } else if(!itemSource){
+      lastSource="";
+    }
+    let freqStr="<div><span style=\'font-family:JetBrains Mono,monospace;font-size:13px;font-weight:500;color:var(--blue)\'>"+item.nom+"</span></div>";
+    row.innerHTML="<div style=\'flex:1\'>"+freqStr+"</div><span style=\'font-size:11px;color:var(--muted);margin:0 8px\'>"+item.d+"m</span><button onclick=\'removeFromPlaylist(\\\""+slot+"\\\","+i+")\" style=\'font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer\'>✕</button>"
     el.appendChild(row);
   });
 }
@@ -414,7 +425,7 @@ function clearPlaylist(slot){
 function launchPlaylist(slot){
   if(playlists[slot].length===0)return;
   function go(){
-    seqQueue=playlists[slot].map(function(p){return{n:p.nom,hz:p.hz,d:p.d};});
+    seqQueue=playlists[slot].map(function(p){return{n:p.nom,hz:p.hz,d:p.d,source:p.source||''};});
     seqType="playlist";seqProtoName=slot==="matin"?"Playlist Matin":"Playlist Soir";seqIndex=0;
     let binBtn=document.querySelector('.nav-btn');
     if(binBtn)showPage('binaural',binBtn);
@@ -2105,8 +2116,10 @@ function updatePlayerDisplay(){
     badgeEl.style.borderColor = c.border;
   }
 
-  // ===== Titre = nom de la séquence =====
-  document.getElementById('player-proto-name').textContent = protoName;
+  // ===== Titre = source du combo/protocole si disponible, sinon nom séquence =====
+  let cur2 = (seqQueue && seqQueue.length > 0 && seqIndex < seqQueue.length) ? seqQueue[seqIndex] : null;
+  let displayTitle = (cur2 && cur2.source) ? cur2.source : protoName;
+  document.getElementById('player-proto-name').textContent = displayTitle;
 
   // ===== Sous-titre = position =====
   let seqInfoEl = document.getElementById('player-seq-info');
