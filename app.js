@@ -590,6 +590,7 @@ function togglePause(){
       timerInterval=setInterval(function(){
         secondsLeft--;saveSession();updateTimerDisplay();
         if(secondsLeft<=0){
+          playEndChime();
           if(seqQueue&&seqQueue.length>0&&seqIndex<seqQueue.length){
             if(leftOsc){leftOsc.stop();leftOsc=null;}
             if(rightOsc){rightOsc.stop();rightOsc=null;}
@@ -952,9 +953,26 @@ function startAudio(){
   updateMediaSession();
   if(timerMin>0){
     secondsLeft=timerMin*60;updateTimerDisplay();
-    timerInterval=setInterval(function(){secondsLeft--;saveSession();updateTimerDisplay();if(secondsLeft<=0)stopAudio();},1000);
+    timerInterval=setInterval(function(){secondsLeft--;saveSession();updateTimerDisplay();if(secondsLeft<=0){playEndChime();stopAudio();}},1000);
   }
   },80);
+}
+
+function playEndChime(){
+  try{
+    var c=new (window.AudioContext||window.webkitAudioContext)();
+    var t=c.currentTime;
+    [[523.25,0],[659.25,0.35]].forEach(function(n){
+      var o=c.createOscillator(),g=c.createGain();
+      o.type='sine';o.frequency.value=n[0];
+      g.gain.setValueAtTime(0.0001,t+n[1]);
+      g.gain.exponentialRampToValueAtTime(0.18,t+n[1]+0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+n[1]+1.2);
+      o.connect(g);g.connect(c.destination);
+      o.start(t+n[1]);o.stop(t+n[1]+1.3);
+    });
+    setTimeout(function(){try{c.close();}catch(e){}},2200);
+  }catch(e){}
 }
 
 function stopAudio(userStop){
@@ -1572,6 +1590,7 @@ function startAudioSequence(){
   timerInterval=setInterval(function(){
     secondsLeft--;saveSession();updateTimerDisplay();
     if(secondsLeft<=0){
+      playEndChime();
       leftOsc.stop();rightOsc.stop();audioCtx.close();
       leftOsc=null;rightOsc=null;audioCtx=null;
       clearInterval(timerInterval);timerInterval=null;
