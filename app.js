@@ -888,6 +888,8 @@ function loadFreq(hz,d,nom){
   function go(){
     baseHz=hz;timerMin=d;currentLabel=nom+" - "+hz+" Hz";
     setTimerChip(d);updateDisplays();
+    openPlayer();
+    startAudio();
   }
   if(playing){
     showConfirm("Session en cours","Arrêter et charger "+nom+" ?",function(){stopAudio();go();},{confirmLabel:'Charger',icon:'🎵'});
