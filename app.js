@@ -410,7 +410,12 @@ function renderPlaylist(slot){
       lastSource="";
     }
     let freqStr="<div><span style=\'font-family:JetBrains Mono,monospace;font-size:13px;font-weight:500;color:var(--blue)\'>"+item.nom+"</span></div>";
-    row.innerHTML="<div style=\'flex:1\'>"+freqStr+"</div><span style=\'font-size:11px;color:var(--muted);margin:0 8px\'>"+item.d+"m</span><button onclick=\'removeFromPlaylist(\\\""+slot+"\\\","+i+")\" style=\'font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer\'>✕</button>"
+    row.innerHTML="<div style=\'flex:1\'>"+freqStr+"</div><span style=\'font-size:11px;color:var(--muted);margin:0 8px\'>"+item.d+"m</span>";
+    let delBtn=document.createElement("button");
+    delBtn.textContent="✕";
+    delBtn.style.cssText="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer";
+    delBtn.addEventListener("click",function(e){e.stopPropagation();removeFromPlaylist(slot,i);});
+    row.appendChild(delBtn);
     el.appendChild(row);
   });
 }
