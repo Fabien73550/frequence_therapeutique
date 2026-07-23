@@ -2,573 +2,432 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#F2E9DC">
-<title>Remise en Forme - Isotropie</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Fréquences Thérapeutiques Binaural X — Générateur de sons binauraux</title>
+<meta name="application-name" content="Fréquences Thérapeutiques">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Générateur de fréquences thérapeutiques binaurales : minéraux, vitamines, organes, protocoles, symptômes, pathogènes et chakras. Casque recommandé. Par Marc-Alain Lavoie · Naturasounds.">
+<meta name="keywords" content="fréquences thérapeutiques, binaural, sons de guérison, 432 Hz, chakras, solfège, pathogènes, protocoles, Lavoie, Naturasounds">
+<meta name="author" content="Marc-Alain Lavoie · Naturasounds">
+<meta name="theme-color" content="#080b12" id="meta-theme-color">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html, body { height:100%; background:#F2E9DC; font-family:system-ui,-apple-system,sans-serif; overflow-x:hidden; }
-  body { user-select:none; -webkit-user-select:none; }
-  button { font-family:inherit; cursor:pointer; }
-  #app { min-height:100vh; }
-  .count-anim { transition:all 0.25s ease; transform-origin:center; }
-  .count-anim.changed { transform:scale(1.12); }
-</style>
+<!-- Icônes PWA / Apple / favicon -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Fréquences ThQV">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Open Graph pour partage social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fréquences Thérapeutiques Binaural X">
+<meta property="og:description" content="Générateur de sons binauraux thérapeutiques : minéraux, vitamines, protocoles, symptômes, pathogènes, chakras.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fréquences Thérapeutiques Binaural X">
+<meta name="twitter:description" content="Générateur de sons binauraux thérapeutiques.">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>
+  // Appliquer le thème AVANT le rendu pour éviter le flash
+  (function(){
+    try {
+      var t = localStorage.getItem('ft_theme');
+      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+    } catch(e){}
+  })();
+</script>
 </head>
 <body>
-<div id="app"></div>
-<script>
-// ── Donnees exercices (ordre de seance) ────────────────────────────────────────
-var EX_ALL = [
-  { name:"La Chaise", zh:"\u9760\u5899\u9759\u8E72", py:"kao qiang jing dun", em:"\uD83E\uDE91",
-    desc:"Dos plaqué contre un mur, descends jusqu'à ce que tes cuisses soient parallèles au sol, genoux à 90 degrés au-dessus des chevilles. Les bras restent libres, ne pose pas les mains sur les cuisses.",
-    eff:"Travail intense des quadriceps, fessiers et mollets. Reconnu pour faire baisser la tension artérielle et renforcer l'endurance des jambes." },
-  { name:"Isométrie des Mollets", zh:"\u63D0\u8E35", py:"ti zhong", em:"\uD83E\uDDB5",
-    desc:"Debout, pieds joints, monte lentement sur la pointe des pieds le plus haut possible et tiens la position en serrant fort les mollets. Garde le buste droit et l'équilibre.",
-    eff:"Renforce les muscles du mollet (gastrocnémien et soléaire), solidifie les chevilles et les tendons d'Achille, améliore la stabilité et l'équilibre debout." },
-  { name:"Posture du Cavalier", zh:"\u9A6C\u6B65", py:"ma bu", em:"\uD83D\uDC0E",
-    desc:"Écarte les pieds plus large que les épaules, pointes vers l'avant, puis descends comme pour t'asseoir sur un cheval en poussant les genoux vers l'extérieur. Dos droit, bassin engagé.",
-    eff:"Double travail : renforce les cuisses (quadriceps) et les fessiers, tout en étirant les adducteurs (intérieur des cuisses). Excellent pour l'ancrage, la posture et la force des jambes." },
-  { name:"Gainage Table Inversée", zh:"\u53CD\u5411\u5E73\u677F\u652F\u6491", py:"fan xiang ping ban", em:"\uD83D\uDD01",
-    desc:"Assis au sol, jambes tendues, mains posées derrière les hanches. Pousse le bassin vers le haut jusqu'à former une ligne droite des épaules aux chevilles, tête dans l'alignement. Serre fessiers et abdos.",
-    eff:"Renforce toute la chaîne arrière : fessiers, ischio-jambiers, bas du dos, plus les épaules et triceps. Ouvre la poitrine et corrige la posture." },
-  { name:"Suspension Passive", zh:"\u60AC\u5782", py:"xuan chui", em:"\uD83C\uDFCB",
-    desc:"Suspends-toi à une barre, bras tendus, mains écartées largeur d'épaules. Laisse le corps pendre sans remonter les épaules vers les oreilles, garde-les actives et basses.",
-    eff:"Renforce la prise (grip) et les avant-bras, décompresse la colonne vertébrale (baisse la pression sur les disques), améliore la mobilité des épaules et soulage le dos." },
-  { name:"Planche", zh:"\u5E73\u677F\u652F\u6491", py:"ping ban zhi cheng", em:"\uD83D\uDEE1",
-    desc:"En appui sur les avant-bras et la pointe des pieds, corps parfaitement aligné des épaules aux talons. Serre les abdos et les fessiers, ne laisse pas le bassin s'affaisser ni remonter.",
-    eff:"Renforce toute la sangle abdominale profonde, les épaules et le bas du dos. Améliore la posture et la stabilité du tronc." },
-  { name:"Pompe Tenue Basse", zh:"\u4F4E\u4F4D\u4FEF\u5367\u6491", py:"di wei fu wo cheng", em:"\uD83D\uDCAA",
-    desc:"Descends en position basse de pompe, coudes pliés, poitrine proche du sol, et tiens la position sans bouger. Corps gainé et aligné, coudes le long du corps.",
-    eff:"Travail intense des pectoraux, triceps et épaules avant. Développe la force de poussée et la stabilité du haut du corps." },
-  { name:"Gainage Latéral", zh:"\u4FA7\u5E73\u677F\u652F\u6491", py:"ce ping ban zhi cheng", em:"\uD83E\uDD38",
-    desc:"Sur le côté, en appui sur un avant-bras et le tranchant du pied, hanches décollées pour former une ligne droite. Alterne le côté à chaque série : série 1 à droite, série 2 à gauche, série 3 à droite, etc.",
-    eff:"Renforce les obliques, la stabilité latérale du tronc et l'épaule d'appui. Complète la planche frontale pour un gainage équilibré." },
-  { name:"Pont Fessier", zh:"\u81C0\u6865", py:"tun qiao", em:"\uD83C\uDF09",
-    desc:"Allongé sur le dos, genoux pliés, pieds à plat au sol largeur de hanches. Épaules au sol, décolle uniquement le bassin jusqu'à aligner épaules, hanches et genoux (les genoux restent pliés). Tiens en serrant fort les fessiers.",
-    eff:"Renforce les fessiers, les ischio-jambiers et le bas du dos. Isole la chaîne postérieure que les squats ne travaillent qu'indirectement, améliore la posture et protège le dos." },
-  { name:"Extension Dorsale", zh:"\u5C0F\u71D5\u98DE", py:"xiao yan fei", em:"\uD83E\uDDB8",
-    desc:"Allongé sur le ventre, bras tendus vers l'avant. Décolle en même temps la poitrine, les bras et les jambes du sol, comme Superman en vol, et tiens la position en serrant le dos et les fessiers.",
-    eff:"Renforce toute la chaîne postérieure du haut du corps : muscles du dos, épaules arrière et fessiers. Corrige la posture voûtée et équilibre le travail de poussée des pompes." },
-  { name:"Squat Profond", zh:"\u6DF1\u8E72", py:"shen dun", em:"\uD83D\uDC38",
-    desc:"Pieds largeur d'épaules, descends accroupi le plus bas possible, talons au sol, poitrine haute. Coudes à l'intérieur des genoux pour les écarter doucement, mains jointes devant toi.",
-    eff:"Étire chevilles, hanches, adducteurs et bas du dos en une seule posture. Restaure la mobilité d'accroupissement naturelle et complète directement la Chaise et le Cavalier." },
-  { name:"Chien Tête en Bas", zh:"\u4E0B\u72AC\u5F0F", py:"xia quan shi", em:"\uD83D\uDC15",
-    desc:"À quatre pattes, pousse les hanches vers le haut et l'arrière pour former un V inversé. Jambes tendues ou légèrement pliées, talons tirés vers le sol, dos long, tête relâchée entre les bras.",
-    eff:"Étire toute la chaîne postérieure : ischio-jambiers, mollets, épaules et grand dorsal. Décompresse la colonne vertébrale et compense les longues tenues de gainage." },
-  { name:"Fente du Psoas", zh:"\u4F4E\u5F13\u6B65", py:"di gong bu", em:"\uD83E\uDDCE",
-    desc:"Un genou au sol, l'autre pied à plat devant, genou plié à 90 degrés, buste droit. AVANT de bouger : rentre le coccyx sous toi (comme un chien qui met sa queue entre les jambes) en serrant le fessier de la jambe arrière et les abdos. Garde ce verrouillage, puis avance légèrement le corps jusqu'à sentir l'étirement en haut de la cuisse arrière et au pli de la hanche. Séries 1 et 2 à droite, séries 3 et 4 à gauche (ou l'inverse).",
-    eff:"Étire le psoas et le quadriceps, les muscles qui raidissent le plus avec la Chaise, le Cavalier et la position assise. Libère le bassin et soulage les lombaires." },
-  { name:"Pigeon", zh:"\u9E3D\u5B50\u5F0F", py:"ge zi shi", em:"\uD83D\uDD4A",
-    desc:"Depuis quatre pattes, amène le genou droit vers la main droite, tibia posé au sol devant toi, jambe gauche tendue derrière. Bassin bien droit face au sol, descends le buste vers le sol selon ta souplesse. Séries 1 et 2 à droite, séries 3 et 4 à gauche (ou l'inverse).",
-    eff:"Étire en profondeur les fessiers et le piriforme, très sollicités par le Pont Fessier et la Chaise. Prévient les tensions de type sciatique et libère la rotation de hanche." },
-  { name:"Ouverture Thoracique", zh:"\u5F00\u80F8\u5F0F", py:"kai xiong shi", em:"\uD83D\uDEAA",
-    desc:"Debout dans un cadre de porte, avant-bras posés sur chaque montant, coudes à hauteur d'épaules. Avance doucement un pied et pousse la poitrine vers l'avant jusqu'à sentir l'étirement dans les pectoraux.",
-    eff:"Étire les pectoraux et l'avant des épaules, raidis par la Pompe Tenue Basse et la Planche. Corrige la posture voûtée et redonne de l'amplitude aux épaules." },
-  { name:"Torsion Vertébrale", zh:"\u810A\u67F1\u626D\u8F6C", py:"ji zhu niu zhuan", em:"\uD83C\uDF00",
-    desc:"Allongé sur le dos, bras en croix, genoux pliés. Laisse tomber les deux genoux d'un côté vers le sol, tête tournée du côté opposé, les deux épaules restent collées au sol. Séries 1 et 2 à droite, séries 3 et 4 à gauche (ou l'inverse).",
-    eff:"Mobilise toute la colonne vertébrale, étire les obliques et détend les lombaires. Idéale en fin de séance pour relâcher le dos après le gainage." }
-];
-var REST_EX_PROG = { bas:60, haut:50, sou:15 };
-var REST_EX = 120;
 
-// ── Niveaux (semaine 1/2/3) ──────────────────────────────────────────────────────
-var LVL_ALL = [
-  [{s:3,w:30,r:40},{s:4,w:50,r:40},{s:5,w:90,r:60}],
-  [{s:3,w:30,r:20},{s:3,w:90,r:30},{s:3,w:180,r:40}],
-  [{s:3,w:25,r:30},{s:4,w:45,r:30},{s:5,w:60,r:45}],
-  [{s:3,w:15,r:30},{s:3,w:30,r:30},{s:3,w:50,r:30}],
-  [{s:3,w:15,r:30},{s:4,w:35,r:30},{s:5,w:60,r:30}],
-  [{s:3,w:30,r:20},{s:3,w:45,r:20},{s:4,w:60,r:20}],
-  [{s:3,w:15,r:30},{s:3,w:25,r:30},{s:4,w:35,r:30}],
-  [{s:4,w:20,r:15},{s:4,w:30,r:15},{s:4,w:40,r:15}],
-  [{s:3,w:30,r:30},{s:3,w:45,r:30},{s:4,w:60,r:30}],
-  [{s:3,w:20,r:20},{s:3,w:30,r:20},{s:4,w:40,r:20}],
-  [{s:3,w:30,r:10},{s:3,w:45,r:10},{s:3,w:60,r:10}],
-  [{s:3,w:30,r:10},{s:3,w:45,r:10},{s:3,w:60,r:10}],
-  [{s:4,w:30,r:10},{s:4,w:45,r:10},{s:4,w:60,r:10}],
-  [{s:4,w:30,r:10},{s:4,w:45,r:10},{s:4,w:60,r:10}],
-  [{s:3,w:30,r:10},{s:3,w:45,r:10},{s:3,w:60,r:10}],
-  [{s:4,w:30,r:10},{s:4,w:45,r:10},{s:4,w:60,r:10}]
-];
+<!-- Boutons fixes en haut à droite : Volume + Thème -->
+<button class="header-btn header-btn-volume" onclick="toggleVolumePanel(event)" id="header-volume-btn" title="Volume" aria-label="Réglage du volume">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+</button>
+<button class="theme-toggle" onclick="toggleTheme()" title="Changer de thème" aria-label="Basculer thème clair/sombre">
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+</button>
 
-// ── Composition + ORDRE de chaque programme (indices dans EX_ALL) ────────────────────
-// EX_ALL : 0 Chaise, 1 Mollets, 2 Cavalier, 3 Table Inversee, 4 Suspension,
-//          5 Planche, 6 Pompe, 7 Gainage Lateral, 8 Pont Fessier, 9 Extension Dorsale
-var PROG = {
-  bas:  [8, 3, 0, 1, 2],        // Pont Fessier, Table Inversee, Chaise, Mollets, Cavalier
-  haut: [5, 9, 6, 7, 4],        // Planche, Extension Dorsale, Pompe, Gainage Lateral, Suspension
-  sou:  [10, 11, 12, 13, 14, 15] // Squat Profond, Chien Tete en Bas, Fente Psoas, Pigeon, Ouverture Thoracique, Torsion
-};
-var PROG_NAMES = { bas:"Bas du corps", haut:"Haut du corps", sou:"Souplesse" };
-var LVL_NAMES = ["Débutant","Médium","Pro"];
+<div id="resume-bar" style="display:none;position:fixed;top:0;left:0;right:0;background:#a06fff;border-bottom:2px solid #c9a0ff;padding:12px 16px;z-index:200;align-items:center;gap:10px;box-shadow:0 2px 20px rgba(160,111,255,0.6)">
+  <span id="resume-text" style="flex:1;font-size:13px;font-weight:500;color:#fff"></span>
+  <button onclick="doResume()" style="padding:6px 14px;border-radius:8px;border:1px solid #fff;background:#fff;color:#a06fff;font-size:12px;font-weight:600;cursor:pointer">▶ Reprendre</button>
+  <button onclick="dismissResume()" style="padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.5);background:transparent;color:#fff;font-size:12px;cursor:pointer">✕</button>
+</div>
 
-// ── Vues ordonnees selon le programme actif (remplies par applyProgram) ─────────────
-var EX = [], LVL = [];
-function applyProgram(){
-  EX = []; LVL = [];
-  REST_EX = REST_EX_PROG[S.prog];
-  var order = PROG[S.prog];
-  for(var i=0;i<order.length;i++){ var idx=order[i]; EX.push(EX_ALL[idx]); LVL.push(LVL_ALL[idx]); }
-}
+<div class="page active" id="page-binaural">
+  <div class="header"><h1>Fréquences Thérapeutiques</h1><p>Marc-Alain Lavoie · Naturasounds <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div class="freq-row">
+    <div class="freq-box"><div class="freq-num" id="f-left">432</div><div class="freq-lbl">gauche Hz</div></div>
+    <div class="freq-sep"></div>
+    <div class="freq-box"><div class="beat-num" id="f-beat">1.2</div><div class="freq-lbl">battement</div></div>
+    <div class="freq-sep"></div>
+    <div class="freq-box"><div class="freq-num" id="f-right">433.2</div><div class="freq-lbl">droite Hz</div></div>
+  </div>
+  <div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+    <div class="card-label" style="margin-bottom:0;white-space:nowrap">Recherche fréquence</div>
+    <input type="number" id="bin-hz-input" min="20" max="20000" value="432"
+      style="width:100px;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center"
+      oninput="onBinInput()">
+    <span style="font-size:13px;color:var(--muted)">Hz</span>
+  </div>
+  <input type="range" id="bin-slider" min="20" max="20000" value="432" step="1"
+    style="width:100%;accent-color:var(--green);margin-bottom:6px" oninput="onBinSlider()">
+  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:8px">
+    <span>20 Hz</span><span style="color:var(--green)">← glisser →</span><span>20 000 Hz</span>
+  </div>
+  <button id="btn-live-tone" onclick="toggleLiveTone()" class="btn btn-blue btn-block" style="margin-bottom:8px">▶ Lancer l'écoute</button>
+  <button onclick="document.getElementById('ft-wav-input').click()" class="btn btn-secondary btn-sm btn-block" title="Importer un WAV partagé par un autre utilisateur">📥 Importer un WAV</button>
+  </div>
+  <div class="card"><div class="card-label">Onde binaurale</div><div class="chips" id="onde-chips"></div></div>
+  <div class="card"><div class="card-label">Minuteur</div><div class="timer-chips" id="timer-chips"></div></div>
+  <p class="warning">Casque obligatoire pour effet binaural</p>
+</div>
 
-// ── Contenu enrichi du guide (meme ordre que EX_ALL) : points cles + respiration ────
-var GUIDE = [
-  { cues:"Genoux a 90 degres, alignes au-dessus des chevilles (jamais au-dela des orteils). Dos entierement plaque au mur, bas du dos compris. Bras libres, ne pose pas les mains sur les cuisses.",
-    resp:"Respire lentement et regulierement, ne bloque jamais ta respiration." },
-  { cues:"Monte le plus haut possible sur la pointe des pieds, poids sur le gros orteil. Jambes tendues, buste droit. Pour l'equilibre, effleure un mur du bout des doigts si besoin.",
-    resp:"Respiration continue, expire en tenant la contraction du mollet." },
-  { cues:"Pieds plus larges que les epaules, pointes vers l'avant. Pousse activement les genoux vers l'exterieur (ils ne rentrent pas). Dos droit, poids reparti sur les talons.",
-    resp:"Respire par le ventre, calmement, sans a-coups." },
-  { cues:"Bassin haut, corps en ligne droite des epaules aux chevilles. Serre fessiers et abdos. Epaules basses, loin des oreilles. Regard vers le plafond.",
-    resp:"Souffle regulierement, ne coupe pas la respiration pendant la tenue." },
-  { cues:"Bras tendus, prise largeur d'epaules. Garde les epaules actives et basses (pas totalement relachees). Laisse pendre le bas du corps sans te balancer.",
-    resp:"Respiration profonde et lente, relache les tensions a chaque expiration." },
-  { cues:"Coudes sous les epaules, avant-bras au sol. Corps en ligne droite : ne creuse pas le bas du dos, ne remonte pas les fesses. Serre abdos et fessiers, menton legerement rentre.",
-    resp:"Respire normalement : le gainage tient par la contraction, pas par l'apnee." },
-  { cues:"Descends jusqu'a ce que la poitrine soit proche du sol, coudes a environ 45 degres du corps (pas ecartes a l'equerre). Corps gaine et aligne. Trop dur ? Pose les genoux au sol.",
-    resp:"Souffle de facon controlee, garde le tronc serre en permanence." },
-  { cues:"Coude sous l'epaule, corps en ligne droite de la tete aux pieds. Hanches bien decollees, ne laisse pas le bassin descendre. Alterne le cote a chaque serie.",
-    resp:"Respiration reguliere, gaine les obliques du cote au sol." },
-  { cues:"Pieds a plat, talons proches des fessiers, largeur de hanches. Pousse dans les talons (pas la pointe). Serre fort les fessiers en haut sans cambrer le bas du dos. Epaules et nuque relachees au sol.",
-    resp:"Respiration reguliere, expire en montant le bassin et garde les fessiers contractes." },
-  { cues:"Regarde le sol, nuque dans l'alignement (ne casse pas la tete en arriere). Decolle poitrine, bras et cuisses en meme temps. Serre les omoplates et les fessiers. Mouvement doux, sans a-coups.",
-    resp:"Respire calmement pendant la tenue, ne bloque jamais la respiration." },
-  { cues:"Talons au sol obligatoirement (surélève-les sur un livre au début si besoin). Dos le plus droit possible, poitrine ouverte. Le poids reste au milieu des pieds, pas sur les orteils.",
-    resp:"Respire profondément par le ventre, laisse les hanches descendre un peu plus à chaque expiration." },
-  { cues:"Priorité au dos long, pas aux jambes tendues : plie les genoux si le dos s'arrondit. Pousse fort le sol avec les mains, les talons cherchent le sol sans forcément le toucher.",
-    resp:"Respiration lente et régulière, expire en poussant les talons vers le sol." },
-  { cues:"La rétroversion est LA clé : coccyx rentré, fessier arrière et abdos serrés en permanence. Si le bas du dos se cambre, le psoas ne s'étire plus du tout (erreur classique). Inutile d'avancer loin : bien verrouillé, l'étirement arrive presque tout de suite. Buste droit, main posée sur la cuisse avant si besoin.",
-    resp:"Respiration calme et régulière, expire en avançant légèrement, sans jamais relâcher le fessier." },
-  { cues:"Le bassin reste droit et face au sol, ne bascule pas sur le côté du genou plié. Si c'est trop intense, garde le buste relevé sur les mains. Aucune douleur au genou tolérée.",
-    resp:"Respire lentement, relâche un peu plus le buste vers le sol à chaque expiration." },
-  { cues:"Coudes à hauteur des épaules. Avance avec le corps entier, ne cambre pas le bas du dos. Épaules basses, loin des oreilles.",
-    resp:"Expire en avançant la poitrine, tiens la position en respirant amplement." },
-  { cues:"Les deux épaules restent collées au sol, c'est plus important que de poser les genoux. Laisse la gravité faire le travail, ne force jamais la torsion.",
-    resp:"Respiration très lente, laisse les genoux descendre un peu plus à chaque expiration." }
-];
-for(var gi=0; gi<EX_ALL.length; gi++){ EX_ALL[gi].cues=GUIDE[gi].cues; EX_ALL[gi].resp=GUIDE[gi].resp; }
+<div class="page" id="page-perso">
+  <div class="header"><h1>Mes Playlists</h1><p>Matin et Soir · Ajoute depuis Minéraux <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
 
-// ── Palette (fond beige chaud + tons C harmonises) ───────────────────────────────
-var CLR = {
-  work:    { m:"#1E5FA3", d:"#CBB99E", g:"rgba(30,95,163,0.25)" },
-  restSet: { m:"#9B7BD4", d:"#CBB99E", g:"rgba(155,123,212,0.25)" },
-  restEx:  { m:"#6B4FB8", d:"#CBB99E", g:"rgba(107,79,184,0.25)" }
-};
-var GOOD = { m:"#0A8A63", g:"rgba(10,138,99,0.25)" };
-var BG   = "#F2E9DC";
-var SF   = "#FBF6EE";
-var TX   = "#3A332A";
-var DM   = "#5A4A33";
-var SOFT = "#E4D7C3";
-var ZH   = "#6B4FB8";
+  <div class="card" id="playlist-card-matin">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:24px">☀</span><span style="font-size:15px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:0.05em">Playlist Matin</span><button onclick='toggleFavPlaylist("matin")' id='fav-btn-matin' style="background:none;border:none;font-size:28px;cursor:pointer;padding:2px 6px;line-height:1;min-width:40px;text-align:center;color:var(--amber)">☆</button></div>
+      <button onclick="clearPlaylist('matin')"
+        style="font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600">
+        Vider
+      </button>
+    </div>
+    <div id="playlist-items-matin"></div>
+    <button onclick="launchPlaylist('matin')"
+      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
+      ▶ Lancer Matin
+    </button>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input type="text" id="save-name-matin" placeholder="Nom playlist..."
+        style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:13px;font-family:'Outfit',sans-serif">
+      <button onclick="savePlaylistAs('matin')"
+        style="padding:10px 14px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer">
+        💾 Sauver
+      </button>
+    </div>
+  </div>
 
-// ── Audio ──────────────────────────────────────────────────────────────────────
-var _ac=null;
-function getCtx(){ if(!_ac) _ac=new (window.AudioContext||window.webkitAudioContext)(); if(_ac.state==="suspended")_ac.resume(); return _ac; }
-// bip court (note qui s'eteint)
-function bip(freq,dur,vol){ try{ var c=getCtx(); var o=c.createOscillator(); var g=c.createGain(); o.type="sine"; o.connect(g); g.connect(c.destination); o.frequency.value=freq; var t=c.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o.stop(t+dur+0.02); }catch(e){} }
-// bip doux (attaque et extinction progressives)
-function softBip(freq,start,dur,vol){ try{ var c=getCtx(); var o=c.createOscillator(); var g=c.createGain(); o.type="sine"; o.connect(g); g.connect(c.destination); o.frequency.value=freq; var t=c.currentTime+start; g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(vol,t+0.04); g.gain.setValueAtTime(vol,t+dur-0.10); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o.stop(t+dur+0.02); }catch(e){} }
-// biiip tenu chaud (fondamentale + octave grave pour arrondir)
-function warmBeep(freq,start,dur,vol){ try{ var c=getCtx(); var t=c.currentTime+start; var o1=c.createOscillator(); var g1=c.createGain(); o1.type="sine"; o1.frequency.value=freq; o1.connect(g1); g1.connect(c.destination); g1.gain.setValueAtTime(0.0001,t); g1.gain.linearRampToValueAtTime(vol,t+0.06); g1.gain.setValueAtTime(vol,t+dur-0.12); g1.gain.exponentialRampToValueAtTime(0.0001,t+dur); o1.start(t); o1.stop(t+dur+0.02); var o2=c.createOscillator(); var g2=c.createGain(); o2.type="sine"; o2.frequency.value=freq/2; o2.connect(g2); g2.connect(c.destination); g2.gain.setValueAtTime(0.0001,t); g2.gain.linearRampToValueAtTime(vol*0.45,t+0.06); g2.gain.setValueAtTime(vol*0.45,t+dur-0.12); g2.gain.exponentialRampToValueAtTime(0.0001,t+dur); o2.start(t); o2.stop(t+dur+0.02); }catch(e){} }
-// biiip tenu (volume constant) - pour le zero
-function held(freq,dur,vol){ try{ var c=getCtx(); var o=c.createOscillator(); var g=c.createGain(); o.type="sine"; o.connect(g); g.connect(c.destination); o.frequency.value=freq; var t=c.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.02); g.gain.setValueAtTime(vol,t+dur-0.08); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o.stop(t+dur+0.02); }catch(e){} }
-// SON DE DEPART (uniquement au tout debut de seance) : bip ... bip ... biiiip 659Hz, dure 2.4s avant que le chrono parte
-var START_DURATION = 2400; // ms : 0.5 + 0.5 + biiip qui se termine
-function startSound(){ softBip(587,0,0.22,0.24); softBip(587,0.5,0.22,0.24); warmBeep(659,1.0,1.4,0.32); }
-// note de fin de decompte (le 0) : biiip tenu 0.8s octave haute
-function zeroSound(){ held(1047,0.8,0.4); }
-// decompte 4->0 : octaves qui montent
-var UP_NOTES = { 4:392, 3:523, 2:659, 1:784 };
-function vibe(p){ try{ if(navigator.vibrate)navigator.vibrate(p); }catch(e){} }
+  <div class="card" id="playlist-card-soir">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:24px;display:inline-block;transform:rotate(180deg)">☽</span><span style="font-size:15px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:0.05em">Playlist Soir</span><button onclick='toggleFavPlaylist("soir")' id='fav-btn-soir' style="background:none;border:none;font-size:28px;cursor:pointer;padding:2px 6px;line-height:1;min-width:40px;text-align:center;color:var(--purple)">☆</button></div>
+      <button onclick="clearPlaylist('soir')"
+        style="font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600">
+        Vider
+      </button>
+    </div>
+    <div id="playlist-items-soir"></div>
+    <button onclick="launchPlaylist('soir')"
+      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
+      ▶ Lancer Soir
+    </button>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input type="text" id="save-name-soir" placeholder="Nom playlist..."
+        style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:13px;font-family:'Outfit',sans-serif">
+      <button onclick="savePlaylistAs('soir')"
+        style="padding:10px 14px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer">
+        💾 Sauver
+      </button>
+    </div>
+  </div>
 
-// ── Etat global ─────────────────────────────────────────────────────────────────
-var S = { screen:"home", week:1, prog:"bas", exIdx:0, setIdx:0, phase:"work", tl:0, paused:false, done:false, running:false, showInfo:false };
-var SOUND = 1;
-function toggleSound(){ SOUND=!SOUND; renderSession(); }
-function playBip(f,d,v){ if(SOUND) bip(f,d,v); }
-function playZero(){ if(SOUND) zeroSound(); }
-function playStart(){ if(SOUND) startSound(); }
-var timer=null;
-// ── Historique des seances + suggestion (cycle Haut > Souplesse > Bas > Souplesse) ──
-function loadHist(){ try{ return JSON.parse(localStorage.getItem("iso_hist")||"[]"); }catch(e){ return []; } }
-function saveSession(){
-  try{
-    var h=loadHist();
-    h.push({ p:S.prog, d:new Date().toISOString().slice(0,10) });
-    if(h.length>10) h=h.slice(h.length-10);
-    localStorage.setItem("iso_hist", JSON.stringify(h));
-  }catch(e){}
-}
-function suggestNext(){
-  var h=loadHist();
-  if(!h.length) return null;
-  var last=h[h.length-1];
-  if(last.p==="haut"||last.p==="bas") return { prog:"sou", last:last };
-  for(var i=h.length-1;i>=0;i--){
-    if(h[i].p==="haut") return { prog:"bas", last:last };
-    if(h[i].p==="bas") return { prog:"haut", last:last };
-  }
-  return { prog:"bas", last:last };
-}
-function daysAgoTxt(dstr){
-  var today=new Date(); today.setHours(0,0,0,0);
-  var d=new Date(dstr+"T00:00:00");
-  var diff=Math.round((today-d)/86400000);
-  if(diff<=0) return "aujourd'hui";
-  if(diff===1) return "hier";
-  return "il y a "+diff+" jours";
-}
+  <div class="card" id="playlist-card-partage" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:20px">🔗</span><span style="font-size:15px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.05em">📤 Playlist Partagée</span></div>
+      <button onclick="clearPlaylist('partage')"
+        style="font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer;font-weight:600">
+        Vider
+      </button>
+    </div>
+    <div id="playlist-items-partage"></div>
+    <button onclick="launchPlaylist('partage')"
+      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
+      ▶ Lancer Partagée
+    </button>
+  </div>
 
-// ── Reprise apres coupure : sauvegarde de l'etat de seance ──
-var SAVE_KEY="iso_resume";
-function saveState(){
-  try{
-    if(!S.running||S.done) return;
-    localStorage.setItem(SAVE_KEY, JSON.stringify({week:S.week,prog:S.prog,exIdx:S.exIdx,setIdx:S.setIdx,phase:S.phase,tl:S.tl,ts:Date.now()}));
-  }catch(e){}
-}
-function clearState(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
-function loadState(){
-  try{
-    var d=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");
-    if(!d||typeof d.tl!=="number"||!PROG[d.prog]) return null;
-    if(Date.now()-d.ts > 6*3600*1000){ clearState(); return null; }
-    return d;
-  }catch(e){ return null; }
-}
-function resumeSession(){
-  var d=loadState(); if(!d){ renderHome(); return; }
-  getCtx();
-  S.week=d.week; S.prog=d.prog; applyProgram();
-  S.exIdx=Math.min(d.exIdx,EX.length-1); S.setIdx=d.setIdx; S.phase=d.phase; S.tl=d.tl;
-  S.done=false; S.running=true; S.paused=true; S.screen="session";
-  renderSession();
-  startTick();
-}
-function dismissResume(){ clearState(); renderHome(); }
+  <div class="card" id="saved-playlists-card">
+    <div class="card-label">Mes playlists sauvegardées</div>
+    <div id="saved-playlists-list"></div>
+  </div>
+  <div class="card" id="suggested-protocols-card">
+    <div class="card-label">Protocoles suggérés Matin / Soir</div>
+    <div id="suggested-protocols-list"></div>
+  </div>
+</div>
+<div class="page" id="page-mineraux">
+  <div class="header"><h1>Éléments et Minéraux</h1><p>Appuyer pour charger dans le générateur <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div class="selected-bar" id="sel-bar-min"><span class="selected-bar-text" id="sel-bar-min-txt">—</span></div>
+  <div style="margin-bottom:12px"><input type="text" id="min-search-global" placeholder="🔍 Chercher... (magnésium, dos, vitamine C, etc)" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:14px;font-family:'Outfit',sans-serif;outline:none" oninput="filterMinGlobal(this.value)"></div>
+  <div id="min-accordion"></div>
+</div>
 
-var app = document.getElementById("app");
+<div class="page" id="page-proto">
+  <div class="header"><h1>Protocoles</h1><p>Appuyer sur une fréquence pour la charger <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div id="proto-list"></div>
+</div>
 
-// ── Horloge a aiguille (SVG) ─────────────────────────────────────────────────────
-function clockSVG(tl, tot, phase){
-  var c = CLR[phase]||CLR.work;
-  var progress = tot>0 ? Math.max(0,Math.min(1,(tot-tl)/tot)) : 1;
-  var angle = progress*360;
-  function toXY(deg,r){ var a=(deg-90)*Math.PI/180; return [100+r*Math.cos(a),100+r*Math.sin(a)]; }
-  var h = toXY(angle,74);
-  var arcPath="";
-  if(progress<=0){ arcPath="M100 16 A84 84 0 1 1 99.999 16"; }
-  else if(progress<1){ var s=toXY(angle,84); var large=(1-progress)*360>180?1:0; arcPath="M"+s[0].toFixed(2)+" "+s[1].toFixed(2)+" A84 84 0 "+large+" 1 100 16"; }
-  var ticks="";
-  [0,90,180,270].forEach(function(a){ var p1=toXY(a,70), p2=toXY(a,80); ticks+='<line x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke="'+SOFT+'" stroke-width="2.5" stroke-linecap="round"/>'; });
-  return '<svg viewBox="0 0 200 200" style="width:210px;height:210px;display:block;margin:0 auto;filter:drop-shadow(0 0 14px '+c.g+')">'
-    + '<circle cx="100" cy="100" r="90" fill="'+SF+'"/>'
-    + '<circle cx="100" cy="100" r="84" fill="none" stroke="'+c.d+'" stroke-width="5.5"/>'
-    + ticks
-    + (arcPath ? '<path d="'+arcPath+'" fill="none" stroke="'+c.m+'" stroke-width="6" stroke-linecap="round"/>' : '')
-    + '<line x1="100" y1="100" x2="'+h[0].toFixed(2)+'" y2="'+h[1].toFixed(2)+'" stroke="'+c.m+'" stroke-width="3.5" stroke-linecap="round"/>'
-    + '<circle cx="100" cy="100" r="6.5" fill="'+c.m+'"/>'
-    + '</svg>';
-}
+<div class="page" id="page-symptomes">
+  <div class="header"><h1>Par Symptôme</h1><p>Appuyer sur une fréquence pour la charger <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div style="margin-bottom:14px">
+    <div style="display:flex;gap:8px">
+      <input type="text" placeholder="🔍 Fatigue, stress, douleur genou, dos..." id="symp-search-input"
+        style="flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--border);
+        background:var(--s2);color:var(--green);font-size:14px;font-family:'Outfit',sans-serif;outline:none"
+        onkeydown="if(event.key==='Enter')doSympSearch()">
+      <button onclick="doSympSearch()"
+        style="padding:12px 18px;border-radius:12px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap">
+        🔍 Chercher
+      </button>
+    </div>
+    <div id="symp-suggestions" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px"></div>
+  </div>
+  <div class="cat-tabs" id="symp-cat-tabs"></div>
+  <div id="symp-list"></div>
+</div>
 
-// ── Ecran accueil ────────────────────────────────────────────────────────────────
-function totalMin(){
-  var t=(EX.length-1)*REST_EX;
-  for(var i=0;i<EX.length;i++){ var l=LVL[i][S.week-1]; t+=l.s*l.w+(l.s-1)*l.r; }
-  return Math.round(t/60);
-}
-function renderHome(){
-  var h='<div style="min-height:100vh;background:'+BG+';color:'+TX+';padding:24px 16px;">'
-    + '<div style="max-width:400px;margin:0 auto;">'
-    + '<div style="text-align:center;margin-bottom:24px;">'
-    + '<p style="font-size:11px;color:'+DM+';margin:0 0 6px;letter-spacing:0.18em;text-transform:uppercase;">Programme Isométrique</p>'
-    + '<h1 style="font-size:27px;font-weight:700;margin:0;letter-spacing:-0.02em;color:'+TX+';">Remise en Forme</h1>'
-    + '</div>';
-  var rs=loadState();
-  if(rs){
-    h+='<div style="background:'+CLR.restEx.g+';border:1.5px solid '+CLR.restEx.m+';border-radius:14px;padding:12px 14px;margin-bottom:14px;">'
-      + '<p style="margin:0;font-size:12px;color:'+TX+';line-height:1.5;">\u23F8 <strong>S\u00e9ance interrompue : '+PROG_NAMES[rs.prog]+'</strong><br>'
-      + '<span style="color:'+DM+';">Exercice '+(rs.exIdx+1)+'/'+PROG[rs.prog].length+' \u2014 s\u00e9rie '+(rs.setIdx+1)+'</span></p>'
-      + '<div style="display:flex;gap:8px;margin-top:9px;">'
-      + '<button onclick="resumeSession()" style="flex:1;padding:9px 0;border-radius:10px;border:none;background:'+CLR.restEx.m+';color:#fff;font-size:12px;font-weight:700;">\u25B6 Reprendre</button>'
-      + '<button onclick="dismissResume()" style="flex:1;padding:9px 0;border-radius:10px;border:none;background:'+SOFT+';color:'+DM+';font-size:12px;font-weight:600;">Ignorer</button>'
-      + '</div></div>';
-  }
-  h+='<div style="background:'+SF+';border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(58,51,42,0.06);">'
-    + '<p style="font-size:11px;color:'+DM+';margin:0 0 10px;text-transform:uppercase;letter-spacing:0.1em;">Niveau</p>'
-    + '<div style="display:flex;gap:8px;margin-bottom:10px;">';
-  for(var w=1;w<=3;w++){
-    var on=S.week===w;
-    h+='<button onclick="setWeek('+w+')" style="flex:1;padding:13px 0;border-radius:12px;border:none;background:'+(on?CLR.work.m:SOFT)+';color:'+(on?"#fff":DM)+';font-size:14px;font-weight:'+(on?600:500)+';">'+LVL_NAMES[w-1]+'</button>';
-  }
-  h+='</div>'
-    + '<p style="font-size:12px;color:'+DM+';margin:0;text-align:center;">Durée : environ <strong style="color:'+TX+';">'+totalMin()+' min</strong></p>'
-    + '</div>'
-    + '<div style="background:'+SF+';border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(58,51,42,0.06);">'
-    + '<p style="font-size:11px;color:'+DM+';margin:0 0 10px;text-transform:uppercase;letter-spacing:0.1em;">Programme du jour</p>';
-  var sug=suggestNext();
-  if(sug){
-    var okS=(S.prog===sug.prog);
-    h+='<div style="background:'+(okS?GOOD.g:SOFT)+';border-radius:12px;padding:11px 13px;margin-bottom:10px;'+(okS?"border:1.5px solid "+GOOD.m+";":"")+'">'
-      + '<p style="margin:0;font-size:12px;color:'+TX+';line-height:1.5;">\uD83D\uDCA1 <strong>Suggestion : '+PROG_NAMES[sug.prog]+'</strong><br>'
-      + '<span style="color:'+DM+';">Dernière séance : '+PROG_NAMES[sug.last.p]+' ('+daysAgoTxt(sug.last.d)+')</span></p>'
-      + (okS?'':'<button onclick="setProgram(\''+sug.prog+'\')" style="margin-top:8px;padding:8px 14px;border-radius:10px;border:none;background:'+GOOD.m+';color:#fff;font-size:12px;font-weight:700;">Choisir '+PROG_NAMES[sug.prog]+'</button>')
-      + '</div>';
-  }
-  h+='<div style="display:flex;gap:8px;">';
-  var progs=["bas","haut","sou"];
-  for(var pb=0;pb<progs.length;pb++){
-    var pk=progs[pb], onP=(S.prog===pk);
-    h+='<button onclick="setProgram(\''+pk+'\')" style="flex:1;padding:13px 2px;border-radius:12px;border:none;background:'+(onP?CLR.work.m:SOFT)+';color:'+(onP?"#fff":DM)+';font-size:12px;font-weight:'+(onP?600:500)+';">'+PROG_NAMES[pk]+'</button>';
-  }
-  h+='</div>'
-    + '</div>'
-    + '<div style="background:'+SF+';border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(58,51,42,0.06);">'
-    + '<p style="font-size:11px;color:'+DM+';margin:0 0 10px;text-transform:uppercase;letter-spacing:0.1em;">Séance du jour</p>';
-  for(var i=0;i<EX.length;i++){
-    var l=LVL[i][S.week-1];
-    h+='<div style="display:flex;align-items:center;gap:12px;padding:11px 0;'+(i<EX.length-1?"border-bottom:1px solid "+SOFT+";":"")+'">'
-      + '<span style="font-size:30px;width:38px;text-align:center;">'+EX[i].em+'</span>'
-      + '<div style="flex:1;min-width:0;">'
-      + '<p style="margin:0 0 2px;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:'+TX+';">'+EX[i].name+'</p>'
-      + '<p style="margin:0 0 3px;font-size:17px;color:'+ZH+';font-weight:700;line-height:1.1;">'+EX[i].zh+'</p>'
-      + '<p style="margin:0;font-size:12px;color:'+DM+';">'+l.s+' séries x '+l.w+'s - repos '+l.r+'s</p>'
-      + '</div>'
-      + '<span style="font-size:11px;color:'+CLR.work.m+';font-weight:700;min-width:20px;">#'+(i+1)+'</span>'
-      + '</div>';
-  }
-  h+='</div>'
-    + '<button onclick="prepareSession()" style="width:100%;padding:17px;border-radius:16px;border:none;background:'+CLR.work.m+';color:#fff;font-size:15px;font-weight:700;letter-spacing:0.06em;box-shadow:0 6px 24px rgba(30,95,163,0.35);">DÉMARRER - '+LVL_NAMES[S.week-1]+'</button>'
-    + '<button onclick="showGuide()" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid '+CLR.work.m+';background:'+SF+';color:'+CLR.work.m+';font-size:14px;font-weight:600;margin-top:12px;">\uD83D\uDCD6  Guide des postures</button>'
-    + '<div style="display:flex;gap:16px;justify-content:center;margin-top:18px;flex-wrap:wrap;">';
-  var leg=[["Travail","work"],["Repos série","restSet"],["Repos exercice","restEx"]];
-  for(var k=0;k<leg.length;k++){
-    h+='<div style="display:flex;align-items:center;gap:6px;"><div style="width:9px;height:9px;border-radius:50%;background:'+CLR[leg[k][1]].m+';"></div><span style="font-size:11px;color:'+DM+';">'+leg[k][0]+'</span></div>';
-  }
-  h+='</div></div></div>';
-  app.innerHTML=h;
-}
+<div class="page" id="page-pathogenes">
+  <div class="header"><h1>🦠 Pathogènes</h1><p>Virus, bactéries, parasites, champignons <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div class="selected-bar" id="sel-bar-path"><span class="selected-bar-text" id="sel-bar-path-txt">—</span></div>
+  <div class="cat-tabs" id="path-cat-tabs"></div>
+  <div id="path-list"></div>
+</div>
 
-// ── Ecran guide ──────────────────────────────────────────────────────────────────
-function renderGuide(){
-  var h='<div style="min-height:100vh;background:'+BG+';color:'+TX+';padding:24px 16px;">'
-    + '<div style="max-width:400px;margin:0 auto;">'
-    + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">'
-    + '<button onclick="goHome()" style="background:'+SF+';border:none;color:'+TX+';font-size:18px;width:40px;height:40px;border-radius:12px;box-shadow:0 2px 8px rgba(58,51,42,0.08);">\u2190</button>'
-    + '<h1 style="font-size:21px;font-weight:700;margin:0;color:'+TX+';">Guide - '+PROG_NAMES[S.prog]+'</h1>'
-    + '</div>';
-  for(var i=0;i<EX.length;i++){
-    var e=EX[i];
-    var wk=LVL[i];
-    var cons='<div style="display:flex;gap:6px;">';
-    for(var w=0;w<3;w++){
-      var on=(S.week===w+1);
-      cons+='<div style="flex:1;text-align:center;padding:9px 4px;border-radius:11px;background:'+(on?CLR.work.m:SOFT)+';">'
-        + '<div style="font-size:9px;color:'+(on?"rgba(255,255,255,0.85)":DM)+';text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">'+LVL_NAMES[w]+'</div>'
-        + '<div style="font-size:13px;font-weight:700;margin-top:3px;color:'+(on?"#fff":TX)+';">'+wk[w].s+'\u00D7'+wk[w].w+'s</div>'
-        + '<div style="font-size:10px;margin-top:1px;color:'+(on?"rgba(255,255,255,0.85)":DM)+';">repos '+wk[w].r+'s</div>'
-        + '</div>';
-    }
-    cons+='</div>';
-    h+='<div style="background:'+SF+';border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 6px 24px rgba(58,51,42,0.10);">'
-      + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">'
-      + '<span style="font-size:34px;">'+e.em+'</span>'
-      + '<div style="flex:1;">'
-      + '<p style="margin:0;font-size:11px;color:'+CLR.work.m+';font-weight:700;">EXERCICE #'+(i+1)+'</p>'
-      + '<h2 style="margin:1px 0 2px;font-size:17px;font-weight:600;color:'+TX+';">'+e.name+'</h2>'
-      + '<p style="margin:0;font-size:19px;color:'+ZH+';font-weight:700;line-height:1.1;">'+e.zh+' <span style="font-size:12px;color:'+DM+';font-weight:400;font-style:italic;">'+e.py+'</span></p>'
-      + '</div></div>'
-      + '<div style="margin-bottom:10px;">'
-      + '<p style="margin:0 0 3px;font-size:10px;color:'+DM+';text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Comment faire</p>'
-      + '<p style="margin:0;font-size:13px;color:'+TX+';line-height:1.55;">'+e.desc+'</p>'
-      + '</div>'
-      + '<div style="margin-bottom:10px;">'
-      + '<p style="margin:0 0 3px;font-size:10px;color:'+CLR.restEx.m+';text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Points clés</p>'
-      + '<p style="margin:0;font-size:13px;color:'+TX+';line-height:1.55;">'+e.cues+'</p>'
-      + '</div>'
-      + '<div style="margin-bottom:10px;">'
-      + '<p style="margin:0 0 3px;font-size:10px;color:'+DM+';text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Respiration</p>'
-      + '<p style="margin:0;font-size:13px;color:'+TX+';line-height:1.55;">'+e.resp+'</p>'
-      + '</div>'
-      + '<div style="margin-bottom:12px;">'
-      + '<p style="margin:0 0 3px;font-size:10px;color:'+GOOD.m+';text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Ce que ça fait</p>'
-      + '<p style="margin:0;font-size:13px;color:'+TX+';line-height:1.55;">'+e.eff+'</p>'
-      + '</div>'
-      + '<div style="padding-top:12px;border-top:1px solid '+SOFT+';">'
-      + '<p style="margin:0 0 7px;font-size:10px;color:'+CLR.work.m+';text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Ta consigne</p>'
-      + cons
-      + '</div>'
-      + '</div>';
-  }
-  h+='<button onclick="prepareSession()" style="width:100%;padding:16px;border-radius:14px;border:none;background:'+CLR.work.m+';color:#fff;font-size:15px;font-weight:700;box-shadow:0 6px 20px '+CLR.work.g+';margin-top:4px;">DÉMARRER LA SÉANCE</button>'
-    + '</div></div>';
-  app.innerHTML=h;
-}
+<div class="play-bar" id="play-bar" style="display:none">
+  <div class="play-bar-info">
+    <div class="play-bar-freq" id="pb-freq" onclick="openPlayer()" style="cursor:pointer" title="Ouvrir le lecteur">Racine - 432 Hz - D 1.2 Hz</div>
+  </div>
+  <div style="display:flex;gap:4px;align-items:center;flex-shrink:0">
+    <button id="pause-btn" onclick="togglePause()" title="Pause"
+      style="display:none;padding:8px 9px;border-radius:10px;border:1.5px solid var(--green-border);background:var(--green-bg);color:var(--green);font-family:'Outfit',sans-serif;font-size:15px;cursor:pointer;white-space:nowrap;line-height:1">
+      ⏸
+    </button>
+    <div class="play-bar-timer inactive" id="pb-timer">13:00</div>
+    <!-- Bouton Volume → ouvre le panneau volume -->
+    <button onclick="toggleVolumePanel(event)" id="volume-btn" title="Volume"
+      style="padding:8px 9px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-family:'Outfit',sans-serif;font-size:15px;cursor:pointer;white-space:nowrap;line-height:1;display:flex;align-items:center;justify-content:center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+    </button>
+    <button onclick="exportWav()" title="Télécharger le son en .wav"
+      style="padding:8px 9px;border-radius:10px;border:1px solid var(--blue-border);background:var(--blue-bg);color:var(--blue);font-family:'Outfit',sans-serif;font-size:15px;cursor:pointer;white-space:nowrap;line-height:1">
+      📤
+    </button>
+    <button class="play-btn" id="play-btn" onclick="togglePlay()" title="Lancer">
+      <span id="play-icon">▶</span>
+    </button>
+  </div>
+</div>
 
-// ── Ecran pret (demarrage manuel) ────────────────────────────────────────────────
-function renderReady(){
-  var e=EX[0];
-  var l=LVL[0][S.week-1];
-  var h='<div style="min-height:100vh;background:'+BG+';color:'+TX+';display:flex;align-items:center;justify-content:center;padding:24px 16px;">'
-    + '<div style="max-width:400px;width:100%;text-align:center;">'
-    + '<p style="font-size:11px;color:'+DM+';margin:0 0 4px;text-transform:uppercase;letter-spacing:0.14em;">'+LVL_NAMES[S.week-1]+' - Premier exercice</p>'
-    + '<div style="font-size:56px;line-height:1.1;margin:10px 0;">'+e.em+'</div>'
-    + '<h2 style="margin:2px 0 2px;font-size:23px;font-weight:600;color:'+TX+';">'+e.name+'</h2>'
-    + '<p style="margin:0 0 6px;font-size:26px;color:'+ZH+';font-weight:700;">'+e.zh+'</p>'
-    + '<p style="margin:0 0 28px;font-size:13px;color:'+DM+';">'+l.s+' séries x '+l.w+'s - repos '+l.r+'s</p>'
-    + '<button onclick="beginSession()" style="width:100%;padding:18px;border-radius:16px;border:none;background:'+CLR.work.m+';color:#fff;font-size:16px;font-weight:700;letter-spacing:0.08em;box-shadow:0 6px 22px '+CLR.work.g+';">\u25B6  COMMENCER</button>'
-    + '<button onclick="goHome()" style="width:100%;padding:13px;border-radius:14px;border:none;background:transparent;color:'+DM+';font-size:13px;font-weight:500;margin-top:10px;">Retour</button>'
-    + '</div></div>';
-  app.innerHTML=h;
-}
+<!-- Panneau volume flottant (au-dessus de la play-bar) -->
+<div id="volume-panel" style="display:none;position:fixed;bottom:120px;right:12px;background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px;z-index:99;box-shadow:0 -4px 24px rgba(0,0,0,0.4);min-width:240px;animation:modalIn 0.2s ease-out">
+  <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+    <span>Volume</span>
+    <button onclick="toggleVolumePanel(event)" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px;padding:0 4px;line-height:1">✕</button>
+  </div>
+  <div class="volume-control" style="margin:0">
+    <button onclick="adjustVolume(-5)" title="Baisser de 5%" aria-label="Baisser le volume" style="background:var(--s2);border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;font-weight:600;line-height:1">−</button>
+    <input type="range" class="volume-slider" id="volume-slider-bar" min="0" max="100" value="25" aria-label="Volume">
+    <button onclick="adjustVolume(5)" title="Monter de 5%" aria-label="Augmenter le volume" style="background:var(--s2);border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;font-weight:600;line-height:1">+</button>
+    <span id="volume-value-bar" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);min-width:40px;text-align:right;font-weight:500">25%</span>
+  </div>
+</div>
 
-// ── Ecran seance ─────────────────────────────────────────────────────────────────
-function renderSession(){
-  if(S.done){ renderDone(); return; }
-  var l=LVL[S.exIdx][S.week-1];
-  var tot = S.phase==="work" ? l.w : (S.phase==="restSet" ? l.r : REST_EX);
-  var pc = CLR[S.phase]||CLR.work;
-  var showIdx = (S.phase==="restEx" && S.exIdx+1<EX.length) ? S.exIdx+1 : S.exIdx;
-  var showEx = EX[showIdx];
-  var phLabel = S.phase==="work" ? (S.prog==="sou"?"\u00C9TIREMENT":"TRAVAIL") : "REPOS";
-  var isNext = (S.phase==="restEx" && S.exIdx+1<EX.length);
-  var mins=Math.floor(S.tl/60), secs=S.tl%60;
-  var display = mins>0 ? mins+":"+String(secs).padStart(2,"0") : String(S.tl);
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('binaural',this)" aria-label="Binaural">
+    <svg class="nav-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Binaural
+  </button>
+  <button class="nav-btn" onclick="showPage('perso',this)" aria-label="Mes playlists">
+    <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Perso
+  </button>
+  <button class="nav-btn" onclick="showPage('mineraux',this)" aria-label="Minéraux">
+    <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>Minéraux
+  </button>
+  <button class="nav-btn" onclick="showPage('symptomes',this)" aria-label="Symptômes">
+    <svg class="nav-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 7v8M7 11h8"/></svg>Symptômes
+  </button>
+  <button class="nav-btn" onclick="showPage('favs',this)" aria-label="Favoris">
+    <svg class="nav-icon-svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favoris
+  </button>
+  <button class="nav-btn-more" onclick="toggleMoreMenu(event)" aria-label="Plus d'onglets">
+    <svg class="nav-icon-svg" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>Plus
+  </button>
+</nav>
 
-  // Pendant le repos, les barres de series montrent l'exercice a venir
-  var barIdx = (S.phase==="restEx" && S.exIdx+1<EX.length) ? S.exIdx+1 : S.exIdx;
-  var bLvl = LVL[barIdx][S.week-1];
-  var barSetIdx = (S.phase==="restEx") ? 0 : S.setIdx;
+<!-- Menu "Plus" déroulant -->
+<div class="more-menu" id="more-menu">
+  <button class="more-menu-item" onclick="showPage('proto',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Protocoles
+  </button>
+  <button class="more-menu-item" onclick="showPage('eveil',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+    <svg viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg>Éveil & Chakras
+  </button>
+  <button class="more-menu-item" onclick="showPage('pathogenes',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+    <svg viewBox="0 0 24 24"><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7A4 4 0 0 0 19 16l-4-7V3"/><line x1="9" y1="3" x2="15" y2="3"/></svg>Pathogènes
+  </button>
+  <button class="more-menu-item" onclick="showPage('history',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Historique
+  </button>
+</div>
 
-  var dots="";
-  var activeEx = (S.phase==="restEx" && S.exIdx+1<EX.length) ? S.exIdx+1 : S.exIdx;
-  var exTxt = "Exercice "+(activeEx+1)+"/"+EX.length;
-  for(var i=0;i<EX.length;i++){
-    var sz=i===activeEx?10:8;
-    var bg=i<activeEx?CLR.work.m:(i===activeEx?pc.m:SOFT);
-    dots+='<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+bg+';transition:all 0.3s;"></div>';
-  }
+<div class="page" id="page-eveil">
+  <div class="header"><h1>Éveil & Conscience</h1><p>Solfège · Chakras G40 · Séquence éveil <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
 
-  var bars="";
-  for(var j=0;j<bLvl.s;j++){
-    var complete = (S.phase==="restEx") ? (j<0) : (j<S.setIdx || (j===S.setIdx && S.phase!=="work"));
-    var bg2 = complete?CLR.work.m:(j===barSetIdx?pc.m:SOFT);
-    bars+='<div style="height:5px;flex:1;max-width:44px;border-radius:3px;background:'+bg2+';transition:background 0.4s;"></div>';
-  }
-  var fmtTxt = S.phase==="restEx" ? (bLvl.s+"×"+bLvl.w+"s") : (l.s+"×"+l.w+"s");
-  var setTxt = S.phase==="restEx" ? ("Série 1 / "+bLvl.s+" ("+fmtTxt+")") : ("Série "+(S.setIdx+1)+" / "+l.s+" ("+fmtTxt+")");
+  <div class="card">
+    <div class="card-label">Séquence Éveil</div>
+    <button onclick="lancerSequenceEveil()" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer">
+      ✧ Alpha 10Hz (11min) -&gt; Theta 6Hz (30min)
+    </button>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Base 756 Hz · Couronne · Casque obligatoire</p>
+  </div>
 
-  var h='<div style="min-height:100vh;background:'+BG+';color:'+TX+';padding:20px 16px;">'
-    + '<div style="max-width:400px;margin:0 auto;">'
-    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">'
-    + '<div style="display:flex;gap:6px;align-items:center;">'
-    + '<button onclick="toggleSound()" style="background:'+SF+';border:none;color:'+DM+';font-size:14px;width:34px;height:34px;border-radius:11px;line-height:1;box-shadow:0 2px 8px rgba(58,51,42,0.08);">'+(SOUND?"\uD83D\uDD0A":"\uD83D\uDD07")+'</button>'
-    + '<button onclick="quitSession()" style="background:'+SF+';border:none;color:'+DM+';font-size:12px;font-weight:600;padding:0 14px;height:34px;border-radius:11px;line-height:1;box-shadow:0 2px 8px rgba(58,51,42,0.08);">Accueil</button>'
-    + '</div>'
-    + '<span style="font-size:11px;color:'+DM+';letter-spacing:0.12em;font-weight:600;">'+exTxt+'</span>'
-    + '<div style="display:flex;gap:6px;align-items:center;">'+dots+'</div>'
-    + '</div>'
-    + '<div style="text-align:center;margin-bottom:18px;">'
-    + (isNext ? '<p style="font-size:11px;color:'+pc.m+';margin:0 0 6px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Prochain exercice</p>' : '')
-    + '<div style="font-size:46px;line-height:1.1;margin-bottom:4px;">'+showEx.em+'</div>'
-    + '<h2 style="margin:2px 0 2px;font-size:21px;font-weight:600;color:'+TX+';">'+showEx.name+'</h2>'
-    + '<p style="margin:0;font-size:24px;color:'+ZH+';font-weight:700;line-height:1.1;">'+showEx.zh+'</p>'
-    + (S.prog==="sou" ? '<button onclick="toggleInfo()" style="margin-top:8px;padding:7px 14px;border-radius:20px;border:1.5px solid '+pc.m+';background:'+(S.showInfo?pc.m:SF)+';color:'+(S.showInfo?"#fff":pc.m)+';font-size:12px;font-weight:600;">ℹ️  Comment faire</button>' : '')
-    + (S.prog==="sou" && S.showInfo ? '<div style="text-align:left;background:'+SF+';border-radius:14px;padding:14px 16px;margin-top:10px;box-shadow:0 4px 16px rgba(58,51,42,0.08);"><p style="margin:0 0 8px;font-size:13px;color:'+TX+';line-height:1.5;">'+showEx.desc+'</p><p style="margin:0;font-size:10px;color:'+CLR.restEx.m+';text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Point clé</p><p style="margin:2px 0 0;font-size:13px;color:'+TX+';line-height:1.5;">'+showEx.cues+'</p></div>' : '')
-    + '</div>'
-    + '<div style="text-align:center;margin-bottom:18px;">'
-    + '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:6px;">'+bars+'</div>'
-    + '<span style="font-size:15px;font-weight:600;color:'+pc.m+';">'+setTxt+'</span>'
-    + '</div>'
-    + clockSVG(S.tl,tot,S.phase)
-    + '<p id="count-display" style="text-align:center;margin:10px 0 4px;font-size:40px;font-weight:700;color:'+pc.m+';font-family:Courier New,monospace;" class="count-anim">'+display+'</p>'
-    + '<p style="text-align:center;margin:0 0 18px;font-size:12px;font-weight:700;color:'+pc.m+';letter-spacing:0.14em;">'+phLabel+'</p>'
-    + '<button onclick="togglePause()" style="width:100%;padding:15px;border-radius:14px;border:none;background:'+(S.paused?pc.m:SOFT)+';color:'+(S.paused?"#fff":DM)+';font-size:14px;font-weight:700;'+(S.paused?"box-shadow:0 4px 16px "+pc.g+";":"")+'">'+(S.paused?"\u25B6  Reprendre":"\u23F8  Pause")+'</button>'
-    + '</div></div>';
-  app.innerHTML=h;
-}
+  <div class="card">
+    <div class="card-label">Fréquences Solfège</div>
+    <button onclick="var l=document.getElementById('solfege-list');l.style.display=l.style.display==='none'?'block':'none';" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--blue-border);background:var(--blue-bg);color:var(--blue);font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:8px">✧ Fréquences Solfège</button>
+    <div id="solfege-list" style="display:none"></div>
+  </div>
 
-function renderDone(){
-  app.innerHTML='<div style="min-height:100vh;background:'+BG+';display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;">'
-    + '<div>'
-    + '<div style="font-size:72px;margin-bottom:16px;">\uD83C\uDF89</div>'
-    + '<h2 style="color:'+TX+';margin:0 0 8px;font-size:26px;font-weight:700;">Séance terminee !</h2>'
-    + '<p style="color:'+CLR.work.m+';margin:0 0 4px;font-weight:600;">'+LVL_NAMES[S.week-1]+' - Bravo !</p>'
-    + '<p style="color:'+DM+';font-size:13px;margin:0 0 32px;">Hydrate-toi et prends 5 min pour t\'etirer.</p>'
-    + '<button onclick="goHome()" style="padding:15px 44px;border-radius:14px;border:none;background:'+CLR.work.m+';color:#fff;font-size:15px;font-weight:700;box-shadow:0 6px 20px '+CLR.work.g+';">Retour</button>'
-    + '</div></div>';
-}
+  <div class="card">
+    <div class="card-label">Voyage des Chakras</div>
+    <button onclick="lancerVoyageChakras()" style="width:100%;padding:14px;border-radius:12px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:6px" id="voyage-btn">
+      ✦ Voyage Delta 1.2 Hz
+    </button>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;text-align:center">Ancrage et détente profonde · les 9 chakras</p>
 
-// ── Logique timer ────────────────────────────────────────────────────────────────
-function startTick(){
-  clearInterval(timer);
-  timer=setInterval(function(){
-    if(S.paused) return;
-    var next=S.tl-1;
-    if(next>=5 && next<=10){ playBip(880,0.10,0.28); }
-    else if(next>=1 && next<=4){ playBip(UP_NOTES[next],0.16,0.32); }
-    if(next<=0){ S.tl=0; playZero(); clearInterval(timer); advance(); }
-    else { S.tl=next; renderSession(); saveState();
-      var el=document.getElementById('count-display');
-      if(el){ el.classList.add('changed'); setTimeout(function(){ if(el) el.classList.remove('changed'); },280); } }
-  },1000);
-}
-function advance(){
-  var l=LVL[S.exIdx][S.week-1];
-  if(S.phase==="work"){
-    if(S.setIdx<l.s-1){ go("restSet", S.exIdx, S.setIdx, l.r); }
-    else if(S.exIdx<EX.length-1){ go("restEx", S.exIdx, S.setIdx, REST_EX); }
-    else { setTimeout(function(){ vibe([300,100,300,100,500]); }, 900); S.done=true; saveSession(); clearState(); renderSession(); }
-  } else if(S.phase==="restSet"){
-    go("work", S.exIdx, S.setIdx+1, LVL[S.exIdx][S.week-1].w);
-  } else if(S.phase==="restEx"){
-    var ni=S.exIdx+1; go("work", ni, 0, LVL[ni][S.week-1].w);
-  }
-}
-function go(phase, exIdx, setIdx, tl){
-  S.phase=phase; S.exIdx=exIdx; S.setIdx=setIdx; S.tl=tl; S.paused=false; S.showInfo=false;
-  vibe(80);
-  renderSession();
-  saveState();
-  startTick();
-}
-function togglePause(){ S.paused=!S.paused; renderSession(); }
-function toggleInfo(){ S.showInfo=!S.showInfo; renderSession(); }
-function quitSession(){ clearInterval(timer); S.running=false; goHome(); }
+    <button onclick="lancerVoyageEveil()" style="width:100%;padding:14px;border-radius:12px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:6px" id="voyage-eveil-btn">
+      ✧ Voyage Gamma 40 Hz
+    </button>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;text-align:center">Éveil et conscience élevée · les 9 chakras</p>
 
-// ── Navigation ───────────────────────────────────────────────────────────────────
-function setWeek(w){ S.week=w; renderHome(); }
-function setProgram(p){ S.prog=p; applyProgram(); renderHome(); }
-function showGuide(){ clearInterval(timer); S.screen="guide"; renderGuide(); }
-// prepare : ecran pret, le timer ne demarre PAS encore
-function prepareSession(){
-  getCtx();
-  clearInterval(timer);
-  clearState();
-  S.screen="ready"; S.exIdx=0; S.setIdx=0; S.phase="work"; S.tl=LVL[0][S.week-1].w; S.paused=false; S.done=false; S.running=false;
-  renderReady();
-}
-// begin : c'est ici que TOI tu lances le timer
-function beginSession(){
-  getCtx();
-  S.screen="session"; S.running=true;
-  S.phase="work"; S.tl=LVL[0][S.week-1].w; S.paused=false;
-  playStart();
-  renderSession();
-  saveState();
-  // le chrono demarre seulement a la fin du biiiip
-  setTimeout(function(){ vibe(80); startTick(); }, START_DURATION);
-}
-function goHome(){ clearInterval(timer); S.screen="home"; S.done=false; S.running=false; renderHome(); }
+    <button onclick="var l=document.getElementById('chakra-eveil-list');l.style.display=l.style.display==='none'?'block':'none';" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:8px">☯ Choisir un chakra</button>
+    <div id="chakra-eveil-list" style="display:none"></div>
+  </div>
+</div>
 
-applyProgram();
-var _sug=suggestNext();
-if(_sug){ S.prog=_sug.prog; applyProgram(); }
-renderHome();
-</script>
+<div class="page" id="page-favs">
+  <div class="header"><h1>⭐ Mes Favoris</h1><p>Fréquences que tu as mises en favori dans Minéraux <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div id="favs-list">
+    <div style="font-size:13px;color:var(--dim);text-align:center;padding:40px 0">Clique sur ⭐ dans l'onglet Minéraux pour ajouter ici</div>
+  </div>
+  <div id="favs-actions" style="display:none;margin-top:12px">
+    <button onclick="partagerFavs()" class="btn btn-green btn-block" style="margin-bottom:8px">📤 Partager mes favoris</button>
+    <div id="favs-share-box" style="display:none;background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:13px;color:var(--green);font-family:'JetBrains Mono',monospace;word-break:break-word;line-height:1.6;max-height:300px;overflow-y:auto;margin-bottom:8px"></div>
+    <button onclick="copierFavs()" id="favs-copy-btn" class="btn btn-blue btn-sm btn-block" style="display:none">📋 Copier le texte</button>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="exportUserData()" class="btn btn-amber btn-sm" style="flex:1" title="Sauvegarder playlists, favoris et historique en JSON">💾 Sauvegarder</button>
+      <button onclick="importUserDataPrompt()" class="btn btn-purple btn-sm" style="flex:1" title="Restaurer depuis un fichier JSON">📂 Restaurer</button>
+    </div>
+    <input type="file" id="ft-json-input" accept=".json,application/json" style="display:none" onchange="if(this.files[0])importUserData(this.files[0]);this.value='';">
+  </div>
+</div>
+
+<!-- Page Historique -->
+<div class="page" id="page-history">
+  <div class="header"><h1>Historique & Stats</h1><p>Sessions de écoute récentes <span class="help-link" onclick="toggleAide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span></p></div>
+  <div id="history-stats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px">
+    <div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Sessions</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-minutes">0m</div><div class="stat-label">Temps total</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-topfreq">—</div><div class="stat-label">Fréquence top</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Jours consécutifs</div></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Sessions récentes</div>
+    <div id="history-list">
+      <div class="history-empty">Aucune session pour le moment.<br>Lance une fréquence pour commencer.</div>
+    </div>
+    <button class="btn btn-secondary btn-sm btn-block" style="margin-top:10px" onclick="clearHistory()">Vider l'historique</button>
+  </div>
+</div>
+
+<!-- Modale aide -->
+<div id="help-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:400;overflow-y:auto;padding:20px;animation:fadeIn 0.25s">
+  <div style="max-width:500px;margin:20px auto;background:var(--s1);border-radius:16px;padding:20px;animation:modalIn 0.3s ease-out">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="margin:0;font-size:20px;color:var(--amber)">❓ Guide</h2>
+      <button onclick="toggleAide()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--dim)">✕</button>
+    </div>
+
+    <div id="help-accordion"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+
+<div id="page-player" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:300;overflow-y:auto;padding:0;flex-direction:column">
+  <div style="padding:20px 20px 0 20px;display:flex;align-items:center;justify-content:space-between">
+    <button onclick="closePlayer()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer">← Retour</button>
+    <span id="player-seq-label" style="font-size:12px;color:var(--muted)">S1</span>
+  </div>
+  <div id="player-resume-overlay" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:10;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px">
+    <div style="font-size:40px;margin-bottom:16px">⏸</div>
+    <div id="player-resume-name" style="font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px">—</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:32px">Session interrompue</div>
+    <button onclick="doResume()" style="padding:16px 32px;border-radius:16px;border:1.5px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:16px;font-weight:600;cursor:pointer">▶ Reprendre</button>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;text-align:center;min-height:60vh">
+    <!-- Badge type de séquence (PLAYLIST MATIN / PROTOCOLE / SYMPTÔME / etc.) -->
+    <div id="player-seq-badge" style="display:inline-block;padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">PLAYLIST</div>
+    <!-- Titre de la séquence (Playlist Matin, Anxiété Stress, Genou douloureux, etc.) -->
+    <div id="player-proto-name" style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:4px">—</div>
+    <!-- Sous-titre : type + position (ex: "Protocole · 2/5", "Séquence · 3/10") -->
+    <div id="player-seq-info" style="font-size:12px;color:var(--muted);margin-bottom:14px;min-height:14px">—</div>
+    <!-- Nom de la fréquence en cours (le protocole ou symptôme spécifique) -->
+    <div id="player-freq-name" style="font-size:18px;color:var(--green);font-weight:600;margin-bottom:4px;min-height:22px">—</div>
+    <!-- Détails : Hz + durée -->
+    <div id="player-freq-action" style="font-size:13px;color:var(--muted);margin-bottom:32px;min-height:18px">—</div>
+    <div style="position:relative;width:160px;height:160px;margin-bottom:12px">
+      <!-- Halo pulsant (Option B) -->
+      <div class="halo-pulse" id="player-halo"></div>
+      <svg id="player-clock-svg" viewBox="0 0 160 160" width="160" height="160" style="position:relative;z-index:1">
+        <circle cx="80" cy="80" r="74" fill="none" stroke="var(--border)" stroke-width="3"/>
+        <circle cx="80" cy="80" r="74" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="464.9" stroke-dashoffset="464.9" id="player-clock-arc" stroke-linecap="round" transform="rotate(-90 80 80)"/>
+        <line id="player-clock-min" x1="80" y1="80" x2="80" y2="22" stroke="var(--text)" stroke-width="3" stroke-linecap="round"/>
+        <line id="player-clock-sec" x1="80" y1="80" x2="80" y2="16" stroke="var(--green)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="80" cy="80" r="4" fill="var(--text)"/>
+        <text id="player-clock-text" x="80" y="110" text-anchor="middle" fill="var(--muted)" font-size="13" font-family="JetBrains Mono,monospace">--:--</text>
+      </svg>
+    </div>
+    <div id="player-progress-label" style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:32px;letter-spacing:1px">— / —</div>
+    <div style="width:100%;max-width:320px;height:4px;background:var(--border);border-radius:4px;margin-bottom:24px;overflow:hidden">
+      <div id="player-progress-bar" style="height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 1s linear"></div>
+    </div>
+    <!-- Slider de volume -->
+    <div class="volume-control" style="margin-bottom:32px">
+      <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="25" aria-label="Volume">
+      <span id="volume-value" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);min-width:32px;text-align:right">25%</span>
+    </div>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center">
+      <button id="player-pause-btn" onclick="togglePause()" class="btn btn-green btn-lg" style="min-width:120px">⏸ Pause</button>
+      <button onclick="exportWav()" class="btn btn-blue" title="Télécharger en WAV">⬇ WAV</button>
+      <button onclick="stopAudio();closePlayer()" class="btn btn-secondary" title="Arrêter">⏹</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
+
+
+1688 Sourcing
+
+
+1688找供应商
+
+
+Copy
+
+
+Translate
+
+Search for similar products on 1688
+
+
+❯
+
+
+
