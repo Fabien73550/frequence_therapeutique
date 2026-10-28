@@ -80,7 +80,7 @@
     <span>20 Hz</span><span style="color:var(--green)">← glisser →</span><span>20 000 Hz</span>
   </div>
   <button id="btn-live-tone" onclick="toggleLiveTone()" class="btn btn-blue btn-block" style="margin-bottom:8px">▶ Lancer l'écoute</button>
-  <button onclick="document.getElementById('ft-wav-input').click()" class="btn btn-secondary btn-sm btn-block" title="Importer un WAV partagé par un autre utilisateur">📥 Importer un WAV</button>
+  <button onclick="document.getElementById('ft-wav-input').click()" class="btn btn-secondary btn-sm btn-block" title="Importer un fichier partagé par un autre utilisateur (.wav ou .flac)">📥 Importer</button>
   </div>
   <div class="card"><div class="card-label">Onde binaurale</div><div class="chips" id="onde-chips"></div></div>
   <div class="card"><div class="card-label">Minuteur</div><div class="timer-chips" id="timer-chips"></div></div>
@@ -213,7 +213,7 @@
       style="padding:8px 9px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-family:'Outfit',sans-serif;font-size:15px;cursor:pointer;white-space:nowrap;line-height:1;display:flex;align-items:center;justify-content:center">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
     </button>
-    <button onclick="exportWav()" title="Télécharger le son en .wav"
+    <button onclick="exportFlac()" title="Télécharger le son en .flac"
       style="padding:8px 9px;border-radius:10px;border:1px solid var(--blue-border);background:var(--blue-bg);color:var(--blue);font-family:'Outfit',sans-serif;font-size:15px;cursor:pointer;white-space:nowrap;line-height:1">
       📤
     </button>
@@ -404,7 +404,7 @@
     </div>
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center">
       <button id="player-pause-btn" onclick="togglePause()" class="btn btn-green btn-lg" style="min-width:120px">⏸ Pause</button>
-      <button onclick="exportWav()" class="btn btn-blue" title="Télécharger en WAV">⬇ WAV</button>
+      <button onclick="exportFlac()" class="btn btn-blue" title="Télécharger en FLAC (sans perte)">⬇ FLAC</button>
       <button onclick="stopAudio();closePlayer()" class="btn btn-secondary" title="Arrêter">⏹</button>
     </div>
   </div>

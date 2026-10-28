@@ -122,6 +122,52 @@ function estBase9(hz) {
   return s === '9';
 }
 
+// ===== TRANSPOSITION PAR OCTAVES (plage 70-200 Hz, mode Auralis) =====
+// La valeur d'origine reste la reference : listes, protocoles, sauvegardes.
+// Seule la valeur ECOUTEE est transposee par octaves (x2 / /2 uniquement),
+// puis reajustee au dernier chiffre pour rester en base 9 (somme = 9).
+var OCT_MIN=70,OCT_MAX=200,HZ_DIV_LAVOIE=16,octaveOn=true;
+function sommeChiffres9(v){
+  var t=String(v).replace(".","").replace("-","");
+  if(!t||/[^0-9]/.test(t))return false;
+  var n=0;for(var i=0;i<t.length;i++)n+=t.charCodeAt(i)-48;
+  while(n>9){var u=0;while(n>0){u+=n%10;n=Math.floor(n/10);}n=u;}
+  return n===9;
+}
+function octavier(hz){
+  if(!(hz>0))return hz;
+  var v=hz/HZ_DIV_LAVOIE,k=0;
+  while(v>=OCT_MAX&&k<40){v=v/2;k++;}
+  while(v<OCT_MIN&&k>-40){v=v*2;k--;}
+  return v;
+}
+function base9Affiche(hz){
+  var pas=[0.0001,0.001,0.01,0.1];
+  for(var p=0;p<pas.length;p++){
+    var st=pas[p],n0=Math.round(hz/st);
+    for(var k=0;k<=20;k++){
+      var c=[n0,n0+k,n0-k];
+      for(var i=0;i<3;i++){
+        var v=parseFloat((c[i]*st).toFixed(4));
+        if(v>0&&sommeChiffres9(v))return v;
+      }
+    }
+  }
+  return parseFloat(hz.toFixed(4));
+}
+function hzSortie(hz){
+  if(!hz)return hz;
+  if(!octaveOn)return hz;
+  return base9Affiche(octavier(hz));
+}
+function freqGauche(){return hzSortie(baseHz);}
+function hzAff(hz){
+  if(!(hz>0))return hz;
+  var v=hzSortie(hz);
+  return Math.round(v*100)/100;
+}
+
+
 let accEl=document.getElementById('help-accordion');
 let guideSections=[];
 if(accEl){
@@ -267,14 +313,14 @@ function toggleLiveTone(){
 function onBinSlider(){
   let v=parseInt(document.getElementById("bin-slider").value);
   document.getElementById("bin-hz-input").value=v;
-  baseHz=v;currentLabel=v+" Hz";
+  baseHz=v;currentLabel=hzAff(v)+" Hz";
   updateDisplays();
   if(playing&&leftOsc&&rightOsc){
-    leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
-    rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
+    leftOsc.frequency.setTargetAtTime(hzSortie(baseHz),audioCtx.currentTime,0.02);
+    rightOsc.frequency.setTargetAtTime(hzSortie(baseHz)+diff,audioCtx.currentTime,0.02);
   }else if(liveToneActive&&liveCtx){
-    liveLeft.frequency.setTargetAtTime(baseHz,liveCtx.currentTime,0.02);
-    liveRight.frequency.setTargetAtTime(baseHz+diff,liveCtx.currentTime,0.02);
+    liveLeft.frequency.setTargetAtTime(hzSortie(baseHz),liveCtx.currentTime,0.02);
+    liveRight.frequency.setTargetAtTime(hzSortie(baseHz)+diff,liveCtx.currentTime,0.02);
   }
 }
 let liveCtx=null,liveLeft=null,liveRight=null;
@@ -292,8 +338,8 @@ function startLiveTone(){
     merger.connect(g);g.connect(liveCtx.destination);
     liveLeft.start();liveRight.start();
   }
-  liveLeft.frequency.setTargetAtTime(baseHz,liveCtx.currentTime,0.02);
-  liveRight.frequency.setTargetAtTime(baseHz+diff,liveCtx.currentTime,0.02);
+  liveLeft.frequency.setTargetAtTime(hzSortie(baseHz),liveCtx.currentTime,0.02);
+  liveRight.frequency.setTargetAtTime(hzSortie(baseHz)+diff,liveCtx.currentTime,0.02);
 }
 function stopLiveTone(){
   if(liveLeft){liveLeft.stop();liveLeft=null;}
@@ -305,24 +351,24 @@ function onBinInput(){
   if(isNaN(v))return;
   v=Math.min(20000,Math.max(20,v));
   document.getElementById("bin-slider").value=v;
-  baseHz=v;currentLabel=v+" Hz";
+  baseHz=v;currentLabel=hzAff(v)+" Hz";
   updateDisplays();
   if(playing&&leftOsc&&rightOsc){
-    leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
-    rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
+    leftOsc.frequency.setTargetAtTime(hzSortie(baseHz),audioCtx.currentTime,0.02);
+    rightOsc.frequency.setTargetAtTime(hzSortie(baseHz)+diff,audioCtx.currentTime,0.02);
   }else if(liveToneActive&&liveCtx){
-    liveLeft.frequency.setTargetAtTime(baseHz,liveCtx.currentTime,0.02);
-    liveRight.frequency.setTargetAtTime(baseHz+diff,liveCtx.currentTime,0.02);
+    liveLeft.frequency.setTargetAtTime(hzSortie(baseHz),liveCtx.currentTime,0.02);
+    liveRight.frequency.setTargetAtTime(hzSortie(baseHz)+diff,liveCtx.currentTime,0.02);
   }
 }
 function onCustomSlider(){
   let v=parseInt(document.getElementById("custom-slider").value);
   document.getElementById("custom-hz-input").value=v;
-  baseHz=v;currentLabel=v+" Hz";
+  baseHz=v;currentLabel=hzAff(v)+" Hz";
   updateDisplays();
   if(playing&&leftOsc&&rightOsc){
-    leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
-    rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
+    leftOsc.frequency.setTargetAtTime(hzSortie(baseHz),audioCtx.currentTime,0.02);
+    rightOsc.frequency.setTargetAtTime(hzSortie(baseHz)+diff,audioCtx.currentTime,0.02);
   }
 }
 function onCustomInput(){
@@ -330,11 +376,11 @@ function onCustomInput(){
   if(isNaN(v))return;
   v=Math.min(10000,Math.max(20,v));
   document.getElementById("custom-slider").value=v;
-  baseHz=v;currentLabel=v+" Hz";
+  baseHz=v;currentLabel=hzAff(v)+" Hz";
   updateDisplays();
   if(playing&&leftOsc&&rightOsc){
-    leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.02);
-    rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.02);
+    leftOsc.frequency.setTargetAtTime(hzSortie(baseHz),audioCtx.currentTime,0.02);
+    rightOsc.frequency.setTargetAtTime(hzSortie(baseHz)+diff,audioCtx.currentTime,0.02);
   }
 }
 
@@ -349,14 +395,14 @@ function addToPlaylist(hzOrSlot, d, nom, slot, source){
     let s=hzOrSlot;
     let hz=parseInt(document.getElementById("bin-hz-input").value)||baseHz;
     let dur=Math.round(Math.max(10,Math.min(45,6000/hz)));
-    playlists[s].push({hz:hz,d:dur,nom:hz+" Hz",source:""});
+    playlists[s].push({hz:hz,d:dur,nom:hzAff(hz)+" Hz",source:""});
     savePlaylist(s);renderPlaylist(s);
   } else {
     // Mode Minéraux/Protocoles : addToPlaylist(hz, d, nom, slot, source)
     let s=slot||"matin";
-    playlists[s].push({hz:hzOrSlot,d:d||10,nom:nom||hzOrSlot+" Hz",source:source||""});
+    playlists[s].push({hz:hzOrSlot,d:d||10,nom:nom||hzAff(hzOrSlot)+" Hz",source:source||""});
     savePlaylist(s);renderPlaylist(s);
-    showToast((nom||hzOrSlot+" Hz")+" → "+(s==="matin"?"☀️ Matin":"🌙 Soir"));
+    showToast((nom||hzAff(hzOrSlot)+" Hz")+" → "+(s==="matin"?"☀️ Matin":"🌙 Soir"));
   }
 }
 
@@ -556,7 +602,7 @@ function renderSavedPlaylists(){
     var items=savedPlaylists[nom];
     var listHtml="";
     items.forEach(function(item,i){
-      listHtml+="<div style='font-size:12px;color:var(--green);padding:3px 0;border-bottom:1px solid var(--border)'>"+(i+1)+". "+item.nom+" — "+item.hz+" Hz — "+item.d+" min</div>";
+      listHtml+="<div style='font-size:12px;color:var(--green);padding:3px 0;border-bottom:1px solid var(--border)'>"+(i+1)+". "+item.nom+" — "+hzAff(item.hz)+" Hz — "+item.d+" min</div>";
     });
     listHtml+="<div style='display:flex;gap:8px;margin-top:10px;'>"
       +"<button onclick='loadSavedInto(\""+nom.replace(/"/g,'')+"\",\"matin\")' style='flex:1;font-size:12px;padding:8px;border-radius:8px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer'>☀ Charger dans Matin</button>"
@@ -764,7 +810,7 @@ function init(){
     b.onclick=function(){
       document.querySelectorAll("#onde-chips .chip").forEach(function(x,j){x.className="chip"+(j===i?" b":"");});
       diff=o.diff;updateDisplays();
-      if(playing&&leftOsc&&rightOsc){leftOsc.frequency.setTargetAtTime(baseHz,audioCtx.currentTime,0.05);rightOsc.frequency.setTargetAtTime(baseHz+diff,audioCtx.currentTime,0.05);}
+      if(playing&&leftOsc&&rightOsc){leftOsc.frequency.setTargetAtTime(hzSortie(baseHz),audioCtx.currentTime,0.05);rightOsc.frequency.setTargetAtTime(hzSortie(baseHz)+diff,audioCtx.currentTime,0.05);}
     };
     oc.appendChild(b);
   });
@@ -832,7 +878,7 @@ function buildEveil(){
   SOLFEGE.forEach(function(s){
     let el=document.createElement("div");
     el.className="freq-item";
-    el.innerHTML="<div class='freq-item-left'><span class='freq-item-name'>"+s.nom+"</span> <span class='freq-item-sub'>"+s.action+"</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+s.hz+" <span class='freq-item-dur'>"+Math.round(Math.max(10,Math.min(45,6000/s.hz)))+"m</span></span></div>";
+    el.innerHTML="<div class='freq-item-left'><span class='freq-item-name'>"+s.nom+"</span> <span class='freq-item-sub'>"+s.action+"</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+hzAff(s.hz)+" <span class='freq-item-dur'>"+Math.round(Math.max(10,Math.min(45,6000/s.hz)))+"m</span></span></div>";
     el.onclick=function(){loadFreq(s.hz,Math.round(Math.max(10,Math.min(45,6000/s.hz))),s.nom);openPlayer();};
     sl.appendChild(el);
   });
@@ -886,7 +932,7 @@ function updateVoyageBtn(){
 
 function loadFreq(hz,d,nom){
   function go(){
-    baseHz=hz;timerMin=d;currentLabel=nom+" - "+hz+" Hz";
+    baseHz=hz;timerMin=d;currentLabel=nom+" - "+hzAff(hz)+" Hz";
     setTimerChip(d);updateDisplays();
     openPlayer();
     startAudio();
@@ -903,8 +949,8 @@ function setTimerChip(d){
 }
 
 function updateDisplays(){
-  document.getElementById("f-left").textContent=baseHz;
-  document.getElementById("f-right").textContent=(baseHz+diff).toFixed(1);
+  document.getElementById("f-left").textContent=hzAff(baseHz);
+  document.getElementById("f-right").textContent=(hzSortie(baseHz)+diff).toFixed(1);
   let beatEl=document.getElementById("f-beat");beatEl.textContent=diff%1===0?diff:diff.toFixed(1);beatEl.style.color="var(--blue)";
   document.getElementById("pb-freq").textContent=currentLabel+" - D "+diff+" Hz";
   updateTimerDisplay();
@@ -942,7 +988,7 @@ function startAudio(){
   gainNode.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+2);
   leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
   leftOsc.type="sine";rightOsc.type="sine";
-  leftOsc.frequency.value=baseHz;rightOsc.frequency.value=baseHz+diff;
+  leftOsc.frequency.value=hzSortie(baseHz);rightOsc.frequency.value=hzSortie(baseHz)+diff;
   const lg=audioCtx.createGain();const rg=audioCtx.createGain();
   lg.gain.value=1;rg.gain.value=1;
   leftOsc.connect(lg);rightOsc.connect(rg);
@@ -1077,10 +1123,10 @@ function partagerFavs(){
   favs.forEach(function(nom){
     if(nom==='matin_playlist'){
       txt+="\n☀ PLAYLIST MATIN :\n";
-      playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
+      playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+hzAff(f.hz)+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
     } else if(nom==='soir_playlist'){
       txt+="\n☽ PLAYLIST SOIR :\n";
-      playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
+      playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+hzAff(f.hz)+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
     }
   });
   if(freqs.length>0){
@@ -1103,11 +1149,11 @@ function partagerUnFav(nom){
   let freqs=[];
   if(nom==='matin_playlist'){
     txt+="☀ PLAYLIST MATIN :\n";
-    playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
+    playlists['matin'].forEach(function(f){txt+="  • "+f.nom+" — "+hzAff(f.hz)+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
     link+=("matin_"+freqs.join("_"));
   } else if(nom==='soir_playlist'){
     txt+="☽ PLAYLIST SOIR :\n";
-    playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+f.hz+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
+    playlists['soir'].forEach(function(f){txt+="  • "+f.nom+" — "+hzAff(f.hz)+" Hz — "+f.d+"m\n";freqs.push(f.hz);});
     link+=("soir_"+freqs.join("_"));
   }
   txt+="\n📱 Clique pour ouvrir et lancer :\n"+link;
@@ -1219,7 +1265,7 @@ function buildMineraux(){
     right.style.cssText="display:flex;align-items:center;gap:6px;flex-shrink:0";
     let hz=document.createElement("span");
     hz.style.cssText="font-size:12px;color:var(--green);margin-right:4px";
-    hz.textContent=m.hz+" "+m.duree+"m";
+    hz.textContent=hzAff(m.hz)+" "+m.duree+"m";
     let btnM=document.createElement("button");
     btnM.className="add-btn matin";btnM.textContent="+M";
     btnM.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"matin");};
@@ -1287,7 +1333,7 @@ function buildMineraux(){
             if(!m)return;
             let btn=document.createElement("button");
             btn.style.cssText="padding:4px 8px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:11px;cursor:pointer";
-            btn.textContent=nom.split(" (")[0]+" — "+m.hz+" Hz";
+            btn.textContent=nom.split(" (")[0]+" — "+hzAff(m.hz)+" Hz";
             btn.onclick=function(){loadFreq(m.hz,m.duree,m.nom);openPlayer();};
             freqRow.appendChild(btn);
           });
@@ -1362,7 +1408,7 @@ function filterMinGlobal(query){
     right.style.cssText="display:flex;align-items:center;gap:6px;flex-shrink:0";
     let hz=document.createElement("span");
     hz.style.cssText="font-size:12px;color:var(--green)";
-    hz.textContent=m.hz+" "+m.duree+"m";
+    hz.textContent=hzAff(m.hz)+" "+m.duree+"m";
     let btnM=document.createElement("button");
     btnM.className="add-btn matin";btnM.textContent="+M";
     btnM.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"matin");};
@@ -1412,7 +1458,7 @@ function buildProtocoles(){
     bodyHTML+="<button class='proto-freq-btn s1' style='font-size:11px' onclick='launchSequence("+pi+",\"s1\")'>Lancer S1</button>";
     bodyHTML+="</div><div class='proto-freq-row'>";
     p.s1.forEach(function(f){
-      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s1' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\",\"matin\",\"\",\""+p.nom+"\")'>+ PL</button></div>";
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s1' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+hzAff(f.hz)+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\",\"matin\",\"\",\""+p.nom+"\")'>+ PL</button></div>";
     });
     bodyHTML+="</div></div>";
     bodyHTML+="<div class='proto-section'>";
@@ -1421,7 +1467,7 @@ function buildProtocoles(){
     bodyHTML+="<button class='proto-freq-btn s2' style='font-size:11px' onclick='launchSequence("+pi+",\"s2\")'>Lancer S2</button>";
     bodyHTML+="</div><div class='proto-freq-row'>";
     p.s2.forEach(function(f){
-      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+f.hz+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\",\"matin\",\"\",\""+p.nom+"\")'>+ PL</button></div>";
+      bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+hzAff(f.hz)+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\",\"matin\",\"\",\""+p.nom+"\")'>+ PL</button></div>";
     });
     bodyHTML+="</div></div>";
     card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title' style='color:var(--text)'>"+p.nom+"</span><span class='proto-badge'>S1:"+durS1+"m S2:"+durS2+"m</span></div><div class='proto-body'>"+bodyHTML+"</div>";
@@ -1555,11 +1601,11 @@ function playNextInSequence(){
   const f=seqQueue[seqIndex];
   baseHz=f.hz;timerMin=f.d;
   if(seqType==="s1"||seqType==="s2"){
-    currentLabel=seqProtoName+" : "+f.hz+" Hz";
+    currentLabel=seqProtoName+" : "+hzAff(f.hz)+" Hz";
   } else if(seqProtoName&&seqType!=="playlist"){
     currentLabel=seqProtoName+" : "+f.n;
   } else {
-    currentLabel=f.n+" - "+f.hz+" Hz";
+    currentLabel=f.n+" - "+hzAff(f.hz)+" Hz";
   }
   if(seqEveilDiffs.length>seqIndex)diff=seqEveilDiffs[seqIndex];
   setTimerChip(f.d);updateDisplays();updateVoyageBtn();
@@ -1577,7 +1623,7 @@ function startAudioSequence(){
   gainNode.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+2);
   leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
   leftOsc.type="sine";rightOsc.type="sine";
-  leftOsc.frequency.value=baseHz;rightOsc.frequency.value=baseHz+diff;
+  leftOsc.frequency.value=hzSortie(baseHz);rightOsc.frequency.value=hzSortie(baseHz)+diff;
   const lg=audioCtx.createGain();const rg=audioCtx.createGain();
   lg.gain.value=1;rg.gain.value=1;
   leftOsc.connect(lg);rightOsc.connect(rg);
@@ -1609,7 +1655,7 @@ function startAudioSequence(){
 
 function launchSympSequence(list,type,nom){
   function go(){
-    seqQueue=list.map(function(item){return{n:item.hz+" Hz",hz:item.hz,d:item.d};});
+    seqQueue=list.map(function(item){return{n:hzAff(item.hz)+" Hz",hz:item.hz,d:item.d};});
     seqType=type;seqProtoName=nom;seqIndex=0;openPlayer();
     playNextInSequence();
   }
@@ -1657,14 +1703,14 @@ function buildSymptomes(){
       bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 \u2014 Nettoyage</div>";
       bodyHTML+="<button class='proto-freq-btn s1 symp-launch-s1' style='font-size:11px'>Lancer S1</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
-      s.s1.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s1'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
+      s.s1.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s1'>"+hzAff(item.hz)+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       bodyHTML+="<div class='proto-section' style='margin-top:8px'>";
       bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
       bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 \u2014 R\u00e9paration</div>";
       bodyHTML+="<button class='proto-freq-btn s2 symp-launch-s2' style='font-size:11px'>Lancer S2</button>";
       bodyHTML+="</div><div class='proto-freq-row'>";
-      (s.s2||[]).forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+item.hz+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
+      (s.s2||[]).forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+hzAff(item.hz)+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
       bodyHTML+="</div></div>";
       card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
       // Attach click handlers via JS to avoid JSON escaping issues
@@ -1743,7 +1789,7 @@ function buildPathogenes(){
         openPlayer();
         const bar=document.getElementById("sel-bar-path");
         bar.classList.add("show");
-        document.getElementById("sel-bar-path-txt").textContent=m.nom+" — "+m.hz+" Hz — "+calcD+" min chargé";
+        document.getElementById("sel-bar-path-txt").textContent=m.nom+" — "+hzAff(m.hz)+" Hz — "+calcD+" min chargé";
       };
       itemsContainer.appendChild(el);
     });
@@ -1894,7 +1940,7 @@ function doSympSearch(){
     html+='<button class="chip" onclick="playSearchResult('+ri+')" style="flex-direction:row;gap:6px;padding:8px 12px;font-size:12px">'
       +'<span style="font-size:10px;color:var(--muted);margin-right:2px">['+r.src+']</span>'
       +'<span style="color:var(--green);font-weight:600">'+r.nom+'</span>'
-      +' <span style="color:var(--blue);font-family:JetBrains Mono">'+r.hz+' Hz</span>'
+      +' <span style="color:var(--blue);font-family:JetBrains Mono">'+hzAff(r.hz)+' Hz</span>'
       +' <span style="font-size:10px;color:var(--muted)">'+r.d+'m</span>'
       +'</button>';
   });
@@ -1941,7 +1987,7 @@ function addAllToPlaylist(slot){
   html+='<div style="max-height:150px;overflow-y:auto;margin-bottom:12px">';
   r.forEach(function(item){
     html+='<div style="font-size:12px;color:var(--text);padding:3px 0;border-bottom:1px solid var(--border)">'
-      +'<span style="color:var(--blue);font-family:JetBrains Mono;font-size:11px">'+item.hz+' Hz</span>'
+      +'<span style="color:var(--blue);font-family:JetBrains Mono;font-size:11px">'+hzAff(item.hz)+' Hz</span>'
       +' <span>'+item.nom+'</span>'
       +' <span style="color:var(--muted);font-size:11px">'+item.d+'m</span>'
       +'</div>';
@@ -2048,7 +2094,7 @@ if('serviceWorker' in navigator){
     let hzList=parts.slice(1).map(Number);
     if(slot==='matin'||slot==='soir'){
       playlists[slot]=hzList.map(function(hz,idx){
-        return {hz:hz, d:Math.round(Math.max(10,Math.min(45,6000/hz))), nom:hz+' Hz'};
+        return {hz:hz, d:Math.round(Math.max(10,Math.min(45,6000/hz))), nom:hzAff(hz)+' Hz'};
       });
       savePlaylist(slot);
       renderPlaylist(slot);
@@ -2058,7 +2104,7 @@ if('serviceWorker' in navigator){
     let hzList2=f.split(',').map(Number);
     let slot2='partage';
     playlists[slot2]=hzList2.map(function(hz){
-      return {hz:hz, d:Math.round(Math.max(10,Math.min(45,6000/hz))), nom:hz+' Hz'};
+      return {hz:hz, d:Math.round(Math.max(10,Math.min(45,6000/hz))), nom:hzAff(hz)+' Hz'};
     });
     savePlaylist(slot2);
     renderPlaylist(slot2);
@@ -2174,7 +2220,7 @@ function updatePlayerDisplay(){
     }
     // Détails : Hz + durée + action
     let details = '';
-    if (cur.hz) details += cur.hz + ' Hz';
+    if (cur.hz) details += hzAff(cur.hz) + ' Hz';
     if (cur.d) details += (details ? ' · ' : '') + cur.d + ' min';
     if (cur.action) details += (details ? ' · ' : '') + cur.action;
     document.getElementById('player-freq-action').textContent = details || '—';
@@ -2186,7 +2232,7 @@ function updatePlayerDisplay(){
     // Mode fréquence libre (pas de séquence)
     document.getElementById('player-freq-name').textContent = currentLabel || '—';
     let details = '';
-    if (baseHz) details += baseHz + ' Hz';
+    if (baseHz) details += hzAff(baseHz) + ' Hz';
     if (timerMin) details += (details ? ' · ' : '') + timerMin + ' min';
     document.getElementById('player-freq-action').textContent = details || '—';
     document.getElementById('player-progress-label').textContent = '';
@@ -2443,7 +2489,7 @@ function renderHistory() {
       html += '<div class="history-item">' +
                 '<div>' + typeBadge +
                   '<span style="color:var(--text);font-weight:500">' + (e.label || '—') + '</span>' +
-                  ' <span class="history-freq">' + e.hz + ' Hz</span>' +
+                  ' <span class="history-freq">' + hzAff(e.hz) + ' Hz</span>' +
                   ' <span style="color:var(--muted);font-size:11px">· ' + e.duration + ' min</span>' +
                 '</div>' +
                 '<div class="history-date">' + dateStr + '</div>' +
@@ -2567,6 +2613,346 @@ function importUserData(file) {
   reader.readAsText(file);
 }
 
+// ===== ENCODEUR FLAC SANS PERTE (ecrit a la main, ES5, aucune bibliotheque) =====
+// FLAC 16 bits, blocksize fixe 4096, sous-trames FIXED 0-4 + Rice, CRC8/CRC16, MD5.
+
+var FLAC_BLOCK = 4096;
+var FLAC_MD5K = [0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,0xf57c0faf,0x4787c62a,0xa8304613,0xfd469501,
+0x698098d8,0x8b44f7af,0xffff5bb1,0x895cd7be,0x6b901122,0xfd987193,0xa679438e,0x49b40821,
+0xf61e2562,0xc040b340,0x265e5a51,0xe9b6c7aa,0xd62f105d,0x02441453,0xd8a1e681,0xe7d3fbc8,
+0x21e1cde6,0xc33707d6,0xf4d50d87,0x455a14ed,0xa9e3e905,0xfcefa3f8,0x676f02d9,0x8d2a4c8a,
+0xfffa3942,0x8771f681,0x6d9d6122,0xfde5380c,0xa4beea44,0x4bdecfa9,0xf6bb4b60,0xbebfbc70,
+0x289b7ec6,0xeaa127fa,0xd4ef3085,0x04881d05,0xd9d4d039,0xe6db99e5,0x1fa27cf8,0xc4ac5665,
+0xf4292244,0x432aff97,0xab9423a7,0xfc93a039,0x655b59c3,0x8f0ccc92,0xffeff47d,0x85845dd1,
+0x6fa87e4f,0xfe2ce6e0,0xa3014314,0x4e0811a1,0xf7537e82,0xbd3af235,0x2ad7d2bb,0xeb86d391];
+var FLAC_MD5S = [7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,
+5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,
+4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,
+6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21];
+
+var FLAC_CRC8_T = null, FLAC_CRC16_T = null;
+function flacCrc8Tab(){
+  if(!FLAC_CRC8_T){var t=new Uint8Array(256);for(var i=0;i<256;i++){var c=i;for(var j=0;j<8;j++){c=(c&0x80)?(((c<<1)^0x07)&0xFF):((c<<1)&0xFF);}t[i]=c;}FLAC_CRC8_T=t;}
+  return FLAC_CRC8_T;
+}
+function flacCrc16Tab(){
+  if(!FLAC_CRC16_T){var t=new Uint16Array(256);for(var i=0;i<256;i++){var c=i<<8;for(var j=0;j<8;j++){c=(c&0x8000)?(((c<<1)^0x8005)&0xFFFF):((c<<1)&0xFFFF);}t[i]=c;}FLAC_CRC16_T=t;}
+  return FLAC_CRC16_T;
+}
+function flacCrc8(a,off,len){var t=flacCrc8Tab(),c=0;for(var i=0;i<len;i++){c=t[c^a[off+i]];}return c&0xFF;}
+function flacCrc16(a,off,len){var t=flacCrc16Tab(),c=0;for(var i=0;i<len;i++){c=(((c<<8)&0xFFFF)^t[((c>>8)^a[off+i])&0xFF]);}return c&0xFFFF;}
+
+// --- buffer octets qui grandit ---
+function FlacBuf(cap){
+  this.a=new Uint8Array(cap||262144);this.n=0;
+}
+FlacBuf.prototype.reserve=function(k){
+  if(this.n+k<=this.a.length)return;
+  var cap=this.a.length;while(cap<this.n+k)cap*=2;
+  var b=new Uint8Array(cap);b.set(this.a.subarray(0,this.n));this.a=b;
+};
+FlacBuf.prototype.push=function(v){this.reserve(1);this.a[this.n++]=(v&0xFF);};
+
+// --- ecrivain de bits MSB d'abord, arithmetique pure (aucun decalage 32 bits) ---
+function FlacBW(buf){this.buf=buf;this.acc=0;this.n=0;}
+FlacBW.prototype.put=function(v,n){
+  if(n<=0)return;
+  if(n>30)n=30;
+  while(n>0){
+    var place=8-this.n;
+    var take=n<place?n:place;
+    var shift=n-take;
+    var chunk=shift>0?Math.floor(v/Math.pow(2,shift))%Math.pow(2,take):v%Math.pow(2,take);
+    this.acc=this.acc*Math.pow(2,take)+chunk;
+    this.n+=take;
+    n=shift;
+    if(this.n===8){this.buf.push(this.acc);this.acc=0;this.n=0;}
+  }
+};
+FlacBW.prototype.sbits=function(v,n){
+  var m=Math.pow(2,n);
+  if(v<0)v=v+m;
+  this.put(v,n);
+};
+FlacBW.prototype.unary=function(q){
+  while(q>=16){this.put(0,16);q-=16;}
+  this.put(1,q+1);
+};
+FlacBW.prototype.align=function(){if(this.n>0)this.put(0,8-this.n);};
+
+// --- MD5 incremental ---
+function FlacMd5(){
+  this.h0=0x67452301;this.h1=0xefcdab89|0;this.h2=0x98badcfe|0;this.h3=0x10325476|0;
+  this.b=new Uint8Array(64);this.bl=0;this.total=0;this.M=new Int32Array(16);
+}
+FlacMd5.prototype.block=function(d,off){
+  var M=this.M,i,x;
+  for(i=0;i<16;i++){x=off+i*4;M[i]=(d[x]|(d[x+1]<<8)|(d[x+2]<<16)|(d[x+3]<<24));}
+  var a=this.h0,b=this.h1,c=this.h2,dd=this.h3;
+  for(i=0;i<64;i++){
+    var f,g;
+    if(i<16){f=(b&c)|((~b)&dd);g=i;}
+    else if(i<32){f=(dd&b)|((~dd)&c);g=(5*i+1)&15;}
+    else if(i<48){f=b^c^dd;g=(3*i+5)&15;}
+    else{f=c^(b|(~dd));g=(7*i)&15;}
+    var tmp=dd;dd=c;c=b;
+    var s=(a+f+FLAC_MD5K[i]+M[g])|0;
+    var sh=FLAC_MD5S[i];
+    b=(b+((s<<sh)|(s>>>(32-sh))))|0;
+    a=tmp;
+  }
+  this.h0=(this.h0+a)|0;this.h1=(this.h1+b)|0;this.h2=(this.h2+c)|0;this.h3=(this.h3+dd)|0;
+};
+FlacMd5.prototype.update=function(d){
+  var i=0,len=d.length;this.total+=len;
+  while(i<len){
+    if(this.bl===0&&len-i>=64){this.block(d,i);i+=64;continue;}
+    var take=Math.min(64-this.bl,len-i);
+    this.b.set(d.subarray(i,i+take),this.bl);
+    this.bl+=take;i+=take;
+    if(this.bl===64){this.block(this.b,0);this.bl=0;}
+  }
+};
+FlacMd5.prototype.digest=function(){
+  var bits=this.total*8;
+  var pad=new Uint8Array((this.bl<56?56-this.bl:120-this.bl)+8);
+  pad[0]=0x80;
+  var hi=Math.floor(bits/4294967296),lo=bits%4294967296;
+  var p=pad.length-8;
+  pad[p]=lo&0xFF;pad[p+1]=Math.floor(lo/256)%256;pad[p+2]=Math.floor(lo/65536)%256;pad[p+3]=Math.floor(lo/16777216)%256;
+  pad[p+4]=hi&0xFF;pad[p+5]=Math.floor(hi/256)%256;pad[p+6]=Math.floor(hi/65536)%256;pad[p+7]=Math.floor(hi/16777216)%256;
+  this.update(pad);
+  var out=new Uint8Array(16);
+  var hs=[this.h0,this.h1,this.h2,this.h3];
+  for(var i=0;i<4;i++){var v=hs[i];out[i*4]=v&0xFF;out[i*4+1]=(v>>>8)&0xFF;out[i*4+2]=(v>>>16)&0xFF;out[i*4+3]=(v>>>24)&0xFF;}
+  return out;
+};
+
+// --- sous-trame : CONSTANT / VERBATIM / FIXED 0-4 + Rice (1 partition) ---
+function flacSubframe(bw,x,n,bps,scratch){
+  var i,v,min=x[0],max=x[0];
+  for(i=1;i<n;i++){v=x[i];if(v<min)min=v;if(v>max)max=v;}
+  if(min===max){bw.put(0,1);bw.put(0,6);bw.put(0,1);bw.sbits(min,bps);return;}
+  var maxO=n-1<4?n-1:4;
+  var u=scratch.u,bestU=scratch.best;
+  var bestO=-1,bestK=0,bestEst=1e18,bestN=0;
+  for(var o=0;o<=maxO;o++){
+    var n2=n-o,sum=0,e;
+    if(o===0){for(i=0;i<n2;i++){e=x[i];u[i]=e>=0?e*2:(-e*2-1);sum+=u[i];}}
+    else if(o===1){for(i=0;i<n2;i++){e=x[i+1]-x[i];u[i]=e>=0?e*2:(-e*2-1);sum+=u[i];}}
+    else if(o===2){for(i=0;i<n2;i++){e=x[i+2]-2*x[i+1]+x[i];u[i]=e>=0?e*2:(-e*2-1);sum+=u[i];}}
+    else if(o===3){for(i=0;i<n2;i++){e=x[i+3]-3*x[i+2]+3*x[i+1]-x[i];u[i]=e>=0?e*2:(-e*2-1);sum+=u[i];}}
+    else {for(i=0;i<n2;i++){e=x[i+4]-4*x[i+3]+6*x[i+2]-4*x[i+1]+x[i];u[i]=e>=0?e*2:(-e*2-1);sum+=u[i];}}
+    var mean=sum/n2;
+    var k=mean<1?0:Math.floor(Math.log(mean)/Math.LN2);
+    if(k<0)k=0;if(k>14)k=14;
+    for(var kk=k;kk>=k-1&&kk>=0;kk--){
+      var est=o*bps+10+n2*(kk+1)+sum/Math.pow(2,kk);
+      if(est<bestEst){bestEst=est;bestO=o;bestK=kk;bestN=n2;bestU.set(u.subarray(0,n2));}
+    }
+  }
+  var vEst=n*bps+10;
+  if(bestO<0||bestEst>vEst){
+    bw.put(0,1);bw.put(1,6);bw.put(0,1);
+    for(i=0;i<n;i++)bw.sbits(x[i],bps);
+    return;
+  }
+  bw.put(0,1);bw.put(8+bestO,6);bw.put(0,1);
+  for(i=0;i<bestO;i++)bw.sbits(x[i],bps);
+  bw.put(0,2);bw.put(0,4);bw.put(bestK,4);
+  var p2=Math.pow(2,bestK);
+  for(i=0;i<bestN;i++){
+    var uv=bestU[i];
+    bw.unary(Math.floor(uv/p2));
+    if(bestK>0)bw.put(uv%p2,bestK);
+  }
+}
+
+// --- flux FLAC ---
+function FlacStream(sr,ch,totalSamples,decorr){
+  this.sr=sr;this.ch=ch;this.total=0;this.totalExpected=totalSamples|0;
+  this.decorr=(decorr!==false)&&ch===2;
+  this.data=new FlacBuf(1048576);
+  this.L=new Int32Array(FLAC_BLOCK);this.R=new Int32Array(FLAC_BLOCK);this.S=new Int32Array(FLAC_BLOCK);
+  this.fill=0;this.nframe=0;
+  this.minFrame=0xFFFFFF;this.maxFrame=0;
+  this.md5=new FlacMd5();
+  this._mdb=new Uint8Array(FLAC_BLOCK*4);
+  this._scr={u:new Int32Array(FLAC_BLOCK+4),best:new Int32Array(FLAC_BLOCK+4)};
+  this._scr2={u:new Int32Array(FLAC_BLOCK+4),best:new Int32Array(FLAC_BLOCK+4)};
+}
+FlacStream.prototype._i16=function(v,f){
+  var a=f[v];if(a<-1)a=-1;else if(a>1)a=1;
+  return a<0?Math.trunc(a*0x8000):Math.trunc(a*0x7FFF);
+};
+FlacStream.prototype.push=function(fL,fR,len){
+  var i=0,j,j2;
+  while(i<len){
+    var take=Math.min(FLAC_BLOCK-this.fill,len-i);
+    for(j=0;j<take;j++){
+      var sl=this._i16(i+j,fL),srr=fR?this._i16(i+j,fR):sl;
+      this.L[this.fill+j]=sl;this.R[this.fill+j]=srr;
+    }
+    var mb=this._mdb,mo=0;
+    for(j2=0;j2<take;j2++){
+      var a=this.L[this.fill+j2],b2=this.R[this.fill+j2];
+      mb[mo++]=a&0xFF;mb[mo++]=Math.floor(a/256)&0xFF;mb[mo++]=b2&0xFF;mb[mo++]=Math.floor(b2/256)&0xFF;
+    }
+    this.md5.update(mb.subarray(0,mo));
+    this.fill+=take;this.total+=take;i+=take;
+    if(this.fill===FLAC_BLOCK){this._frame(FLAC_BLOCK);this.fill=0;}
+  }
+};
+FlacStream.prototype._frame=function(n){
+  var ch=this.ch,ls=this.decorr,i;
+  var start=this.data.n;
+  var bsCode=7;
+  if(n===4096)bsCode=12;else if(n===2048)bsCode=11;else if(n===1024)bsCode=10;
+  else if(n===512)bsCode=9;else if(n===256)bsCode=8;else if(n===8192)bsCode=13;
+  this.data.push(0xFF);this.data.push(0xF8);
+  this.data.push((bsCode<<4)|0);
+  this.data.push(((ls?8:(ch-1))<<4)|(4<<1));
+  var fn=this.nframe;
+  if(fn<0x80){this.data.push(fn);}
+  else if(fn<0x800){this.data.push(0xC0|Math.floor(fn/64));this.data.push(0x80|(fn%64));}
+  else if(fn<0x10000){this.data.push(0xE0|Math.floor(fn/4096));this.data.push(0x80|(Math.floor(fn/64)%64));this.data.push(0x80|(fn%64));}
+  else {this.data.push(0xF0|Math.floor(fn/262144));this.data.push(0x80|(Math.floor(fn/4096)%64));this.data.push(0x80|(Math.floor(fn/64)%64));this.data.push(0x80|(fn%64));}
+  if(bsCode===7){this.data.push(Math.floor((n-1)/256));this.data.push((n-1)%256);}
+  this.data.push(flacCrc8(this.data.a,start,this.data.n-start));
+  var bw=new FlacBW(this.data);
+  if(ls){
+    for(i=0;i<n;i++)this.S[i]=this.L[i]-this.R[i];
+    flacSubframe(bw,this.L,n,16,this._scr);
+    flacSubframe(bw,this.S,n,17,this._scr2);
+    bw.align();
+  }else{
+    flacSubframe(bw,this.L,n,16,this._scr);
+    if(ch===2)flacSubframe(bw,this.R,n,16,this._scr2);
+    bw.align();
+  }
+  var crc=flacCrc16(this.data.a,start,this.data.n-start);
+  this.data.push(Math.floor(crc/256));this.data.push(crc%256);
+  var fs=this.data.n-start;
+  if(fs<this.minFrame)this.minFrame=fs;
+  if(fs>this.maxFrame)this.maxFrame=fs;
+  this.nframe++;
+};
+FlacStream.prototype.finish=function(){
+  if(this.fill>0){var n=this.fill;this.fill=0;this._frame(n);}
+  var md5=this.md5.digest();
+  var total=this.totalExpected>0?this.totalExpected:this.total;
+  var out=new Uint8Array(4+4+34+this.data.n);
+  var p=0,i;
+  out[p++]=0x66;out[p++]=0x4C;out[p++]=0x61;out[p++]=0x43;
+  out[p++]=0x80;out[p++]=0x00;out[p++]=0x00;out[p++]=34;
+  function be16(v){out[p++]=Math.floor(v/256)%256;out[p++]=v%256;}
+  function be24(v){out[p++]=Math.floor(v/65536)%256;out[p++]=Math.floor(v/256)%256;out[p++]=v%256;}
+  be16(FLAC_BLOCK);be16(FLAC_BLOCK);
+  be24(this.minFrame===0xFFFFFF?0:this.minFrame);be24(this.maxFrame);
+  var sr=this.sr,chm=this.ch-1,bps=15;
+  out[p++]=Math.floor(sr/4096)%256;
+  out[p++]=Math.floor(sr/16)%256;
+  out[p++]=((sr%16)*16)+((chm%8)*2)+Math.floor(bps/16);
+  out[p++]=((bps%16)*16)+Math.floor(total/4294967296);
+  out[p++]=Math.floor(total/16777216)%256;
+  out[p++]=Math.floor(total/65536)%256;
+  out[p++]=Math.floor(total/256)%256;
+  out[p++]=total%256;
+  for(i=0;i<16;i++)out[p++]=md5[i];
+  out.set(this.data.a.subarray(0,this.data.n),p);
+  return out;
+};
+
+// ====== EXPORT FLAC (sans perte) ======
+// Bloc VORBIS_COMMENT type 4 portant FTMETA=<json> : conserve l'import (ftmd -> FTMETA).
+function flacVorbisBlock(jsonStr) {
+  const enc = new TextEncoder();
+  const vendor = enc.encode('ft-binaural-x 1');
+  const cmt = enc.encode('FTMETA=' + jsonStr);
+  const len = 4 + vendor.length + 4 + 4 + cmt.length;
+  const b = new Uint8Array(4 + len);
+  const v = new DataView(b.buffer);
+  b[0] = 0x84;                      // dernier bloc de metadonnees + type 4
+  b[1] = (len >> 16) & 0xFF;        // longueur sur 3 octets (entete FLAC = 4 o)
+  b[2] = (len >> 8) & 0xFF;
+  b[3] = len & 0xFF;
+  let p = 4;
+  v.setUint32(p, vendor.length, true); p += 4;
+  b.set(vendor, p); p += vendor.length;
+  v.setUint32(p, 1, true); p += 4;  // un seul commentaire
+  v.setUint32(p, cmt.length, true); p += 4;
+  b.set(cmt, p);
+  return b;
+}
+function exportFlac(hz, duration) {
+  if (!hz) hz = baseHz;
+  if (!duration) duration = timerMin || 10;
+  const label = currentLabel || (hz + ' Hz');
+  const diffVal = diff;
+  const rawHz = hz;
+  hz = hzSortie(hz);
+  const sampleRate = 44100;
+  const numSamples = Math.round(sampleRate * duration);
+  let offlineCtx;
+  try {
+    offlineCtx = new OfflineAudioContext(2, numSamples, sampleRate);
+  } catch (e) {
+    customAlert('Erreur', 'Impossible de generer le FLAC : ' + e.message, {icon:'❌'});
+    return;
+  }
+  const merger = offlineCtx.createChannelMerger(2);
+  const gain = offlineCtx.createGain();
+  gain.gain.value = masterVolume || 0.25;
+  const lo = offlineCtx.createOscillator(), ro = offlineCtx.createOscillator();
+  lo.type = 'sine'; ro.type = 'sine';
+  lo.frequency.value = hz;
+  ro.frequency.value = hz + diffVal;
+  const lg = offlineCtx.createGain(), rg = offlineCtx.createGain();
+  lg.gain.value = 1; rg.gain.value = 1;
+  lo.connect(lg); ro.connect(rg);
+  lg.connect(merger, 0, 0); rg.connect(merger, 0, 1);
+  merger.connect(gain); gain.connect(offlineCtx.destination);
+  lo.start(); ro.start();
+  customToast('⏳ Encodage FLAC...');
+  offlineCtx.startRendering().then(function(buffer) {
+    const n = buffer.length;
+    const L = buffer.getChannelData(0);
+    const R = buffer.numberOfChannels > 1 ? buffer.getChannelData(1) : L;
+    const st = new FlacStream(sampleRate, 2, n, false);
+    const CH = 8192;
+    for (let i = 0; i < n; i += CH) {
+      const k = Math.min(CH, n - i);
+      st.push(L.subarray(i, i + k), R.subarray(i, i + k), k);
+    }
+    const raw = st.finish();
+    const meta = JSON.stringify({
+      app: 'ft-binaural-x', version: 1, hz: rawHz, diff: diffVal,
+      duration: duration, label: label, exportedAt: new Date().toISOString()
+    });
+    const blk = flacVorbisBlock(meta);
+    const head = raw.subarray(0, 42);   // fLaC + entete + STREAMINFO (34 o)
+    const rest = raw.subarray(42);
+    head[4] = 0x00;                     // STREAMINFO n'est plus le dernier bloc
+    const out = new Uint8Array(head.length + blk.length + rest.length);
+    out.set(head, 0);
+    out.set(blk, head.length);
+    out.set(rest, head.length + blk.length);
+    const blob = new Blob([out], {type: 'audio/flac'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ft_' + (Math.round(hz * 100) / 100) + 'Hz_d' + diffVal + 'Hz_' + Math.round(duration) + 's.flac';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    customToast('✅ FLAC genere (' + Math.round(out.length / 1024) + ' Ko)');
+  }).catch(function(err) {
+    console.error('FLAC export error:', err);
+    customAlert('Erreur', 'Generation FLAC impossible : ' + err.message, {icon:'❌'});
+  });
+}
+
 // ============================================================
 // EXPORT WAV AVEC MÉTADonnÉES RIFF (chunk 'ftmd')
 // Permet à un autre utilisateur de l'app d'importer le WAV
@@ -2577,6 +2963,8 @@ function exportWavWithMetadata(hz, duration, label, diffVal) {
   if (!duration) duration = timerMin || 10;
   if (!label) label = currentLabel || (hz + ' Hz');
   if (!diffVal) diffVal = diff;
+  const rawHz = hz;
+  hz = hzSortie(hz);
   const sampleRate = 44100;
   const numSamples = sampleRate * duration;
   let offlineCtx;
@@ -2606,7 +2994,7 @@ function exportWavWithMetadata(hz, duration, label, diffVal) {
     const meta = JSON.stringify({
       app: 'ft-binaural-x',
       version: 1,
-      hz: hz,
+      hz: rawHz,
       diff: diffVal,
       duration: duration,
       label: label,
@@ -2675,21 +3063,53 @@ function exportWav(hz, duration) {
 }
 
 // Importer un WAV et charger sa fréquence si metadata présente
+
+// Lecture des metadonnees d'un FLAC exporte par l'appli (bloc VORBIS_COMMENT FTMETA=)
+function readFlacMeta(buf) {
+  const u8 = new Uint8Array(buf);
+  if (!(u8[0] === 0x66 && u8[1] === 0x4C && u8[2] === 0x61 && u8[3] === 0x43)) return null;
+  const view = new DataView(buf);
+  let off = 4;
+  while (off + 4 <= u8.length) {
+    const hdr = u8[off];
+    const type = hdr & 0x7F;
+    const last = hdr & 0x80;
+    const len = (u8[off + 1] << 16) | (u8[off + 2] << 8) | u8[off + 3];
+    if (type === 4) {
+      let p = off + 4;
+      const vlen = view.getUint32(p, true); p += 4 + vlen;
+      const cnt = view.getUint32(p, true); p += 4;
+      for (let i = 0; i < cnt; i++) {
+        const l = view.getUint32(p, true); p += 4;
+        const s = new TextDecoder().decode(new Uint8Array(buf, p, l)); p += l;
+        if (s.indexOf('FTMETA=') === 0) {
+          try { return JSON.parse(s.slice(7)); } catch (e) { return null; }
+        }
+      }
+    }
+    off += 4 + len;
+    if (last) break;
+  }
+  return null;
+}
+
 function importWavFile(file) {
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
       const buf = e.target.result;
       const view = new DataView(buf);
-      // Vérifier RIFF header
-      if (view.getUint8(0) !== 0x52 || view.getUint8(1) !== 0x49 ||
-          view.getUint8(2) !== 0x46 || view.getUint8(3) !== 0x46) {
-        throw new Error('Pas un fichier WAV');
+      const _u8 = new Uint8Array(buf);
+      const _isFlac = (_u8[0] === 0x66 && _u8[1] === 0x4C && _u8[2] === 0x61 && _u8[3] === 0x43);
+      // Vérifier l'en-tête (RIFF pour WAV, fLaC pour FLAC)
+      if (!_isFlac && (view.getUint8(0) !== 0x52 || view.getUint8(1) !== 0x49 ||
+          view.getUint8(2) !== 0x46 || view.getUint8(3) !== 0x46)) {
+        throw new Error('Pas un fichier WAV ou FLAC');
       }
       // Scanner les chunks pour trouver 'ftmd'
       let offset = 12; // après RIFF + WAVE
-      let meta = null;
-      while (offset < buf.byteLength - 8) {
+      let meta = _isFlac ? readFlacMeta(buf) : null;
+      while (!_isFlac && offset < buf.byteLength - 8) {
         const chunkId = String.fromCharCode(
           view.getUint8(offset), view.getUint8(offset+1),
           view.getUint8(offset+2), view.getUint8(offset+3)
@@ -2704,7 +3124,7 @@ function importWavFile(file) {
         offset += 8 + chunkSize + (chunkSize % 2); // padding
       }
       if (!meta) {
-        customAlert('WAV sans métadonnées', "Ce WAV ne contient pas de métadonnées Fréquences Thérapeutiques. Tu peux quand même l'écouter dans un lecteur audio externe.", {icon:'ℹ️'});
+        customAlert('Fichier sans métadonnées', "Ce fichier ne contient pas de métadonnées Fréquences Thérapeutiques. Tu peux quand même l'écouter dans un lecteur audio externe.", {icon:'ℹ️'});
         return;
       }
       // Charger la fréquence
@@ -2726,7 +3146,7 @@ function importWavFile(file) {
         {confirmLabel: 'Charger', icon: '🎵'}
       );
     } catch (err) {
-      customAlert('Erreur', 'Lecture du WAV impossible : ' + err.message, {icon:'❌'});
+      customAlert('Erreur', 'Lecture du fichier impossible : ' + err.message, {icon:'❌'});
     }
   };
   reader.readAsArrayBuffer(file);
@@ -2740,7 +3160,7 @@ function setupWavImport() {
   const input = document.createElement('input');
   input.type = 'file';
   input.id = 'ft-wav-input';
-  input.accept = '.wav,audio/wav';
+  input.accept = '.wav,.flac,audio/wav,audio/flac';
   input.style.display = 'none';
   input.addEventListener('change', function(e) {
     if (e.target.files && e.target.files[0]) {
