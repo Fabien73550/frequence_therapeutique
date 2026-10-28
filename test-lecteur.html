@@ -39,15 +39,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
   background:linear-gradient(90deg,var(--green),var(--amber));transition:width .4s linear}
 
 /* --- liste des etapes qui arrivent --- */
-.liste{width:100%;margin-top:22px;display:flex;flex-direction:column;gap:1px;
-       border-radius:12px;overflow:hidden;background:rgba(255,255,255,.04)}
-.et{display:flex;align-items:center;gap:11px;padding:12px 13px;border:none;
-    background:transparent;text-align:left;cursor:pointer;border-left:2px solid transparent}
+.liste{width:100%;margin-top:20px;display:flex;flex-direction:column}
+.et{display:flex;align-items:center;gap:11px;padding:12px 2px;border:none;
+    border-bottom:1px solid rgba(255,255,255,.07);background:transparent;text-align:left;
+    cursor:pointer;border-left:2px solid transparent;padding-left:9px}
+.et:last-child{border-bottom:none}
 .et .num{width:21px;height:21px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
          font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,158,44,.45)}
 .et .nom{flex:1;min-width:0;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.9}
 .et .meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);opacity:.75;flex-shrink:0}
-.et.actif{border-left-color:var(--green);background:rgba(0,255,186,.07)}
+.et.actif{border-left-color:var(--green);background:linear-gradient(90deg,rgba(0,255,186,.09),transparent 70%)}
 .et.actif .num{color:#04120e;background:var(--green);border-color:var(--green);font-weight:500}
 .et.actif .nom{color:var(--text);font-weight:500;opacity:1}
 .et.actif .meta{color:var(--green);opacity:1}
