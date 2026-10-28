@@ -1,32 +1,35 @@
 {
-  "name": "Fréquences Thérapeutiques",
-  "short_name": "Fréquences",
-  "description": "Fréquences, protocoles et binauraux — application d'écoute.",
-  "lang": "fr",
-  "dir": "ltr",
+  "name": "Fréquences Thérapeutiques Binaural X",
+  "short_name": "Fréquences ThQV",
+  "description": "Générateur de fréquences thérapeutiques binaurales — Marc-Alain Lavoie · Naturasounds",
   "start_url": "./index.html",
-  "scope": "./",
-  "id": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#080b12",
   "theme_color": "#080b12",
-  "categories": ["health", "music", "medical"],
+  "lang": "fr",
+  "categories": ["health", "lifestyle", "music"],
   "icons": [
     {
-      "src": "icone-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icone-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icone-maskable-512.png",
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
