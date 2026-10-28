@@ -20,12 +20,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .page{min-height:100dvh;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top)) 20px calc(14px + env(safe-area-inset-bottom))}
 
 /* --- barre haute : retour bien visible --- */
-.top{display:flex;align-items:center;justify-content:space-between;height:36px}
+.top{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;height:36px}
+.top .titre{text-align:center;font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .back{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,158,44,.55);
       background:linear-gradient(135deg,rgba(255,158,44,.40),rgba(255,158,44,.16));border-color:rgba(255,158,44,.70);color:var(--amber);
       display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.35)}
 .back:active{transform:scale(.96);background:rgba(255,158,44,.32)}
-.essai{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.essai{display:none}
 
 /* --- bloc central --- */
 .centre{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px 0 0}
@@ -33,10 +34,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .hz small{font-size:14px;color:var(--dim);margin-left:6px;letter-spacing:0;font-weight:400}
 .etape{font-size:12px;font-weight:400;color:var(--text)}
 .etape b{color:var(--green);font-weight:500}
-.compteur{margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);opacity:.8;letter-spacing:.5px}
+.compteur{margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);letter-spacing:.5px}
 .barre{width:100%;height:4px;border-radius:4px;background:var(--s3);overflow:hidden;margin-top:16px}
 .barre > i{display:block;height:100%;width:0%;border-radius:4px;
-  background:linear-gradient(90deg,var(--green),var(--amber));transition:width .4s linear}
+  background:var(--amber);transition:width .4s linear}
 
 /* --- liste des etapes qui arrivent --- */
 .liste{width:100%;margin-top:20px;display:flex;flex-direction:column}
@@ -60,7 +61,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .vol output{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);min-width:38px;text-align:right}
 input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:22px;background:transparent}
 input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:5px;
-  background:linear-gradient(90deg,var(--green),var(--amber))}
+  background:var(--amber)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
   background:#fff;margin-top:-6.5px;box-shadow:0 0 10px rgba(255,255,255,.4)}
 
@@ -82,7 +83,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
     <button class="back" aria-label="Retour" onclick="history.length>1?history.back():0">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <span class="essai">page de test</span>
+    <span class="titre" id="titre">Anti-stress biochimique</span><span></span>
   </div>
 
   <div class="centre">
@@ -166,7 +167,7 @@ function mmss(s){var m=Math.floor(s/60),x=s%60;return (m<10?'0':'')+m+':'+(x<10?
 function dessine(){
   var s=STEPS[i], total=s.d*60;
   $hz.innerHTML=hzAff(s.hz).toFixed(2).replace('.',',')+'<small>Hz</small>';
-  $et.innerHTML='<b>'+(i+1)+'/'+STEPS.length+'</b> · '+PROTO+' — '+s.n;
+  $et.innerHTML='<b>'+(i+1)+'/'+STEPS.length+'</b> · Étape en cours — '+s.n;
   $cp.textContent=mmss(ecoule)+' / '+mmss(total);
   $pr.style.width=(ecoule/total*100).toFixed(1)+'%';
   var html='';
