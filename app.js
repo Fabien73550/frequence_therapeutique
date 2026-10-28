@@ -323,13 +323,13 @@ function onBinSlider(){
     liveRight.frequency.setTargetAtTime(hzSortie(baseHz)+diff,liveCtx.currentTime,0.02);
   }
 }
-let liveCtx=null,liveLeft=null,liveRight=null;
+let liveCtx=null,liveLeft=null,liveRight=null,liveGain=null;
 function startLiveTone(){
   if(playing)return;
   if(!liveCtx){
     liveCtx=createAudioContext();
     let merger=liveCtx.createChannelMerger(2);
-    let g=liveCtx.createGain();g.gain.value=0.2;
+    let g=liveCtx.createGain();liveGain=g;g.gain.value=masterVolume;
     liveLeft=liveCtx.createOscillator();liveRight=liveCtx.createOscillator();
     liveLeft.type="sine";liveRight.type="sine";
     let lg=liveCtx.createGain();let rg=liveCtx.createGain();
@@ -344,7 +344,7 @@ function startLiveTone(){
 function stopLiveTone(){
   if(liveLeft){liveLeft.stop();liveLeft=null;}
   if(liveRight){liveRight.stop();liveRight=null;}
-  if(liveCtx){liveCtx.close();liveCtx=null;}
+  if(liveCtx){liveCtx.close();liveCtx=null;}liveGain=null;
 }
 function onBinInput(){
   let v=parseInt(document.getElementById("bin-hz-input").value);
@@ -985,7 +985,7 @@ function startAudio(){
   const merger=audioCtx.createChannelMerger(2);
   gainNode=audioCtx.createGain();
   gainNode.gain.setValueAtTime(0,audioCtx.currentTime);
-  gainNode.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+2);
+  gainNode.gain.linearRampToValueAtTime(masterVolume,audioCtx.currentTime+2);
   leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
   leftOsc.type="sine";rightOsc.type="sine";
   leftOsc.frequency.value=hzSortie(baseHz);rightOsc.frequency.value=hzSortie(baseHz)+diff;
@@ -1620,7 +1620,7 @@ function startAudioSequence(){
   const merger=audioCtx.createChannelMerger(2);
   gainNode=audioCtx.createGain();
   gainNode.gain.setValueAtTime(0,audioCtx.currentTime);
-  gainNode.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+2);
+  gainNode.gain.linearRampToValueAtTime(masterVolume,audioCtx.currentTime+2);
   leftOsc=audioCtx.createOscillator();rightOsc=audioCtx.createOscillator();
   leftOsc.type="sine";rightOsc.type="sine";
   leftOsc.frequency.value=hzSortie(baseHz);rightOsc.frequency.value=hzSortie(baseHz)+diff;
@@ -2121,6 +2121,9 @@ function openPlayer(){
   if(!p)return;
   p.style.display='flex';
   updatePlayerDisplay();
+  // Le curseur du lecteur n'existe qu'a partir d'ici : on le recale sur le volume reel
+  // (sinon il affiche 25 % alors que le volume memorise peut etre autre).
+  try { syncVolumeUI(); } catch(e) {}
 }
 function closePlayer(){
   let p=document.getElementById('page-player');
@@ -2368,6 +2371,47 @@ document.addEventListener('click', function(e) {
   }
 });
 
+
+// ===== VOLUME : point de passage unique =====
+// Applique le volume au lecteur principal ET a l'ecoute libre.
+// Toujours annuler les automations en attente : sinon la montee de 2 s programmee
+// au demarrage reprend la main et le gain revient a 0,25 (mesure du 28/10/2026).
+function appliquerVolume(){
+  const v = masterVolume;
+  if (gainNode && audioCtx) {
+    try {
+      gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+      gainNode.gain.setTargetAtTime(v, audioCtx.currentTime, 0.05);
+    } catch(e) {}
+  }
+  if (liveGain && liveCtx) {
+    try {
+      liveGain.gain.cancelScheduledValues(liveCtx.currentTime);
+      liveGain.gain.setTargetAtTime(v, liveCtx.currentTime, 0.05);
+    } catch(e) {}
+  }
+}
+function setVolumeDepuisCurseur(valeur){
+  const n = parseInt(valeur, 10);
+  masterVolume = (isNaN(n) ? 25 : Math.max(0, Math.min(100, n))) / 100;
+  appliquerVolume();
+  try { localStorage.setItem('ft_volume', masterVolume.toString()); } catch(e) {}
+  syncVolumeUI();
+}
+// Delegation : l'element du curseur est recree a chaque rendu du lecteur, donc un
+// listener pose sur l'element disparait avec lui (cause du curseur muet, 28/10/2026).
+(function(){
+  function estCurseurVolume(e){
+    const t = e.target;
+    return !!(t && t.id && (t.id === 'volume-slider' || t.id === 'volume-slider-bar'));
+  }
+  ['input','change'].forEach(function(ev){
+    document.addEventListener(ev, function(e){
+      if (estCurseurVolume(e)) setVolumeDepuisCurseur(e.target.value);
+    }, true);
+  });
+})();
+
 function setupVolumeSlider() {
   // Charger la valeur sauvegardée
   try {
@@ -2395,13 +2439,7 @@ function setupVolumeSlider() {
 
     // Handler commun
     function onVolumeChange() {
-      masterVolume = parseInt(slider.value) / 100;
-      // Appliquer au gainNode actuel si on est en train de jouer
-      if (gainNode && audioCtx) {
-        try { gainNode.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.05); } catch(e) {}
-      }
-      try { localStorage.setItem('ft_volume', masterVolume.toString()); } catch(e) {}
-      syncVolumeUI();
+      setVolumeDepuisCurseur(slider.value);
     }
 
     // Écouter plusieurs événements pour compatibilité maximale
@@ -2415,9 +2453,7 @@ function adjustVolume(delta) {
   let pct = Math.round(masterVolume * 100) + delta;
   pct = Math.max(0, Math.min(100, pct));
   masterVolume = pct / 100;
-  if (gainNode && audioCtx) {
-    try { gainNode.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.05); } catch(e) {}
-  }
+  appliquerVolume();
   try { localStorage.setItem('ft_volume', masterVolume.toString()); } catch(e) {}
   syncVolumeUI();
 }
@@ -3231,9 +3267,8 @@ startAudio = function() {
   _origStartAudio.apply(this, arguments);
   // Après démarrage, appliquer le volume master
   setTimeout(function() {
-    if (gainNode && audioCtx) {
-      try { gainNode.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.05); } catch(e) {}
-    }
+    // Le volume est deja la cible de la montee de 2 s : ne rien reappliquer ici,
+    // sinon on annule le fondu d'entree (aucun retour a 0,25 possible).
     startHalo();
     updateFreqRowAnim();
     addToHistory(currentLabel, baseHz, timerMin, seqType || 'libre');
@@ -3253,9 +3288,8 @@ const _origStartAudioSequence = startAudioSequence;
 startAudioSequence = function() {
   _origStartAudioSequence.apply(this, arguments);
   setTimeout(function() {
-    if (gainNode && audioCtx) {
-      try { gainNode.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.05); } catch(e) {}
-    }
+    // Le volume est deja la cible de la montee de 2 s : ne rien reappliquer ici,
+    // sinon on annule le fondu d'entree (aucun retour a 0,25 possible).
     startHalo();
     updateFreqRowAnim();
   }, 100);
