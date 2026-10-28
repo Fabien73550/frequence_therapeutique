@@ -61,7 +61,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .vol output{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);min-width:38px;text-align:right}
 input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:22px;background:transparent}
 input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:5px;
-  background:var(--amber)}
+  background:linear-gradient(to right,var(--amber) 0 var(--pct,50%),rgba(255,158,44,.22) var(--pct,50%) 100%)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
   background:#fff;margin-top:-6.5px;box-shadow:0 0 10px rgba(255,255,255,.4)}
 
@@ -197,8 +197,10 @@ $play.onclick=function(){joue?stop():start();};
 document.getElementById('next').onclick=function(){i=(i+1)%STEPS.length;ecoule=0;dessine();};
 document.getElementById('prev').onclick=function(){i=(i-1+STEPS.length)%STEPS.length;ecoule=0;dessine();};
 var $v=document.getElementById('v'),$vo=document.getElementById('vo');
-$v.oninput=function(){$vo.textContent=$v.value+' %';};
+function majVolume(){$v.style.setProperty('--pct',$v.value+'%');$vo.textContent=$v.value+' %';}
+$v.oninput=majVolume;$v.onchange=majVolume;
 dessine();
+majVolume();
 </script>
 </body>
 </html>
