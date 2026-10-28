@@ -168,6 +168,16 @@ function hzAff(hz){
 }
 
 
+// Marqueur de version visible en bas de l'aide (permet de savoir quelle version tourne)
+setTimeout(function(){
+  var acc=document.getElementById('help-accordion');
+  if(!acc)return;
+  var v=document.createElement('div');
+  v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
+  v.textContent='version 281026b';
+  acc.appendChild(v);
+},0);
+
 let accEl=document.getElementById('help-accordion');
 let guideSections=[];
 if(accEl){
@@ -2380,14 +2390,14 @@ function appliquerVolume(){
   const v = masterVolume;
   if (gainNode && audioCtx) {
     try {
-      gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
-      gainNode.gain.setTargetAtTime(v, audioCtx.currentTime, 0.05);
+      gainNode.gain.cancelScheduledValues(0);              // annule aussi la montee de 2 s
+      gainNode.gain.setValueAtTime(v, audioCtx.currentTime); // valeur immediate, sans rampe
     } catch(e) {}
   }
   if (liveGain && liveCtx) {
     try {
-      liveGain.gain.cancelScheduledValues(liveCtx.currentTime);
-      liveGain.gain.setTargetAtTime(v, liveCtx.currentTime, 0.05);
+      liveGain.gain.cancelScheduledValues(0);
+      liveGain.gain.setValueAtTime(v, liveCtx.currentTime);
     } catch(e) {}
   }
 }
