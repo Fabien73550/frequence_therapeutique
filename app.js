@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026i';
+  v.textContent='version 291026j';
   acc.appendChild(v);
 },0);
 
@@ -1519,14 +1519,14 @@ function buildProtocoles(){
       bodyHTML+="<div style='display:flex;flex-direction:column;gap:3px;align-items:center'><button class='proto-freq-btn s2' onclick='loadFreq("+f.hz+","+f.d+",\""+f.n+"\");openPlayer()'>"+ f.n+"<br><span style='font-size:11px'>"+hzAff(f.hz)+" Hz "+f.d+"m</span></button><button style='font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer' onclick='addFreqToPlaylist("+f.hz+","+f.d+",\""+f.n+"\",\"matin\",\"\",\""+p.nom+"\")'>+ PL</button></div>";
     });
     bodyHTML+="</div></div>";
-    card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title' style='color:var(--text)'>"+p.nom+"</span><span class='proto-badge'>S1:"+durS1+"m S2:"+durS2+"m</span></div><div class='proto-body'>"+bodyHTML+"</div>";
+    card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+p.nom+"</span><span class='proto-badge'>S1:"+durS1+"m S2:"+durS2+"m</span></div><div class='proto-body'>"+bodyHTML+"</div>";
     return card;
   }
   SECTIONS.forEach(function(sec){
     let secEl=document.createElement("div");
     secEl.style.cssText="margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden";
     let titreEl=document.createElement("div");
-    titreEl.style.cssText="font-size:14px;font-weight:700;color:var(--amber);padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
+    titreEl.style.cssText="font-size:13px;font-weight:600;color:var(--amber);padding:12px 14px;background:linear-gradient(90deg,rgba(255,158,44,.10),rgba(255,158,44,.02));cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
     let arrow=document.createElement("span");
     arrow.textContent="\u25BC";
     arrow.style.cssText="font-size:10px;transition:transform 0.3s;transform:rotate(-90deg)";
