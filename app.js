@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026m';
+  v.textContent='version 291026n';
   acc.appendChild(v);
 },0);
 
@@ -973,8 +973,10 @@ function buildEveil(){
 function lancerVoyageChakras(){
   function go(){
     seqQueue=CHAKRAS.map(function(c){return{n:c.nom,hz:c.hz,d:c.duree};});
+    seqEveilDiffs=CHAKRAS.map(function(){return 1.2;});
     seqType="chakras";seqProtoName="Voyage chakras";seqIndex=0;openPlayer();
     poserEtape(seqIndex);
+    diff=1.2;
   }
   if(playing){
     showConfirm("Session en cours","Arrêter la session et lancer le voyage des chakras ?",function(){stopAudio();go();},{confirmLabel:'Arrêter & lancer',icon:'⚠️'});
