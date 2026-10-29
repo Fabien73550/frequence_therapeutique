@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026n';
+  v.textContent='version 291026o';
   acc.appendChild(v);
 },0);
 
@@ -955,18 +955,30 @@ function buildEveil(){
     sl.appendChild(el);
   });
 
-  // Chakras G40
-  let cl=document.getElementById("chakra-eveil-list");
-  CHAKRAS.forEach(function(c){
-    let el=document.createElement("div");
-    el.className="freq-item";
-    el.innerHTML="<div class='freq-item-left'><span class='freq-item-name'>"+c.nom+"</span> <span class='freq-item-sub'>G 40 Hz · "+c.duree+"m</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+c.hz+" <span class='freq-item-dur'>+40Hz</span></span></div>";
-    el.onclick=function(){
-      diff=40;
-      loadFreq(c.hz,c.duree,c.nom+" G40");
-      openPlayer();
-    };
-    cl.appendChild(el);
+  // Chakras — une liste par voyage : Delta (1,2 Hz) et Gamma (40 Hz)
+  [{el:"chakra-delta-list",diff:1.2,suf:"D 1,2 Hz",tag:"D1,2"},
+   {el:"chakra-gamma-list",diff:40,suf:"G 40 Hz",tag:"G40"}].forEach(function(cfg){
+    let box=document.getElementById(cfg.el);
+    if(!box)return;
+    CHAKRAS.forEach(function(c){
+      let el=document.createElement("div");
+      el.className="freq-item";
+      el.innerHTML="<div class='freq-item-left'><span class='freq-item-name'>"+c.nom+"</span> <span class='freq-item-sub'>"+cfg.suf+" · "+c.duree+"m</span></div><div class='freq-item-right'><span class='freq-item-hz'>"+c.hz+" <span class='freq-item-dur'>+"+accFr(cfg.diff,cfg.diff%1===0?0:1)+" Hz</span></span></div>";
+      el.onclick=function(){
+        var nom=c.nom+" "+cfg.tag, hz=c.hz, dd=c.duree, df=cfg.diff;
+        // le battement n'est posé qu'au moment où le chargement a vraiment lieu
+        // (sinon une session en cours annulée laissait `diff` sur la mauvaise valeur)
+        if(playing){
+          showConfirm("Session en cours","Arrêter et charger "+nom+" ?",function(){diff=df;loadFreq(hz,dd,nom);},
+                      {confirmLabel:'Charger',icon:'🎵'});
+          return;
+        }
+        diff=df;
+        loadFreq(hz,dd,nom);
+        openPlayer();
+      };
+      box.appendChild(el);
+    });
   });
 }
 
@@ -2219,6 +2231,13 @@ function lpEchap(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/<
 function renderListeEtapes(){
   var el=document.getElementById('pl-liste');
   if(!el)return;
+  // Les voyages chakras n'affichent plus la liste des 9 chakras dans le lecteur :
+  // elle vit sur la page Éveil, sous Delta et sous Gamma.
+  if(seqType==='chakras'||seqType==='eveil_chakras'){
+    if(el.innerHTML!=='')el.innerHTML='';
+    el.dataset.sig='';
+    return;
+  }
   if(!(seqQueue&&seqQueue.length>0)){
     if(el.innerHTML!=='')el.innerHTML='';
     el.dataset.sig='';
