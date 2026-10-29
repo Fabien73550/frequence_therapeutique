@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Page test — symptômes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
+  --border:#242a3d;--border2:#2e3650;
+  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
+  --green:#00ffba;--blue:#3db5ff;--purple:#c77dff;--amber:#ff9e2c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+.page{min-height:100dvh;padding:calc(12px + env(safe-area-inset-top)) 20px calc(90px + env(safe-area-inset-bottom))}
+
+/* --- barre haute --- */
+.top{position:relative;height:40px}
+.titre{display:block;text-align:center;line-height:40px;padding:0 44px;font-size:14px;font-weight:500;
+  color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aide{position:absolute;left:0;top:2px;width:36px;height:36px;padding:0;cursor:pointer;border-radius:10px;
+  border:1px solid rgba(255,158,44,.70);background:linear-gradient(135deg,rgba(255,158,44,.40),rgba(255,158,44,.16));
+  color:var(--amber);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;
+  display:flex;align-items:center;justify-content:center}
+.top-droite{position:absolute;right:0;top:2px;display:flex;gap:4px}
+.rond-mini{width:36px;height:36px;padding:0;border-radius:10px;border:1px solid var(--border2);background:var(--s2);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.filet-top{height:2px;border-radius:2px;margin-top:8px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+.signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+.filet{height:1px;background:rgba(255,255,255,.07);margin:0}
+
+/* --- recherche --- */
+.rech{display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.10);
+  padding:16px 0 9px;margin-bottom:2px}
+.rech svg{width:15px;height:15px;flex-shrink:0;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round}
+.rech input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);
+  font-family:'Outfit',sans-serif;font-size:13px;padding:0}
+.rech input::placeholder{color:var(--dim)}
+
+/* --- selection en cours --- */
+.selection{display:flex;align-items:center;gap:8px;padding:12px 0 6px;font-size:11px;color:var(--muted)}
+.selection .pt{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
+.selection b{color:var(--green);font-weight:500}
+.selection .hz{font-family:'JetBrains Mono',monospace;color:var(--dim);font-size:10.5px}
+
+/* --- categories --- */
+.bloc{padding:16px 0 2px}
+.grp{width:100%;display:flex;align-items:center;gap:9px;padding:12px;border-radius:10px;border:none;
+  cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:6px;
+  background:linear-gradient(90deg,rgba(255,158,44,.10),rgba(255,158,44,.02))}
+.grp .nom{font-size:12.5px;font-weight:600;color:var(--amber);text-align:left;flex:1}
+.grp .compte{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim)}
+.grp .fl{font-size:10px;color:var(--muted);transition:transform .2s}
+.contenu{display:none}
+.contenu.ouvert{display:block}
+
+/* --- lignes de symptomes : degrade violet, comme le bandeau « Lancer Soir » --- */
+.min{width:100%;padding:10px 12px;border-radius:10px;border:none;text-align:left;cursor:pointer;
+  font-family:'Outfit',sans-serif;margin-bottom:5px;
+  background:linear-gradient(90deg,rgba(199,125,255,.16),rgba(199,125,255,.03))}
+.min .haut{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px}
+.min .nom{font-size:12.5px;color:var(--text);font-weight:500}
+.min .act{font-size:10px;color:var(--muted);margin-top:2px}
+.min .droite{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.min .plus{width:24px;height:24px;padding:0;border:none;border-radius:50%;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;line-height:1}
+.min .plus.m{background:rgba(255,158,44,.16);color:var(--amber)}
+.min .plus.s{background:rgba(199,125,255,.18);color:var(--purple)}
+.min .plus.joue{background:rgba(0,255,186,.20);color:var(--green)}
+
+/* --- detail : les frequences des deux sequences --- */
+.det{display:none;margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)}
+.min.ouvert .det{display:block}
+.seq{margin-bottom:7px}
+.seq:last-child{margin-bottom:0}
+.lab{display:block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.lab.s1{color:var(--amber)}
+.lab.s2{color:var(--purple)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 8px;border-radius:8px;white-space:nowrap}
+.chip.s1{background:linear-gradient(90deg,rgba(255,158,44,.16),rgba(255,158,44,.04));color:var(--amber)}
+.chip.s2{background:linear-gradient(90deg,rgba(199,125,255,.18),rgba(199,125,255,.05));color:var(--purple)}
+.chip i{font-style:normal;color:var(--dim)}
+
+.note{text-align:center;font-size:9.5px;color:var(--muted);opacity:.55;margin-top:20px;line-height:1.5}
+.vide{text-align:center;font-size:11px;color:var(--dim);padding:14px 0;display:none}
+
+/* --- nav --- */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--border);
+  display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nv{flex:1;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;
+  background:none;border:none;color:var(--amber);font-family:'Outfit',sans-serif;font-size:9.5px;cursor:pointer;position:relative}
+.nv.actif{color:var(--green)}
+.nv.actif::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2.5px;border-radius:0 0 3px 3px;background:var(--green)}
+.nv svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <button class="aide" aria-label="Aide">?</button>
+    <span class="titre">Symptômes</span>
+    <div class="top-droite">
+      <button class="rond-mini" aria-label="Volume">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
+      <button class="rond-mini" aria-label="Thème">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="filet-top"></div>
+  <div class="signature">Appuyer sur un symptôme pour ouvrir ses séquences</div>
+
+  <div class="rech">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input type="text" id="rech" placeholder="Chercher… migraine, stress, genou">
+  </div>
+
+  <div class="selection" id="selection" style="display:none">
+    <span class="pt"></span>
+    <span>Sélection — <b id="sel-nom">—</b> <span class="hz" id="sel-hz"></span></span>
+  </div>
+
+  <div class="filet" style="margin-top:10px"></div>
+
+  <div class="bloc" id="categories"></div>
+  <div class="vide" id="vide">Aucun symptôme ne correspond</div>
+
+  <div class="note">Page de test — rien n'est publié dans l'application</div>
+</div>
+
+<nav class="nav">
+  <a class="nv" href="index.html" aria-label="Binaural">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>Binaural
+  </a>
+  <a class="nv" href="test-perso.html" aria-label="Perso">
+    <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Perso
+  </a>
+  <a class="nv" href="test-mineraux.html" aria-label="Minéraux">
+    <svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/></svg>Minéraux
+  </a>
+  <span class="nv actif" aria-label="Symptômes">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 7v8M7 11h8"/></svg>Symptômes
+  </span>
+  <a class="nv" href="index.html" aria-label="Favoris">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favoris
+  </a>
+  <a class="nv" href="index.html" aria-label="Plus">
+    <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>Plus
+  </a>
+</nav>
+
+<script>
+/* mêmes règles que l'appli : base 9, octave 70-200 Hz */
+var OCT_MIN=70,OCT_MAX=200,HZ_DIV_LAVOIE=16;
+function sommeChiffres9(v){
+  var t=String(v).replace(".","").replace("-","");
+  if(!t||/[^0-9]/.test(t))return false;
+  var n=0;for(var i=0;i<t.length;i++)n+=t.charCodeAt(i)-48;
+  while(n>9){var u=0;while(n>0){u+=n%10;n=Math.floor(n/10);}n=u;}
+  return n===9;
+}
+function octavier(hz){
+  if(!(hz>0))return hz;
+  var v=hz/HZ_DIV_LAVOIE,k=0;
+  while(v>=OCT_MAX&&k<40){v=v/2;k++;}
+  while(v<OCT_MIN&&k>-40){v=v*2;k--;}
+  return v;
+}
+function base9Affiche(hz){
+  var pas=[0.0001,0.001,0.01,0.1];
+  for(var p=0;p<pas.length;p++){
+    var st=pas[p],n0=Math.round(hz/st);
+    for(var k=0;k<=20;k++){
+      var c=[n0,n0+k,n0-k];
+      for(var i=0;i<3;i++){
+        var v=parseFloat((c[i]*st).toFixed(4));
+        if(v>0&&sommeChiffres9(v))return v;
+      }
+    }
+  }
+  return parseFloat(hz.toFixed(4));
+}
+function hzSortie(hz){return hz?base9Affiche(octavier(hz)):hz;}
+function hzAff(hz){return hz>0?Math.round(hzSortie(hz)*100)/100:hz;}
+function fr(x,d){var s=(parseFloat(x)||0).toFixed(d===undefined?2:d);
+  if(s.indexOf('.')>=0){s=s.replace(/0+$/,'').replace(/\.$/,'');}return s.replace('.',',');}
+function duree(liste){var t=0;(liste||[]).forEach(function(f){t+=f.d||0;});return t;}
+
+/* vraies données de l'appli : SYMPTOMES (data.js), 7 catégories, 33 symptômes */
+var CATS=[{"emo": "🔴", "label": "Douleurs", "items": [{"n": "Dos / Lombaires", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 331.28, "d": 10}], "s2": [{"hz": 1339.54, "d": 10}, {"hz": 1159.23, "d": 10}, {"hz": 1911.53, "d": 10}]}, {"n": "Douleurs musculaires", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 832, "d": 10}], "s2": [{"hz": 1159.23, "d": 10}, {"hz": 2663.54, "d": 10}, {"hz": 763.09, "d": 10}]}, {"n": "Entorse / Foulure", "s1": [{"hz": 515.63, "d": 12}, {"hz": 1911.53, "d": 10}, {"hz": 1339.54, "d": 10}], "s2": [{"hz": 1529.35, "d": 10}, {"hz": 5491.24, "d": 10}]}, {"n": "Fracture consolidation", "s1": [{"hz": 1911.53, "d": 10}, {"hz": 515.63, "d": 12}, {"hz": 4179.05, "d": 10}], "s2": [{"hz": 1477.3, "d": 10}, {"hz": 1146.45, "d": 10}]}, {"n": "Genou douloureux", "s1": [{"hz": 1529.35, "d": 10}], "s2": []}, {"n": "Migraine", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 1096.5, "d": 10}], "s2": [{"hz": 1159.23, "d": 10}, {"hz": 1864.8, "d": 10}, {"hz": 525.21, "d": 10}]}, {"n": "Sciatique", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 331.28, "d": 10}], "s2": [{"hz": 1339.54, "d": 10}, {"hz": 1159.23, "d": 10}, {"hz": 1911.53, "d": 10}]}, {"n": "Tendinite", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 1339.54, "d": 10}], "s2": [{"hz": 3030.84, "d": 10}, {"hz": 3766.01, "d": 10}]}]}, {"emo": "⚡", "label": "Fatigue", "items": [{"n": "Burn-out", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 832, "d": 10}], "s2": [{"hz": 2663.54, "d": 10}, {"hz": 1159.23, "d": 10}, {"hz": 307.35, "d": 10}, {"hz": 456.55, "d": 10}]}, {"n": "Épuisement nerveux", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 190.9, "d": 10}], "s2": [{"hz": 2663.54, "d": 10}, {"hz": 1159.23, "d": 10}, {"hz": 307.35, "d": 10}, {"hz": 525.21, "d": 10}]}, {"n": "Fatigue générale", "s1": [{"hz": 1529.35, "d": 10}], "s2": []}, {"n": "Fatigue matinale", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 832, "d": 10}], "s2": [{"hz": 1159.23, "d": 10}, {"hz": 999, "d": 10}, {"hz": 6052.74, "d": 10}]}, {"n": "Fatigue musculaire post-effort", "s1": [{"hz": 1388, "d": 10}, {"hz": 6256.4, "d": 10}], "s2": [{"hz": 5587.39, "d": 10}, {"hz": 2663.54, "d": 10}, {"hz": 2588.11, "d": 10}]}]}, {"emo": "🌙", "label": "Sommeil", "items": [{"n": "Décalage horaire Jet lag", "s1": [{"hz": 692.31, "d": 10}, {"hz": 1296, "d": 10}], "s2": [{"hz": 307.35, "d": 10}, {"hz": 999, "d": 10}]}, {"n": "Endormissement difficile", "s1": [{"hz": 1529.35, "d": 10}], "s2": []}, {"n": "Réveils nocturnes", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 832, "d": 10}], "s2": [{"hz": 1159.23, "d": 10}, {"hz": 307.35, "d": 10}, {"hz": 999, "d": 10}, {"hz": 763.09, "d": 10}]}, {"n": "Sommeil non réparateur", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 2663.54, "d": 10}], "s2": [{"hz": 1159.23, "d": 10}, {"hz": 2588.11, "d": 10}, {"hz": 763.09, "d": 10}, {"hz": 307.35, "d": 10}]}]}, {"emo": "🧠", "label": "Mental", "items": [{"n": "Anxiété / Angoisse", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 190.9, "d": 10}], "s2": [{"hz": 2663.54, "d": 10}, {"hz": 307.35, "d": 10}, {"hz": 1159.23, "d": 10}, {"hz": 525.21, "d": 10}]}, {"n": "Choc émotionnel Trauma léger", "s1": [{"hz": 331.06, "d": 10}, {"hz": 307.35, "d": 10}], "s2": [{"hz": 190.9, "d": 10}, {"hz": 525.21, "d": 10}]}, {"n": "Déprime passagère", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 1477.3, "d": 10}], "s2": [{"hz": 456.55, "d": 10}, {"hz": 525.21, "d": 10}, {"hz": 3118.31, "d": 10}, {"hz": 9394.36, "d": 10}]}, {"n": "Irritabilité", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 190.9, "d": 10}], "s2": [{"hz": 1159.23, "d": 10}, {"hz": 2663.54, "d": 10}, {"hz": 307.35, "d": 10}, {"hz": 525.21, "d": 10}]}, {"n": "Manque concentration", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 763.09, "d": 10}], "s2": [{"hz": 1477.3, "d": 10}, {"hz": 435.77, "d": 10}, {"hz": 9394.36, "d": 10}]}, {"n": "Stress chronique", "s1": [{"hz": 1529.35, "d": 10}], "s2": []}]}, {"emo": "🛡️", "label": "Immunité", "items": [{"n": "Allergies saisonnières", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 331.28, "d": 10}, {"hz": 832, "d": 10}], "s2": [{"hz": 3030.84, "d": 10}, {"hz": 3118.31, "d": 10}, {"hz": 3766.01, "d": 10}, {"hz": 1339.54, "d": 10}]}, {"n": "Cicatrisation lente", "s1": [{"hz": 4200.04, "d": 10}, {"hz": 3118.31, "d": 10}], "s2": [{"hz": 3030.84, "d": 10}, {"hz": 5491.24, "d": 10}, {"hz": 6972.53, "d": 10}]}, {"n": "Fatigue post-virale", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 2663.54, "d": 10}], "s2": [{"hz": 763.09, "d": 10}, {"hz": 1159.23, "d": 10}, {"hz": 2588.11, "d": 10}, {"hz": 3766.01, "d": 10}]}, {"n": "Inflammation chronique légère", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 3766.01, "d": 10}], "s2": [{"hz": 3030.84, "d": 10}, {"hz": 1339.54, "d": 10}]}, {"n": "Rhume / Grippe", "s1": [{"hz": 1529.35, "d": 10}], "s2": []}]}, {"emo": "💡", "label": "Cognitif", "items": [{"n": "Brouillard mental", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 763.09, "d": 10}], "s2": [{"hz": 1477.3, "d": 10}, {"hz": 435.77, "d": 10}, {"hz": 1159.23, "d": 10}]}, {"n": "Perte de mémoire", "s1": [{"hz": 1529.35, "d": 10}], "s2": []}, {"n": "Surcharge mentale Surmenage", "s1": [{"hz": 435.77, "d": 10}, {"hz": 1477.3, "d": 10}], "s2": [{"hz": 1159.23, "d": 10}, {"hz": 307.35, "d": 10}]}, {"n": "TDAH", "s1": [{"hz": 1529.35, "d": 10}, {"hz": 831.6, "d": 10}, {"hz": 190.9, "d": 10}], "s2": [{"hz": 456.55, "d": 10}, {"hz": 1159.23, "d": 10}, {"hz": 307.35, "d": 10}, {"hz": 1477.3, "d": 10}]}]}, {"emo": "👂", "label": "ORL", "items": [{"n": "Acouphènes", "s1": [{"hz": 1529.35, "d": 10}], "s2": []}]}];
+
+var z=document.getElementById('categories');
+var toutes=[];
+CATS.forEach(function(cat){
+  var g=document.createElement('button');
+  g.className='grp';
+  g.innerHTML='<span class="nom">'+cat.emo+' '+cat.label+'</span><span class="compte">'+cat.items.length+'</span><span class="fl">▼</span>';
+  var box=document.createElement('div');
+  box.className='contenu ouvert';
+  cat.items.forEach(function(it){
+    var b=document.createElement('div');
+    b.className='min';
+    b.setAttribute('data-nom',it.n);
+    var sous=[];
+    if(it.s1.length)sous.push('Nettoyage · '+it.s1.length+' fréq.');
+    if(it.s2.length)sous.push('Réparation · '+it.s2.length+' fréq.');
+    var det='';
+    if(it.s1.length){
+      det+='<div class="seq"><span class="lab s1">S1 — Nettoyage</span><div class="chips">';
+      it.s1.forEach(function(f){det+='<span class="chip s1">'+fr(hzAff(f.hz),2)+' Hz <i>· '+f.d+' min</i></span>';});
+      det+='</div></div>';
+    }
+    if(it.s2.length){
+      det+='<div class="seq"><span class="lab s2">S2 — Réparation</span><div class="chips">';
+      it.s2.forEach(function(f){det+='<span class="chip s2">'+fr(hzAff(f.hz),2)+' Hz <i>· '+f.d+' min</i></span>';});
+      det+='</div></div>';
+    }
+    var boutons='';
+    if(it.s1.length)boutons+='<button class="plus m" data-seq="s1" aria-label="Lancer S1">1</button>';
+    if(it.s2.length)boutons+='<button class="plus s" data-seq="s2" aria-label="Lancer S2">2</button>';
+    b.innerHTML='<div class="haut"><div><div class="nom">'+it.n+'</div><div class="act">'+sous.join(' · ')+'</div></div>'
+      +'<div class="droite">'+boutons+'</div></div>'
+      +(det?'<div class="det">'+det+'</div>':'');
+    b.onclick=function(){
+      var ouvert=b.classList.toggle('ouvert');
+      if(ouvert){
+        var sel=document.getElementById('selection');
+        sel.style.display='flex';
+        document.getElementById('sel-nom').textContent=it.n;
+        var t=[];
+        if(it.s1.length)t.push('S1 '+duree(it.s1)+' min');
+        if(it.s2.length)t.push('S2 '+duree(it.s2)+' min');
+        document.getElementById('sel-hz').textContent='· '+t.join(' · ');
+      }
+    };
+    Array.prototype.forEach.call(b.querySelectorAll('.plus'),function(p){
+      p.onclick=function(e){
+        e.stopPropagation();
+        Array.prototype.forEach.call(b.querySelectorAll('.plus'),function(q){
+          if(q!==p){q.classList.remove('joue');q.textContent=q.getAttribute('data-seq')==='s1'?'1':'2';}
+        });
+        var etait=p.classList.contains('joue');
+        p.classList.toggle('joue',!etait);
+        p.textContent=etait?(p.getAttribute('data-seq')==='s1'?'1':'2'):'✓';
+        if(!etait){
+          var sel=document.getElementById('selection');
+          sel.style.display='flex';
+          document.getElementById('sel-nom').textContent=it.n;
+          var seq=p.getAttribute('data-seq')==='s1'?it.s1:it.s2;
+          document.getElementById('sel-hz').textContent='· '+(p.getAttribute('data-seq')==='s1'?'S1 — Nettoyage':'S2 — Réparation')+' · '+duree(seq)+' min';
+        }
+      };
+    });
+    b.querySelectorAll('.plus').length||(b.querySelector('.droite').style.display='none');
+    box.appendChild(b);
+    toutes.push({row:b,box:box,grp:g,cat:cat});
+  });
+  g.onclick=function(){
+    var ouvert=box.classList.toggle('ouvert');
+    g.querySelector('.fl').textContent=ouvert?'▼':'▶';
+  };
+  z.appendChild(g);
+  z.appendChild(box);
+});
+
+/* recherche : filtre les lignes, ouvre les catégories qui contiennent un résultat */
+function norm(t){return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+document.getElementById('rech').addEventListener('input',function(){
+  var t=norm(this.value);
+  var restants=0;
+  CATS.forEach(function(cat){
+    var groupe=toutes.filter(function(x){return x.cat===cat;});
+    if(!groupe.length)return;
+    var n=0;
+    groupe.forEach(function(o){
+      var ok=!t||norm(o.row.getAttribute('data-nom')).indexOf(t)>=0;
+      o.row.style.display=ok?'':'none';
+      if(ok)n++;
+    });
+    restants+=n;
+    if(t){
+      var ouvert=n>0;
+      groupe[0].grp.style.display=ouvert?'':'none';
+      groupe[0].box.classList.toggle('ouvert',ouvert);
+      groupe[0].grp.querySelector('.fl').textContent=ouvert?'▼':'▶';
+    } else {
+      groupe[0].grp.style.display='';
+      groupe[0].box.classList.add('ouvert');
+      groupe[0].grp.querySelector('.fl').textContent='▼';
+    }
+  });
+  document.getElementById('vide').style.display=(t&&restants===0)?'block':'none';
+});
+</script>
+</body>
+</html>
