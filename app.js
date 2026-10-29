@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026b';
+  v.textContent='version 291026c';
   acc.appendChild(v);
 },0);
 
@@ -491,7 +491,7 @@ function launchPlaylist(slot){
     let binBtn=document.querySelector('.nav-btn');
     if(binBtn)showPage('binaural',binBtn);
     openPlayer();
-    playNextInSequence();
+    poserEtape(seqIndex);
   }
   if(playing){
     showConfirm("Session en cours","Arrêter la session en cours ?",function(){stopAudio();go();},{confirmLabel:'Arrêter & lancer',icon:'⚠️'});
@@ -671,6 +671,8 @@ function togglePause(){
     btn.style.color="var(--green)";
     if(pbtn){pbtn.textContent="⏸ Pause";pbtn.style.borderColor="var(--green-border)";pbtn.style.background="var(--green-bg)";pbtn.style.color="var(--green)";}
   }
+  // l'icone du lecteur doit suivre tout de suite l'etat pause/reprise
+  try{updatePlayerDisplay();}catch(e){}
 }
 
 function showGuidePopup() {
@@ -852,8 +854,8 @@ function lancerSequenceEveil(){
     seqQueue=[{n:"Alpha 10 Hz",hz:756,d:11},{n:"Theta 6 Hz",hz:756,d:30}];
     seqEveilDiffs=[10,6];
     seqType="eveil";seqProtoName="Sequence Eveil";seqIndex=0;openPlayer();
+    poserEtape(seqIndex);
     diff=seqEveilDiffs[0];
-    playNextInSequence();
   }
   if(playing){
     showConfirm("Session en cours","Arrêter la session et lancer la séquence d'éveil ?",function(){stopAudio();go();},{confirmLabel:'Arrêter & lancer',icon:'⚠️'});
@@ -867,8 +869,8 @@ function lancerVoyageEveil(){
     seqQueue=CHAKRAS.map(function(c){return{n:c.nom,hz:c.hz,d:c.duree};});
     seqEveilDiffs=CHAKRAS.map(function(){return 40;});
     seqType="eveil_chakras";seqProtoName="Voyage Eveil";seqIndex=0;openPlayer();
+    poserEtape(seqIndex);
     diff=40;
-    playNextInSequence();
   }
   if(playing){
     showConfirm("Session en cours","Arrêter la session et lancer le voyage d'éveil ?",function(){stopAudio();go();},{confirmLabel:'Arrêter & lancer',icon:'⚠️'});
@@ -912,7 +914,7 @@ function lancerVoyageChakras(){
   function go(){
     seqQueue=CHAKRAS.map(function(c){return{n:c.nom,hz:c.hz,d:c.duree};});
     seqType="chakras";seqProtoName="Voyage chakras";seqIndex=0;openPlayer();
-    playNextInSequence();
+    poserEtape(seqIndex);
   }
   if(playing){
     showConfirm("Session en cours","Arrêter la session et lancer le voyage des chakras ?",function(){stopAudio();go();},{confirmLabel:'Arrêter & lancer',icon:'⚠️'});
@@ -981,7 +983,11 @@ function updateTimerDisplay(){
   }
   updatePlayerDisplay();
 }
-function togglePlay(){if(playing)stopAudio();else startAudio();}
+function togglePlay(){
+  if(playing){stopAudio();return;}
+  if(seqQueue&&seqQueue.length>0&&seqIndex<seqQueue.length){playNextInSequence();return;}
+  startAudio();
+}
 
 function startAudio(){
   stopLiveTone();
@@ -1547,7 +1553,7 @@ function launchSequence(pi,type){
     const p=PROTOCOLES[pi];
     seqQueue=type==="s1"?p.s1.slice():p.s2.slice();
     seqType=type;seqProtoName=p.nom;seqIndex=0;openPlayer();
-    playNextInSequence();
+    poserEtape(seqIndex);
   }
   if(playing){
     showConfirm("Session en cours","Arrêter et lancer la séquence ?",function(){stopAudio();go();},{confirmLabel:'Arrêter & lancer',icon:'⚠️'});
@@ -1667,7 +1673,7 @@ function launchSympSequence(list,type,nom){
   function go(){
     seqQueue=list.map(function(item){return{n:hzAff(item.hz)+" Hz",hz:item.hz,d:item.d};});
     seqType=type;seqProtoName=nom;seqIndex=0;openPlayer();
-    playNextInSequence();
+    poserEtape(seqIndex);
   }
   if(playing){
     showConfirm("Session en cours","Arrêter et lancer la séquence ?",function(){stopAudio();go();},{confirmLabel:'Arrêter & lancer',icon:'⚠️'});
@@ -2210,6 +2216,27 @@ function etapeSuivante(){
 function etapePrecedente(){
   if(!(seqQueue&&seqQueue.length>0))return;
   allerEtape(seqIndex-1<0?seqQueue.length-1:seqIndex-1);
+}
+
+function poserEtape(k){
+  var f=(seqQueue&&seqQueue[k])?seqQueue[k]:null;
+  if(!f)return;
+  if(f.hz)baseHz=f.hz;
+  if(f.d!==undefined&&f.d!==null)timerMin=f.d;
+  if(seqEveilDiffs&&seqEveilDiffs.length>k)diff=seqEveilDiffs[k];
+  if(seqType==='s1'||seqType==='s2')currentLabel=seqProtoName+' : '+hzAff(f.hz)+' Hz';
+  else if(seqProtoName&&seqType!=='playlist')currentLabel=seqProtoName+' : '+f.n;
+  else currentLabel=f.n+' - '+hzAff(f.hz)+' Hz';
+  try{setTimerChip(timerMin);}catch(e){}
+  updateDisplays();
+}
+
+// Bouton principal du lecteur : joue / met en pause. Il n'ARRETE jamais
+// (l'arret c'est le bouton ⏹ en haut a droite) — retour Fabien 29/10/2026.
+function boutonPrincipal(){
+  if(paused||playing){ togglePause(); return; }
+  if(seqQueue&&seqQueue.length>0&&seqIndex<seqQueue.length){ playNextInSequence(); return; }
+  startAudio();
 }
 
 function updatePlayerDisplay(){
