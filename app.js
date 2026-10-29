@@ -1065,7 +1065,7 @@ function stopAudio(userStop){
       +'<div style="font-size:14px;color:var(--muted);margin-bottom:32px">'+seqProtoName+'</div>'
       +'<button onclick="closePlayer()" style="padding:16px 32px;border-radius:16px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:16px;cursor:pointer">← Retour</button>'
       +'</div>';
-    document.querySelector('#page-player > div:nth-child(2)').innerHTML=doneHtml;
+    var doneEl=document.getElementById('pl-done');if(doneEl){doneEl.innerHTML=doneHtml;doneEl.style.display='flex';}
   }
   },1500);
 }
@@ -2130,6 +2130,8 @@ function openPlayer(){
   let p=document.getElementById('page-player');
   if(!p)return;
   p.style.display='flex';
+  var dDone=document.getElementById('pl-done');
+  if(dDone){dDone.style.display='none';dDone.innerHTML='';}
   updatePlayerDisplay();
   // Le curseur du lecteur n'existe qu'a partir d'ici : on le recale sur le volume reel
   // (sinon il affiche 25 % alors que le volume memorise peut etre autre).
@@ -2137,141 +2139,126 @@ function openPlayer(){
 }
 function closePlayer(){
   let p=document.getElementById('page-player');
-  if(p)p.style.display='none';
+  if(p){p.style.display='none';}
+  var d=document.getElementById('pl-done');
+  if(d){d.style.display='none';d.innerHTML='';}
 }
+// ============================================================
+// LECTEUR — affichage (maquette validée le 29/10/2026)
+// Hertz réels · étape/total · temps écoulé · liste des étapes
+// ============================================================
+function lpMmss(s){
+  s=Math.max(0,Math.round(s));
+  var m=Math.floor(s/60),x=s%60;
+  return (m<10?'0':'')+m+':'+(x<10?'0':'')+x;
+}
+function lpHertz(hz){return hzAff(hz).toFixed(2).replace('.',',')+' Hz';}
+function lpEchap(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderListeEtapes(){
+  var el=document.getElementById('pl-liste');
+  if(!el)return;
+  if(!(seqQueue&&seqQueue.length>0)){
+    if(el.innerHTML!=='')el.innerHTML='';
+    el.dataset.sig='';
+    return;
+  }
+  var sig=seqQueue.length+'|'+seqIndex;
+  if(el.dataset.sig===sig)return;
+  el.dataset.sig=sig;
+  var html='';
+  for(var k=0;k<seqQueue.length;k++){
+    var e=seqQueue[k]||{};
+    var nom=e.n||e.nom||'—';
+    var meta=[];
+    if(e.hz)meta.push(lpHertz(e.hz));
+    if(e.d)meta.push(e.d+' min');
+    html+='<button class="et'+(k===seqIndex?' actif':'')+'" onclick="allerEtape('+k+')">'
+        + '<span class="num">'+(k+1)+'</span>'
+        + '<span class="nom">'+lpEchap(nom)+'</span>'
+        + '<span class="meta">'+lpEchap(meta.join(' · '))+'</span>'
+        + '</button>';
+  }
+  el.innerHTML=html;
+  var act=el.querySelector('.et.actif');
+  if(act&&el.scrollHeight>el.clientHeight+4){
+    el.scrollTop=Math.max(0,act.offsetTop-el.clientHeight/2+act.offsetHeight/2);
+  }
+}
+
+function allerEtape(k){
+  if(!(seqQueue&&seqQueue.length>0))return;
+  k=Math.max(0,Math.min(seqQueue.length-1,k));
+  seqIndex=k;
+  if(playing||paused){
+    playNextInSequence();
+  }else{
+    var f=seqQueue[k]||{};
+    if(f.hz)baseHz=f.hz;
+    if(f.d)timerMin=f.d;
+    if(seqType==='s1'||seqType==='s2')currentLabel=seqProtoName+' : '+hzAff(f.hz)+' Hz';
+    else currentLabel=(f.n||f.nom||currentLabel);
+    try{setTimerChip(f.d);}catch(e){}
+    updateDisplays();
+  }
+  updatePlayerDisplay();
+}
+function etapeSuivante(){
+  if(!(seqQueue&&seqQueue.length>0))return;
+  allerEtape(seqIndex+1>=seqQueue.length?0:seqIndex+1);
+}
+function etapePrecedente(){
+  if(!(seqQueue&&seqQueue.length>0))return;
+  allerEtape(seqIndex-1<0?seqQueue.length-1:seqIndex-1);
+}
+
 function updatePlayerDisplay(){
-  let pgPlayer=document.getElementById('page-player');
+  var pgPlayer=document.getElementById('page-player');
   if(!pgPlayer||pgPlayer.style.display==='none')return;
 
-  // ===== Déterminer le type de séquence et le badge =====
-  let badgeText = 'SESSION';
-  let badgeColor = 'green';  // green | amber | purple | blue
-  let seqInfo = '';
-  let protoName = seqProtoName || currentLabel || '—';
+  var enSeq=!!(seqQueue&&seqQueue.length>0);
+  var idx=enSeq?Math.min(seqIndex,seqQueue.length-1):0;
+  var cur=enSeq?seqQueue[idx]:null;
 
-  if (seqType === 'playlist') {
-    if (seqProtoName === 'Playlist Matin') {
-      badgeText = 'PLAYLIST MATIN';
-      badgeColor = 'amber';
-    } else if (seqProtoName === 'Playlist Soir') {
-      badgeText = 'PLAYLIST SOIR';
-      badgeColor = 'purple';
-    } else {
-      badgeText = 'PLAYLIST';
-      badgeColor = 'green';
+  // --- titre du haut : protocole / playlist / fréquence libre ---
+  var titre=(cur&&cur.source)?cur.source:(seqProtoName||currentLabel||'—');
+  var tEl=document.getElementById('pl-titre');
+  if(tEl)tEl.textContent=titre;
+
+  // --- Hertz réellement joués ---
+  var hzEl=document.getElementById('pl-hz');
+  if(hzEl)hzEl.innerHTML=hzAff(baseHz).toFixed(2).replace('.',',')+'<small>Hz</small>';
+
+  // --- étape en cours sur le total ---
+  var etEl=document.getElementById('pl-etape');
+  if(etEl){
+    if(enSeq){
+      var nom=(cur&&(cur.n||cur.nom))||'—';
+      etEl.innerHTML='<b>'+(idx+1)+'/'+seqQueue.length+'</b> · Étape en cours — '+lpEchap(nom);
+    }else{
+      etEl.innerHTML='Écoute libre'+(currentLabel?' — '+lpEchap(currentLabel):'');
     }
-  } else if (seqType === 's1') {
-    badgeText = 'PROTOCOLE · S1 NETTOYAGE';
-    badgeColor = 'amber';
-  } else if (seqType === 's2') {
-    badgeText = 'PROTOCOLE · S2 RÉPARATION';
-    badgeColor = 'green';
-  } else if (seqType === 'chakras') {
-    badgeText = 'VOYAGE DES CHAKRAS';
-    badgeColor = 'purple';
-  } else if (seqType === 'eveil') {
-    badgeText = 'SÉQUENCE ÉVEIL';
-    badgeColor = 'amber';
-  } else if (seqType === 'eveil_chakras') {
-    badgeText = 'VOYAGE ÉVEIL · GAMMA 40';
-    badgeColor = 'amber';
-  } else if (seqType === 'libre' || !seqType) {
-    badgeText = 'FRÉQUENCE LIBRE';
-    badgeColor = 'green';
   }
 
-  // Position dans la séquence
-  if (seqQueue && seqQueue.length > 0) {
-    seqInfo = 'Fréquence ' + (seqIndex + 1) + ' / ' + seqQueue.length;
-  }
+  // --- temps écoulé / total (décision : on affiche le temps ÉCOULÉ) ---
+  var total=(timerMin>0)?timerMin*60:0;
+  var reste=(playing||paused)?secondsLeft:total;
+  var ecoule=Math.max(0,total-reste);
+  var cpEl=document.getElementById('pl-compteur');
+  if(cpEl)cpEl.textContent=lpMmss(ecoule)+' / '+(total?lpMmss(total):'--:--');
+  var prEl=document.getElementById('pl-prog');
+  if(prEl)prEl.style.width=(total?Math.min(100,ecoule/total*100):0).toFixed(1)+'%';
 
-  // ===== Mettre à jour le badge =====
-  let badgeEl = document.getElementById('player-seq-badge');
-  if (badgeEl) {
-    badgeEl.textContent = badgeText;
-    let colorMap = {
-      green:   {bg: 'var(--green-bg)',   color: 'var(--green)',   border: 'var(--green-border)'},
-      amber:   {bg: 'var(--amber-bg)',   color: 'var(--amber)',   border: 'var(--amber-border)'},
-      purple:  {bg: 'var(--purple-bg)',  color: 'var(--purple)',  border: 'var(--purple-border)'},
-      blue:    {bg: 'var(--blue-bg)',    color: 'var(--blue)',    border: 'var(--blue-border)'}
-    };
-    let c = colorMap[badgeColor] || colorMap.green;
-    badgeEl.style.background = c.bg;
-    badgeEl.style.color = c.color;
-    badgeEl.style.borderColor = c.border;
-  }
+  // --- liste des étapes ---
+  renderListeEtapes();
 
-  // ===== Titre = source du combo/protocole si disponible, sinon nom séquence =====
-  let cur2 = (seqQueue && seqQueue.length > 0 && seqIndex < seqQueue.length) ? seqQueue[seqIndex] : null;
-  let displayTitle = (cur2 && cur2.source) ? cur2.source : protoName;
-  document.getElementById('player-proto-name').textContent = displayTitle;
-
-  // ===== Sous-titre = position =====
-  let seqInfoEl = document.getElementById('player-seq-info');
-  if (seqInfoEl) seqInfoEl.textContent = seqInfo;
-
-  // ===== Label compact en haut (S1/S2/etc.) =====
-  let seqLbl = '';
-  if (seqType === 's1') seqLbl = 'S1';
-  else if (seqType === 's2') seqLbl = 'S2';
-  else if (seqType === 'playlist') seqLbl = seqProtoName;
-  else seqLbl = seqType || '';
-  document.getElementById('player-seq-label').textContent = seqLbl;
-
-  // ===== Fréquence en cours (nom + détails) =====
-  if (seqQueue && seqQueue.length > 0 && seqIndex < seqQueue.length) {
-    let cur = seqQueue[seqIndex];
-    // Le nom de la fréquence en cours (le protocole/symptôme/minéral spécifique)
-    // Si la fréquence a une source (combo/protocole), l'afficher comme titre
-    let curNom = cur.n || cur.nom || '—';
-    let curSource = cur.source || '';
-    if(curSource){
-      document.getElementById('player-proto-name').textContent = curSource;
-      document.getElementById('player-freq-name').textContent = curNom;
-    } else {
-      document.getElementById('player-freq-name').textContent = curNom;
-    }
-    // Détails : Hz + durée + action
-    let details = '';
-    if (cur.hz) details += hzAff(cur.hz) + ' Hz';
-    if (cur.d) details += (details ? ' · ' : '') + cur.d + ' min';
-    if (cur.action) details += (details ? ' · ' : '') + cur.action;
-    document.getElementById('player-freq-action').textContent = details || '—';
-    let pos = (seqIndex + 1) + ' / ' + seqQueue.length;
-    document.getElementById('player-progress-label').textContent = pos;
-    let pct = ((seqIndex) / seqQueue.length) * 100;
-    document.getElementById('player-progress-bar').style.width = pct + '%';
-  } else {
-    // Mode fréquence libre (pas de séquence)
-    document.getElementById('player-freq-name').textContent = currentLabel || '—';
-    let details = '';
-    if (baseHz) details += hzAff(baseHz) + ' Hz';
-    if (timerMin) details += (details ? ' · ' : '') + timerMin + ' min';
-    document.getElementById('player-freq-action').textContent = details || '—';
-    document.getElementById('player-progress-label').textContent = '';
-  }
-  // Timer + analog clock
-  let s=(playing||paused)?secondsLeft:timerMin*60;
-  let total=timerMin*60||600;
-  let m=Math.floor(s/60),sec=s%60;
-  let timeStr=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
-  // Clock text
-  let ct=document.getElementById('player-clock-text');
-  if(ct)ct.textContent=timeStr;
-  // Arc progress (circumference 464.9)
-  let arc=document.getElementById('player-clock-arc');
-  if(arc){let pct=s/total;arc.style.strokeDashoffset=(464.9*(1-pct)).toFixed(1);}
-  // Minute hand (based on elapsed time)
-  let elapsed=total-s;
-  let elMin=Math.floor(elapsed/60);let elSec=elapsed%60;
-  let minHand=document.getElementById('player-clock-min');
-  if(minHand){let minAngle=(elMin%60)/60*360;let mr=minAngle*Math.PI/180;let mx=80+58*Math.sin(mr);let my=80-58*Math.cos(mr);minHand.setAttribute('x2',mx.toFixed(1));minHand.setAttribute('y2',my.toFixed(1));}
-  // Second hand
-  let secHand=document.getElementById('player-clock-sec');
-  if(secHand){let secAngle=elSec/60*360;let sr=secAngle*Math.PI/180;let sx=80+62*Math.sin(sr);let sy=80-62*Math.cos(sr);secHand.setAttribute('x2',sx.toFixed(1));secHand.setAttribute('y2',sy.toFixed(1));}
-  // Pause btn
-  let pb=document.getElementById('player-pause-btn');
-  if(pb)pb.textContent=paused?'▶ Reprendre':'⏸ Pause';
+  // --- bouton principal + flèches d'étapes ---
+  var bp=document.getElementById('pl-play');
+  if(bp)bp.textContent=(playing&&!paused)?'⏸':'▶';
+  var pv=document.getElementById('pl-prev');
+  var nx=document.getElementById('pl-next');
+  if(pv)pv.style.visibility=enSeq?'visible':'hidden';
+  if(nx)nx.style.visibility=enSeq?'visible':'hidden';
 }
 
 // ============================================================

@@ -10,7 +10,7 @@
 // la nouvelle version. Sans ça, le cache ancien reste actif.
 // ============================================================
 
-const CACHE_VERSION = 'v6';  // ← BUMPER à chaque déploiement !
+const CACHE_VERSION = 'v7';  // ← BUMPER à chaque déploiement !
 const CACHE_NAME = 'ft-app-' + CACHE_VERSION;
 
 // Fichiers critiques à précharger à l'installation
