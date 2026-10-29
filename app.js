@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026k';
+  v.textContent='version 291026l';
   acc.appendChild(v);
 },0);
 
@@ -1526,7 +1526,7 @@ function buildProtocoles(){
     let secEl=document.createElement("div");
     secEl.style.cssText="margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden";
     let titreEl=document.createElement("div");
-    titreEl.style.cssText="font-size:13px;font-weight:600;color:var(--amber);padding:12px 14px;background:linear-gradient(90deg,rgba(255,158,44,.28),rgba(255,158,44,.07));cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
+    titreEl.style.cssText="font-size:13px;font-weight:600;color:var(--amber);padding:12px 14px;background:linear-gradient(90deg,rgba(255,158,44,.50) 0%,rgba(255,158,44,.22) 14%,rgba(255,158,44,.08) 45%,rgba(255,158,44,.01) 100%);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
     let arrow=document.createElement("span");
     arrow.textContent="\u25BC";
     arrow.style.cssText="font-size:10px;transition:transform 0.3s;transform:rotate(-90deg)";
@@ -1549,7 +1549,7 @@ function buildProtocoles(){
         let subEl=document.createElement("div");
         subEl.style.cssText="margin-bottom:10px";
         let subTitreEl=document.createElement("div");
-        subTitreEl.style.cssText="font-size:12px;font-weight:600;color:var(--muted);padding:4px 0 6px 4px";
+        subTitreEl.style.cssText="font-size:12px;font-weight:600;color:var(--purple);padding:6px 8px;margin:2px 0 5px;border-radius:8px;background:linear-gradient(90deg,rgba(199,125,255,.28) 0%,rgba(199,125,255,.10) 40%,rgba(199,125,255,.01) 100%)";
         subTitreEl.textContent="\u2014 "+sub.sous_titre;
         subEl.appendChild(subTitreEl);
         sub.noms.forEach(function(nom){
