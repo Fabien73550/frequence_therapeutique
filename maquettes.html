@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Maquettes — Fréquences Thérapeutiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
+  --border:#242a3d;--border2:#2e3650;
+  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
+  --green:#00ffba;--blue:#3db5ff;--purple:#c77dff;--amber:#ff9e2c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+.page{min-height:100dvh;padding:calc(14px + env(safe-area-inset-top)) 20px calc(30px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+
+h1{font-size:15px;font-weight:600;text-align:center;letter-spacing:.01em}
+.sous{text-align:center;font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:.05em}
+.filet{height:1px;background:rgba(255,255,255,.07);margin:14px 0}
+
+.label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 0 10px}
+
+a.carte{display:block;text-decoration:none;color:inherit;padding:13px 14px;border-radius:12px;
+  border:1px solid var(--border);background:var(--s1);margin-bottom:8px}
+a.carte:active{background:var(--s2)}
+a.carte .t{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+a.carte .nom{font-size:14px;font-weight:600;color:var(--text)}
+a.carte .fleche{font-size:12px;color:var(--dim)}
+a.carte .desc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+a.carte .url{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim);margin-top:6px}
+
+a.appli{background:linear-gradient(90deg,rgba(0,255,186,.13),rgba(0,255,186,.03));border-color:rgba(0,255,186,.30)}
+a.appli .nom{color:var(--green)}
+a.perso{border-color:rgba(255,158,44,.35)}
+a.perso .nom{color:var(--amber)}
+a.mineraux{border-color:rgba(199,125,255,.35)}
+a.mineraux .nom{color:var(--purple)}
+
+.etat{display:inline-block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:1px}
+.etat.ok{background:rgba(0,255,186,.13);color:var(--green)}
+.etat.attente{background:rgba(255,158,44,.13);color:var(--amber)}
+
+.note{font-size:10.5px;color:var(--dim);line-height:1.6;margin-top:16px;text-align:center}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Maquettes</h1>
+  <div class="sous">Fréquences Thérapeutiques · pages de travail</div>
+  <div class="filet"></div>
+
+  <div class="label">Application en ligne</div>
+
+  <a class="carte appli" href="index.html">
+    <div class="t"><span class="nom">L'application<span class="etat ok">en ligne</span></span><span class="fleche">↗</span></div>
+    <div class="desc">La vraie appli, celle que tu installes sur ton téléphone. Les accueils et le lecteur y sont déjà installés ; Perso, Minéraux et Symptômes y sont encore dans leur ancienne version.</div>
+    <div class="url">index.html</div>
+  </a>
+
+  <div class="label">Pages de travail</div>
+
+  <a class="carte" href="test-accueil.html">
+    <div class="t"><span class="nom">Accueil<span class="etat ok">installé</span></span><span class="fleche">↗</span></div>
+    <div class="desc">Trio gauche / battement / droite, champ de fréquence, curseur logarithmique, ondes binaurales, minuteur.</div>
+    <div class="url">test-accueil.html</div>
+  </a>
+
+  <a class="carte" href="test-lecteur.html">
+    <div class="t"><span class="nom">Lecteur<span class="etat ok">installé</span></span><span class="fleche">↗</span></div>
+    <div class="desc">Écran de lecture d'un protocole : Hertz réels, étape en cours, temps écoulé, liste des étapes.</div>
+    <div class="url">test-lecteur.html</div>
+  </a>
+
+  <a class="carte perso" href="test-perso.html">
+    <div class="t"><span class="nom">Perso<span class="etat attente">maquette</span></span><span class="fleche">↗</span></div>
+    <div class="desc">Playlist Matin et Soir, bouton Vider, enregistrement sous un nom, playlists sauvegardées gardées en mémoire.</div>
+    <div class="url">test-perso.html</div>
+  </a>
+
+  <a class="carte mineraux" href="test-mineraux.html">
+    <div class="t"><span class="nom">Minéraux<span class="etat attente">maquette</span></span><span class="fleche">↗</span></div>
+    <div class="desc">Recherche, catégories repliables, Hertz de chaque élément, boutons M / S qui envoient vers la playlist Matin ou Soir.</div>
+    <div class="url">test-mineraux.html</div>
+  </a>
+
+  <a class="carte" href="test-symptomes.html">
+    <div class="t"><span class="nom">Symptômes<span class="etat attente">maquette</span></span><span class="fleche">↗</span></div>
+    <div class="desc">Recherche, familles repliables, séquences S1 / S2 avec leurs fréquences et leurs boutons ronds.</div>
+    <div class="url">test-symptomes.html</div>
+  </a>
+
+  <div class="note">Pages de travail — aucune n'est publiée dans l'application tant qu'elle n'est pas validée.<br>Les maquettes et l'application ont chacune leur mémoire : une playlist enregistrée ici n'apparaît pas là-bas.</div>
+
+</div>
+</body>
+</html>
