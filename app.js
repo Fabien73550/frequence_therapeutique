@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026q';
+  v.textContent='version 291026r';
   acc.appendChild(v);
 },0);
 
@@ -2163,7 +2163,7 @@ function filterSymptomes() {
 init();
 checkFirstVisit();
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js');
+  navigator.serviceWorker.register('sw.js?v=291026r');
 }
 
 // --- DETECTION LIEN PARTAGE ---

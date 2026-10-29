@@ -10,7 +10,7 @@
 // la nouvelle version. Sans ça, le cache ancien reste actif.
 // ============================================================
 
-const CACHE_VERSION = 'v23';  // ← BUMPER à chaque déploiement !
+const CACHE_VERSION = 'v24';  // ← BUMPER à chaque déploiement !
 const CACHE_NAME = 'ft-app-' + CACHE_VERSION;
 
 // Fichiers critiques à précharger à l'installation
@@ -73,12 +73,18 @@ self.addEventListener('fetch', function(event) {
     return url.pathname.endsWith(ext);
   });
 
-  if (isCritical) {
-    // NETWORK-FIRST pour HTML/JS/CSS/JSON
+  // Toute NAVIGATION est traitée comme critique, même quand le chemin ne finit pas par .html
+  // (la racine « /frequence_therapeutique/ » tombait sinon dans le cache-first → ancienne page servie).
+  const isNavigation = event.request.mode === 'navigate';
+
+  if (isCritical || isNavigation) {
+    // NETWORK-FIRST pour HTML/JS/CSS/JSON et pour toutes les navigations
     // → L'utilisateur a toujours la dernière version si en ligne
     // → Fallback sur le cache si offline
+    // cache:'no-store' : on ignore aussi le cache HTTP (GitHub Pages sert du max-age=600),
+    // sinon un déploiement peut rester invisible plusieurs minutes.
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-store' })
         .then(function(response) {
           // Cache la réponse fraîche
           if (response && response.status === 200) {
