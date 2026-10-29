@@ -619,3 +619,48 @@ select option{background:var(--s2)}
 #page-mineraux .mx-min .plus.s{background:rgba(199,125,255,.16);color:var(--purple)}
 #page-mineraux .mx-min .plus.fait{background:rgba(0,255,186,.20);color:var(--green)}
 #page-mineraux .mx-vide{text-align:center;font-size:11.5px;color:var(--dim);padding:16px 8px}
+
+/* ===== PAGE SYMPTÔMES — maquette validée (29/10/2026) ===== */
+#page-symptomes .sx-titre{font-size:14px;font-weight:500;text-align:center;color:var(--text)}
+#page-symptomes .sx-sous{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+#page-symptomes .sx-aide{display:inline-block;margin-left:7px;font-size:11px;color:var(--amber);cursor:pointer}
+#page-symptomes .sx-filet-top{height:2px;border-radius:2px;margin-top:8px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+#page-symptomes .sx-filet{height:1px;background:rgba(255,255,255,.07);margin:10px 0 0}
+#page-symptomes .sx-rech{display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.10);padding:16px 0 9px;margin-bottom:2px}
+#page-symptomes .sx-rech svg{width:15px;height:15px;flex-shrink:0;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round}
+#page-symptomes .sx-rech input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:0}
+#page-symptomes .sx-rech input::placeholder{color:var(--dim)}
+#page-symptomes .sx-sugg:empty{display:none}
+#page-symptomes .sx-sugg{margin-top:8px}
+#page-symptomes .cat-tabs{display:none}
+
+#page-symptomes .sx-bloc{padding:16px 0 2px}
+#page-symptomes .sx-grp{width:100%;display:flex;align-items:center;gap:9px;padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:6px;background:linear-gradient(90deg,rgba(255,158,44,.10),rgba(255,158,44,.02))}
+#page-symptomes .sx-grp .nom{font-size:12.5px;font-weight:600;color:var(--amber);text-align:left;flex:1}
+#page-symptomes .sx-grp .compte{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim)}
+#page-symptomes .sx-grp .fl{font-size:10px;color:var(--muted);transition:transform .2s}
+#page-symptomes .sx-contenu{display:none}
+#page-symptomes .sx-contenu.ouvert{display:block}
+
+#page-symptomes .sx-min{width:100%;padding:10px 12px;border-radius:10px;border:none;text-align:left;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:5px;background:linear-gradient(90deg,rgba(199,125,255,.16),rgba(199,125,255,.03))}
+#page-symptomes .sx-min .haut{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px}
+#page-symptomes .sx-min .nom{font-size:12.5px;color:var(--text);font-weight:500}
+#page-symptomes .sx-min .droite{display:flex;align-items:center;gap:7px;flex-shrink:0}
+#page-symptomes .sx-min .plus{width:24px;height:24px;padding:0;border:none;border-radius:50%;cursor:pointer;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center}
+#page-symptomes .sx-min .plus.m{background:rgba(255,158,44,.16);color:var(--amber)}
+#page-symptomes .sx-min .plus.s{background:rgba(199,125,255,.18);color:var(--purple)}
+#page-symptomes .sx-min .plus.joue{background:rgba(0,255,186,.20);color:var(--green)}
+
+#page-symptomes .sx-min .det{display:none;margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)}
+#page-symptomes .sx-min.ouvert .det{display:block}
+#page-symptomes .seq{margin-bottom:7px}
+#page-symptomes .seq:last-child{margin-bottom:0}
+#page-symptomes .lab{display:block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+#page-symptomes .lab.s1{color:var(--amber)}
+#page-symptomes .lab.s2{color:var(--purple)}
+#page-symptomes .chips{display:flex;flex-wrap:wrap;gap:5px}
+#page-symptomes .chip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 8px;border-radius:8px;white-space:nowrap}
+#page-symptomes .chip.s1{background:linear-gradient(90deg,rgba(255,158,44,.16),rgba(255,158,44,.04));color:var(--amber)}
+#page-symptomes .chip.s2{background:linear-gradient(90deg,rgba(199,125,255,.18),rgba(199,125,255,.05));color:var(--purple)}
+#page-symptomes .chip i{font-style:normal;color:var(--dim)}
+#page-symptomes .sx-vide{text-align:center;font-size:11.5px;color:var(--dim);padding:16px 8px}

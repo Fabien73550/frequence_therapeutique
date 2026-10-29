@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026h';
+  v.textContent='version 291026i';
   acc.appendChild(v);
 },0);
 
@@ -803,18 +803,36 @@ function showConsentModal(onAccept) {
 }
 
 function filterSympList(query){
-  let cards=document.querySelectorAll("#symp-list .proto-card");
-  let q=query.toLowerCase();
-  cards.forEach(function(card){
-    let text=card.textContent.toLowerCase();
-    card.style.display=text.includes(q)||q===""?"":"none";
+  let q=String(query||"").toLowerCase().trim();
+  let blocs=document.querySelectorAll("#symp-list .sx-bloc");
+  let total=0;
+  blocs.forEach(function(bloc){
+    let visibles=0;
+    bloc.querySelectorAll(".proto-card").forEach(function(card){
+      let ok=(q==="")||card.textContent.toLowerCase().includes(q);
+      card.style.display=ok?"":"none";
+      if(ok)visibles++;
+    });
+    let contenu=bloc.querySelector(".sx-contenu");
+    let fl=bloc.querySelector(".fl");
+    if(q!==""&&visibles>0&&contenu){
+      contenu.classList.add("ouvert");
+      if(fl)fl.textContent="\u25BC";
+    }
+    bloc.style.display=(q===""||visibles>0)?"":"none";
+    total+=visibles;
   });
-  let sections=document.querySelectorAll("#symp-list > div");
-  sections.forEach(function(sec){
-    let hasVisible=false;
-    sec.querySelectorAll(".proto-card").forEach(function(c){if(c.style.display!=="none")hasVisible=true;});
-    sec.style.display=hasVisible?"":"none";
-  });
+  let msg=document.getElementById("symp-aucun");
+  if(q!==""&&total===0){
+    if(!msg){
+      msg=document.createElement("div");msg.id="symp-aucun";msg.className="sx-vide";
+      document.getElementById("symp-list").appendChild(msg);
+    }
+    msg.textContent="Aucun symptôme pour \""+query+"\"";
+    msg.style.display="block";
+  } else if(msg){
+    msg.style.display="none";
+  }
 }
 
 function filterProtoList(query){
@@ -1708,59 +1726,72 @@ function buildSymptomes(){
   const listEl=document.getElementById("symp-list");
   const tabsEl=document.getElementById("symp-cat-tabs");
   if(tabsEl)tabsEl.style.display="none";
-  let searchHTML='<div style="margin-bottom:12px;position:sticky;top:0;background:var(--bg);z-index:10;padding-top:4px"><input type="text" id="symp-search" placeholder="🔍 Chercher un symptôme... (insomnie, migraine, etc)" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:14px;font-family:\'Outfit\',sans-serif;outline:none" oninput="filterSympList(this.value)"></div>';
-  listEl.innerHTML=searchHTML;
-  const ICONS={"Douleurs":"\uD83D\uDD34","Fatigue":"\u26A1","Sommeil":"\uD83C\uDF19","Mental":"\uD83E\uDDE0","Immunité":"\uD83D\uDEE1","Cognitif":"\uD83D\uDCA1"};
+  if(!listEl)return;
+  listEl.innerHTML="";
+  const ICONS={"Douleurs":"\uD83D\uDD34","Fatigue":"\u26A1","Sommeil":"\uD83C\uDF19","Mental":"\uD83E\uDDE0","Immunite":"\uD83D\uDEE1","Cognitif":"\uD83D\uDCA1","ORL":"\uD83D\uDC42"};
+  const LABELS={"Immunite":"Immunit\u00E9"};
   Object.keys(SYMPTOMES).forEach(function(cat){
-    let secEl=document.createElement("div");
-    secEl.style.cssText="margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden";
-    let titreEl=document.createElement("div");
-    titreEl.style.cssText="font-size:14px;font-weight:700;color:var(--amber);padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
-    let arrow=document.createElement("span");
-    arrow.textContent="\u25BC";
-    arrow.style.cssText="font-size:10px;transition:transform 0.3s;transform:rotate(-90deg)";
-    let titreText=document.createElement("span");
-    titreText.textContent=(ICONS[cat]||"")+"\u00A0"+cat;
-    titreEl.appendChild(titreText);
-    titreEl.appendChild(arrow);
-    let contenuEl=document.createElement("div");
-    contenuEl.style.cssText="max-height:0;opacity:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease,padding 0.3s ease;padding:0 10px";
-    titreEl.addEventListener("click",function(){
-      let open=contenuEl.style.maxHeight!=="0px"&&contenuEl.style.maxHeight!=="";
-      contenuEl.style.maxHeight=open?"0":"2000px";
-      contenuEl.style.opacity=open?"0":"1";
-      contenuEl.style.padding=open?"0 10px":"10px";
-      arrow.style.transform=open?"rotate(-90deg)":"rotate(0deg)";
+    let liste=SYMPTOMES[cat].slice().sort(function(a,b){return a.s.localeCompare(b.s);});
+    let bloc=document.createElement("div");bloc.className="sx-bloc";
+    let grp=document.createElement("button");grp.className="sx-grp";
+    let n=document.createElement("span");n.className="nom";n.textContent=(ICONS[cat]||"")+"\u00A0"+(LABELS[cat]||cat);
+    let c=document.createElement("span");c.className="compte";c.textContent=liste.length;
+    let fl=document.createElement("span");fl.className="fl";fl.textContent="\u25B6";
+    grp.appendChild(n);grp.appendChild(c);grp.appendChild(fl);
+    let contenu=document.createElement("div");contenu.className="sx-contenu";
+    grp.onclick=function(){
+      let ouvert=contenu.classList.toggle("ouvert");
+      fl.textContent=ouvert?"\u25BC":"\u25B6";
+    };
+    liste.forEach(function(sym){
+      let ligne=document.createElement("div");ligne.className="proto-card sx-min";
+      let haut=document.createElement("div");haut.className="haut";
+      let nom=document.createElement("div");nom.className="nom";nom.textContent=sym.s;
+      let droite=document.createElement("div");droite.className="droite";
+      if((sym.s1||[]).length){
+        let b1=document.createElement("button");b1.className="plus m";b1.textContent="1";b1.dataset.seq="s1";
+        b1.setAttribute("aria-label","Lancer S1");
+        b1.onclick=function(e){e.stopPropagation();launchSympSequence(sym.s1,"s1",sym.s);};
+        droite.appendChild(b1);
+      }
+      if((sym.s2||[]).length){
+        let b2=document.createElement("button");b2.className="plus s";b2.textContent="2";b2.dataset.seq="s2";
+        b2.setAttribute("aria-label","Lancer S2");
+        b2.onclick=function(e){e.stopPropagation();launchSympSequence(sym.s2,"s2",sym.s);};
+        droite.appendChild(b2);
+      }
+      haut.appendChild(nom);haut.appendChild(droite);
+      let det=document.createElement("div");det.className="det";
+      if((sym.s1||[]).length){
+        let seq=document.createElement("div");seq.className="seq";
+        let lab=document.createElement("span");lab.className="lab s1";lab.textContent="S1 \u2014 Nettoyage";
+        let chips=document.createElement("div");chips.className="chips";
+        sym.s1.forEach(function(f){
+          let ch=document.createElement("span");ch.className="chip s1";
+          ch.textContent=String(hzAff(f.hz)).replace(".",",")+" Hz ";
+          let i=document.createElement("i");i.textContent="\u00B7 "+f.d+" min";ch.appendChild(i);
+          chips.appendChild(ch);
+        });
+        seq.appendChild(lab);seq.appendChild(chips);det.appendChild(seq);
+      }
+      if((sym.s2||[]).length){
+        let seq=document.createElement("div");seq.className="seq";
+        let lab=document.createElement("span");lab.className="lab s2";lab.textContent="S2 \u2014 R\u00E9paration";
+        let chips=document.createElement("div");chips.className="chips";
+        sym.s2.forEach(function(f){
+          let ch=document.createElement("span");ch.className="chip s2";
+          ch.textContent=String(hzAff(f.hz)).replace(".",",")+" Hz ";
+          let i=document.createElement("i");i.textContent="\u00B7 "+f.d+" min";ch.appendChild(i);
+          chips.appendChild(ch);
+        });
+        seq.appendChild(lab);seq.appendChild(chips);det.appendChild(seq);
+      }
+      haut.onclick=function(){ligne.classList.toggle("ouvert");};
+      ligne.appendChild(haut);ligne.appendChild(det);
+      contenu.appendChild(ligne);
     });
-    SYMPTOMES[cat].slice().sort(function(a,b){return a.s.localeCompare(b.s);}).forEach(function(s){
-      const card=document.createElement("div");
-      card.className="proto-card";
-      let bodyHTML="";
-      bodyHTML+="<div class='proto-section'>";
-      bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
-      bodyHTML+="<div class='proto-section-title s1' style='margin-bottom:0'>S1 \u2014 Nettoyage</div>";
-      bodyHTML+="<button class='proto-freq-btn s1 symp-launch-s1' style='font-size:11px'>Lancer S1</button>";
-      bodyHTML+="</div><div class='proto-freq-row'>";
-      s.s1.forEach(function(item){bodyHTML+="<span class='proto-freq-btn s1'>"+hzAff(item.hz)+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
-      bodyHTML+="</div></div>";
-      bodyHTML+="<div class='proto-section' style='margin-top:8px'>";
-      bodyHTML+="<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px'>";
-      bodyHTML+="<div class='proto-section-title s2' style='margin-bottom:0'>S2 \u2014 R\u00e9paration</div>";
-      bodyHTML+="<button class='proto-freq-btn s2 symp-launch-s2' style='font-size:11px'>Lancer S2</button>";
-      bodyHTML+="</div><div class='proto-freq-row'>";
-      (s.s2||[]).forEach(function(item){bodyHTML+="<span class='proto-freq-btn s2'>"+hzAff(item.hz)+" Hz<br><span style='font-size:11px;color:var(--muted)'>"+item.d+" min</span></span>";});
-      bodyHTML+="</div></div>";
-      card.innerHTML="<div class='proto-header' onclick='toggleProto(this)'><span class='proto-title'>"+s.s+"</span></div><div class='proto-body'>"+bodyHTML+"</div>";
-      // Attach click handlers via JS to avoid JSON escaping issues
-      let btns=card.querySelectorAll('.symp-launch-s1');
-      if(btns.length>0)btns[0].onclick=function(){launchSympSequence(s.s1,'s1',s.s);};
-      let btns2=card.querySelectorAll('.symp-launch-s2');
-      if(btns2.length>0)btns2[0].onclick=function(){launchSympSequence(s.s2||[],'s2',s.s);};
-      contenuEl.appendChild(card);
-    });
-    secEl.appendChild(titreEl);
-    secEl.appendChild(contenuEl);
-    listEl.appendChild(secEl);
+    bloc.appendChild(grp);bloc.appendChild(contenu);
+    listEl.appendChild(bloc);
   });
 }
 
