@@ -55,8 +55,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 /* matin : fond ambré très léger / soir : fond violet très léger */
 .liste.matin .item{background:linear-gradient(90deg,rgba(255,158,44,.10),rgba(255,158,44,.02))}
 .liste.soir .item{background:linear-gradient(90deg,rgba(199,125,255,.11),rgba(199,125,255,.02))}
-/* groupe d'origine (quand une fréquence vient d'un protocole) */
-.groupe{font-size:10px;letter-spacing:.06em;color:var(--amber);padding:8px 2px 0;opacity:.85}
 .vide{padding:14px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,.10);
   font-size:11.5px;color:var(--dim);text-align:center}
 
@@ -232,7 +230,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 <script>
 var MATIN=[
   {nom:'Racine',hz:108,d:13},
-  {nom:'Magnésium',hz:72.45,d:10,source:'Anti-stress biochimique'},
+  {nom:'Magnésium',hz:72.45,d:10},
   {nom:'Alpha 10',hz:126,d:18}
 ];
 var SOIR=[
@@ -253,11 +251,7 @@ function dessineListe(idListe,idCompte,items,tag){
   if(items.length===0){
     el.innerHTML='<div class="vide">Vide — ajoute des fréquences depuis Minéraux</div>';
   }else{
-    var dernier='';
     items.forEach(function(it,i){
-      if(it.source&&it.source!==dernier){
-        var g=document.createElement('div');g.className='groupe';g.textContent='⬡ '+it.source;el.appendChild(g);dernier=it.source;
-      }else if(!it.source){dernier='';}
       var b=document.createElement('div');b.className='item';
       b.innerHTML='<span class="nom">'+it.nom+'</span><span class="duree">'+fr(it.hz,2)+' Hz · '+it.d+' min</span>'
                  +'<button class="sup" aria-label="Retirer">✕</button>';
