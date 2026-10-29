@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026d';
+  v.textContent='version 291026e';
   acc.appendChild(v);
 },0);
 
@@ -303,18 +303,43 @@ function dismissResume(){
 
 // CUSTOM FREQUENCY
 let liveToneActive=false;
+// Arrêt immédiat du moteur principal (sans le fondu de 1,5 s de stopAudio) :
+// sert quand on bascule vers l'écoute libre alors qu'une séance tourne.
+function arretImmediat(){
+  try{
+    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+    if(leftOsc){try{leftOsc.stop();}catch(e){}leftOsc=null;}
+    if(rightOsc){try{rightOsc.stop();}catch(e){}rightOsc=null;}
+    if(audioCtx){try{audioCtx.close();}catch(e){}audioCtx=null;}
+    gainNode=null;
+    playing=false;paused=false;pausedSeconds=0;secondsLeft=0;
+    var b=document.getElementById("play-btn");
+    if(b){b.disabled=false;b.className="play-btn";b.innerHTML="<span>▶</span>";}
+    var pb=document.getElementById("pause-btn");
+    if(pb)pb.style.display="none";
+    try{updateTimerDisplay();}catch(e){}
+    try{updatePlayerDisplay();}catch(e){}
+  }catch(e){}
+}
 function toggleLiveTone(){
   let btn=document.getElementById("btn-live-tone");
   if(!liveToneActive){
-    startLiveTone();
+    // une séance tourne peut-être : il a demandé à écouter, on l'arrête
+    if(playing||paused)arretImmediat();
+    var ok=false;
+    try{ ok=startLiveTone(); }catch(e2){ ok=false; }
+    if(!ok){
+      liveToneActive=false;
+      if(btn){btn.innerHTML="▶ Lancer l'écoute";btn.classList.remove("joue");}
+      try{customAlert("Audio indisponible","Le navigateur n'a pas pu ouvrir la sortie audio. Ferme les autres onglets ou relance l'application, puis réessaie.",{icon:"🔇"});}catch(e2){}
+      return;
+    }
     liveToneActive=true;
-    btn.innerHTML="⏹ Arrêter l'écoute";
-    btn.classList.add("joue");
+    if(btn){btn.innerHTML="⏹ Arrêter l'écoute";btn.classList.add("joue");}
   }else{
-    stopLiveTone();
     liveToneActive=false;
-    btn.innerHTML="▶ Lancer l'écoute";
-    btn.classList.remove("joue");
+    if(btn){btn.innerHTML="▶ Lancer l'écoute";btn.classList.remove("joue");}
+    try{ stopLiveTone(); }catch(e2){}
   }
 }
 /* --- accueil : curseur en echelle log (le rond reste au bout du remplissage) --- */
@@ -332,7 +357,11 @@ function accMajCurseur(hz){
   if(!s)return;
   var p=accPosDeHz(hz);
   s.value=p.toFixed(1);
-  s.style.setProperty('--pct',p.toFixed(2)+'%');
+  accRempli(p);
+}
+function accRempli(p){
+  var r=document.getElementById('curseur-rempli');
+  if(r)r.style.width=Math.max(0,Math.min(100,parseFloat(p)||0)).toFixed(2)+'%';
 }
 function accFr(x,d){
   var s=(parseFloat(x)||0).toFixed(d===undefined?1:d);
@@ -342,7 +371,7 @@ function accFr(x,d){
 function onBinSlider(){
   let sl=document.getElementById("bin-slider");
   let v=accHzDePos(sl.value);
-  sl.style.setProperty('--pct',(parseFloat(sl.value)||0).toFixed(2)+'%');
+  accRempli(sl.value);
   document.getElementById("bin-hz-input").value=v;
   baseHz=v;currentLabel=hzAff(v)+" Hz";
   updateDisplays();
@@ -356,9 +385,10 @@ function onBinSlider(){
 }
 let liveCtx=null,liveLeft=null,liveRight=null,liveGain=null;
 function startLiveTone(){
-  if(playing)return;
+  if(playing)return false;
   if(!liveCtx){
     liveCtx=createAudioContext();
+    if(!liveCtx)return false;
     let merger=liveCtx.createChannelMerger(2);
     let g=liveCtx.createGain();liveGain=g;g.gain.value=masterVolume;
     liveLeft=liveCtx.createOscillator();liveRight=liveCtx.createOscillator();
@@ -371,6 +401,7 @@ function startLiveTone(){
   }
   liveLeft.frequency.setTargetAtTime(hzSortie(baseHz),liveCtx.currentTime,0.02);
   liveRight.frequency.setTargetAtTime(hzSortie(baseHz)+diff,liveCtx.currentTime,0.02);
+  return true;
 }
 function stopLiveTone(){
   if(liveLeft){liveLeft.stop();liveLeft=null;}
@@ -1019,6 +1050,7 @@ function startAudio(){
   btn.innerHTML="<span>⏳</span><span>Démarrage...</span>";
   btn.disabled=true;
   setTimeout(function(){
+  try{
   if(audioCtx){audioCtx.close();audioCtx=null;}
   audioCtx=createAudioContext();
   const merger=audioCtx.createChannelMerger(2);
@@ -1046,6 +1078,16 @@ function startAudio(){
   if(timerMin>0){
     secondsLeft=timerMin*60;updateTimerDisplay();
     timerInterval=setInterval(function(){secondsLeft--;saveSession();updateTimerDisplay();if(secondsLeft<=0){playEndChime();stopAudio();}},1000);
+  }
+  }catch(err){
+    // sans ce garde-fou le bouton restait bloque sur "Demarrage..." a vie
+    try{ if(audioCtx){audioCtx.close();audioCtx=null;} }catch(e2){}
+    if(leftOsc){try{leftOsc.stop();}catch(e2){}leftOsc=null;}
+    if(rightOsc){try{rightOsc.stop();}catch(e2){}rightOsc=null;}
+    playing=false;paused=false;
+    var _pb=document.getElementById("play-btn");
+    if(_pb){_pb.disabled=false;_pb.className="play-btn";_pb.innerHTML="<span>\u25b6</span>";}
+    try{customAlert("Audio indisponible","Le navigateur n'a pas pu ouvrir la sortie audio (une autre écoute est peut-être restée ouverte). Ferme les autres onglets ou relance l'application, puis réessaie.",{icon:"🔇"});}catch(e2){}
   }
   },80);
 }
@@ -1656,6 +1698,13 @@ function startAudioSequence(){
   if(audioCtx){audioCtx.close();audioCtx=null;}
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   audioCtx=createAudioContext();
+  if(!audioCtx){
+    playing=false;paused=false;
+    var _pb2=document.getElementById("play-btn");
+    if(_pb2){_pb2.disabled=false;_pb2.className="play-btn";_pb2.innerHTML="<span>\u25b6</span>";}
+    try{customAlert("Audio indisponible","Le navigateur n'a pas pu ouvrir la sortie audio. Ferme les autres onglets ou relance l'application, puis réessaie.",{icon:"🔇"});}catch(e2){}
+    return;
+  }
   const merger=audioCtx.createChannelMerger(2);
   gainNode=audioCtx.createGain();
   gainNode.gain.setValueAtTime(0,audioCtx.currentTime);
