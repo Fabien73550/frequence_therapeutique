@@ -60,10 +60,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .contenu.ouvert{display:block}
 
 /* --- lignes de mineraux --- */
+/* lignes : dégradé violet (le même que le bandeau « Lancer Soir ») */
 .min{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;width:100%;
   padding:10px 12px;border-radius:10px;border:none;text-align:left;cursor:pointer;font-family:'Outfit',sans-serif;
-  background:rgba(255,255,255,.02);margin-bottom:5px}
-.min:active{background:rgba(255,255,255,.045)}
+  background:linear-gradient(90deg,rgba(199,125,255,.16),rgba(199,125,255,.03));margin-bottom:5px}
+.min:active{background:linear-gradient(90deg,rgba(199,125,255,.26),rgba(199,125,255,.07))}
 .min .nom{font-size:12.5px;color:var(--text);font-weight:500}
 .min .act{font-size:10px;color:var(--muted);margin-top:2px}
 .min .droite{display:flex;align-items:center;gap:7px;flex-shrink:0}
