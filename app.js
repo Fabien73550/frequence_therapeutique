@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026f';
+  v.textContent='version 291026g';
   acc.appendChild(v);
 },0);
 
@@ -485,45 +485,46 @@ function addFreqToPlaylist(hz,d,nom,slot,action,source){
   savePlaylist(slot);renderPlaylist(slot);
   showToast(nom+" → "+(slot==="matin"?"☀️ Matin":"🌙 Soir"));
 }
+function hzTxt(hz){return String(hzAff(hz)).replace(".",",")+" Hz";}
 function renderPlaylist(slot){
   let el=document.getElementById("playlist-items-"+slot);
-  let card=document.getElementById("playlist-card-"+slot);
-  if(!el||!card)return;
+  if(!el)return;
+  let compte=document.getElementById("compte-"+slot);
+  let n=playlists[slot]?playlists[slot].length:0;
+  if(compte)compte.textContent=n+(n>1?" fréquences":" fréquence");
   el.innerHTML="";
-  if(playlists[slot].length===0){
-    el.innerHTML="<div style='font-size:12px;color:var(--dim);text-align:center;padding:12px 0'>Vide — ajoute des fréquences depuis Minéraux</div>";
+  if(n===0){
+    el.innerHTML="<div class='pp-vide'>Vide — ajoute des fréquences depuis Minéraux</div>";
     return;
   }
   let lastSource="";
   playlists[slot].forEach(function(item,i){
-    let row=document.createElement("div");
-    row.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)";
-    row.className="playlist-item";
-    row.draggable=true;
-    row.dataset.index=i;
-    row.addEventListener("dragstart",function(e){e.dataTransfer.setData("text/plain",slot+"|"+i);this.classList.add("dragging");});
-    row.addEventListener("dragend",function(){this.classList.remove("dragging");document.querySelectorAll(".playlist-item.drag-over").forEach(function(x){x.classList.remove("drag-over");});});
-    row.addEventListener("dragover",function(e){e.preventDefault();this.classList.add("drag-over");});
-    row.addEventListener("dragleave",function(){this.classList.remove("drag-over");});
-    row.addEventListener("drop",function(e){e.preventDefault();this.classList.remove("drag-over");let data=e.dataTransfer.getData("text/plain").split("|");let fromSlot=data[0],fromIdx=parseInt(data[1]);let toIdx=parseInt(this.dataset.index);if(fromSlot===slot&&fromIdx!==toIdx){let item=playlists[slot].splice(fromIdx,1)[0];playlists[slot].splice(toIdx,0,item);savePlaylist(slot);renderPlaylist(slot);}});
-    // Afficher titre de groupe seulement quand la source change
     let itemSource=item.source||"";
     if(itemSource && itemSource!==lastSource){
-      let groupHeader=document.createElement("div");
-      groupHeader.style.cssText="font-size:11px;color:var(--amber);font-weight:700;padding:8px 0 2px 0;letter-spacing:0.03em";
-      groupHeader.textContent="⬡ "+itemSource;
-      el.appendChild(groupHeader);
+      let g=document.createElement("div");
+      g.className="pp-grp";
+      g.textContent="⬡ "+itemSource;
+      el.appendChild(g);
       lastSource=itemSource;
     } else if(!itemSource){
       lastSource="";
     }
-    let freqStr="<div><span style=\'font-family:JetBrains Mono,monospace;font-size:13px;font-weight:500;color:var(--blue)\'>"+item.nom+"</span></div>";
-    row.innerHTML="<div style=\'flex:1\'>"+freqStr+"</div><span style=\'font-size:11px;color:var(--muted);margin:0 8px\'>"+item.d+"m</span>";
-    let delBtn=document.createElement("button");
-    delBtn.textContent="✕";
-    delBtn.style.cssText="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer";
+    let row=document.createElement("div");
+    row.className="pp-item";
+    row.draggable=true;
+    row.dataset.index=i;
+    row.addEventListener("dragstart",function(e){e.dataTransfer.setData("text/plain",slot+"|"+i);this.classList.add("dragging");});
+    row.addEventListener("dragend",function(){this.classList.remove("dragging");document.querySelectorAll(".pp-item.drag-over").forEach(function(x){x.classList.remove("drag-over");});});
+    row.addEventListener("dragover",function(e){e.preventDefault();this.classList.add("drag-over");});
+    row.addEventListener("dragleave",function(){this.classList.remove("drag-over");});
+    row.addEventListener("drop",function(e){e.preventDefault();this.classList.remove("drag-over");let data=e.dataTransfer.getData("text/plain").split("|");let fromSlot=data[0],fromIdx=parseInt(data[1]);let toIdx=parseInt(this.dataset.index);if(fromSlot===slot&&fromIdx!==toIdx){let item=playlists[slot].splice(fromIdx,1)[0];playlists[slot].splice(toIdx,0,item);savePlaylist(slot);renderPlaylist(slot);}});
+    let nomTxt=item.nom||"";
+    let duree=(/Hz\s*$/.test(nomTxt)?item.d+" min":hzTxt(item.hz)+" · "+item.d+" min");
+    let nomSpan=document.createElement("span");nomSpan.className="nom";nomSpan.textContent=nomTxt;
+    let dureeSpan=document.createElement("span");dureeSpan.className="duree";dureeSpan.textContent=duree;
+    let delBtn=document.createElement("button");delBtn.className="sup";delBtn.textContent="✕";delBtn.setAttribute("aria-label","Retirer");
     delBtn.addEventListener("click",function(e){e.stopPropagation();removeFromPlaylist(slot,i);});
-    row.appendChild(delBtn);
+    row.appendChild(nomSpan);row.appendChild(dureeSpan);row.appendChild(delBtn);
     el.appendChild(row);
   });
 }
@@ -631,52 +632,39 @@ function renderSavedPlaylists(){
   let el=document.getElementById("saved-playlists-list");
   if(!el)return;
   let noms=Object.keys(savedPlaylists);
+  el.innerHTML="";
   if(noms.length===0){
-    el.innerHTML="<div style='font-size:12px;color:var(--dim);text-align:center;padding:12px 0'>Aucune playlist sauvegardée. Utilise le bouton 💾.</div>";
+    el.innerHTML="<div class='pp-vide'>Aucune playlist sauvegardée.</div>";
     return;
   }
-  el.innerHTML="";
   noms.forEach(function(nom){
-    let n=savedPlaylists[nom].length;
-    let safeNom=nom.replace(/'/g,"\\'");
-    var row=document.createElement("div");
-    row.style.cssText="border-bottom:1px solid var(--border);padding:10px 0;";
-    var header=document.createElement("div");
-    header.style.cssText="display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;";
-    var delBtn=document.createElement("button");
-    delBtn.textContent="✕";
-    delBtn.style.cssText="font-size:11px;padding:6px 9px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer";
+    let items=savedPlaylists[nom]||[];
+    let n=items.length;
+    let wrap=document.createElement("div");wrap.className="pp-sauve";
+    let tete=document.createElement("div");tete.className="pp-sauve-tete";
+    let g=document.createElement("div");
+    let nomDiv=document.createElement("div");nomDiv.className="nom";nomDiv.textContent=nom;
+    let sousDiv=document.createElement("div");sousDiv.className="sous";
+    sousDiv.textContent=n+(n>1?" fréquences":" fréquence")+" — cliquer pour voir";
+    g.appendChild(nomDiv);g.appendChild(sousDiv);
+    let delBtn=document.createElement("button");delBtn.className="sup";delBtn.textContent="✕";delBtn.setAttribute("aria-label","Supprimer");
     delBtn.addEventListener("click",function(e){e.stopPropagation();deleteSaved(nom);});
-    var leftDiv=document.createElement("div");
-    leftDiv.style.cssText="flex:1;min-width:0";
-    var nameDiv=document.createElement("div");
-    nameDiv.style.cssText="font-size:14px;font-weight:500;color:var(--green);overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
-    nameDiv.textContent=nom;
-    var infoDiv=document.createElement("div");
-    infoDiv.style.cssText="font-size:11px;color:var(--muted)";
-    infoDiv.textContent=n+" fréquence"+(n>1?"s":"")+" — cliquer pour voir";
-    leftDiv.appendChild(nameDiv);
-    leftDiv.appendChild(infoDiv);
-    header.appendChild(leftDiv);
-    header.appendChild(delBtn);
-    var detail=document.createElement("div");
-    detail.style.cssText="display:none;margin-top:8px;background:var(--s2);border-radius:10px;padding:10px;";
-    var items=savedPlaylists[nom];
-    var listHtml="";
+    tete.appendChild(g);tete.appendChild(delBtn);
+    let detail=document.createElement("div");detail.className="pp-sauve-detail";
     items.forEach(function(item,i){
-      listHtml+="<div style='font-size:12px;color:var(--green);padding:3px 0;border-bottom:1px solid var(--border)'>"+(i+1)+". "+item.nom+" — "+hzAff(item.hz)+" Hz — "+item.d+" min</div>";
+      let l=document.createElement("div");l.className="l";
+      l.textContent=(i+1)+". "+item.nom+" — "+hzTxt(item.hz)+" — "+item.d+" min";
+      detail.appendChild(l);
     });
-    listHtml+="<div style='display:flex;gap:8px;margin-top:10px;'>"
-      +"<button onclick='loadSavedInto(\""+nom.replace(/"/g,'')+"\",\"matin\")' style='flex:1;font-size:12px;padding:8px;border-radius:8px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer'>☀ Charger dans Matin</button>"
-      +"<button onclick='loadSavedInto(\""+nom.replace(/"/g,'')+"\",\"soir\")' style='flex:1;font-size:12px;padding:8px;border-radius:8px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer'>☽ Charger dans Soir</button>"
-      +"</div>";
-    detail.innerHTML=listHtml;
-    header.addEventListener("click",function(){
-      detail.style.display=detail.style.display==="none"?"block":"none";
-    });
-    row.appendChild(header);
-    row.appendChild(detail);
-    el.appendChild(row);
+    let btns=document.createElement("div");btns.className="pp-sauve-btns";
+    let bm=document.createElement("button");bm.className="m";bm.textContent="☀ Charger dans Matin";
+    bm.addEventListener("click",function(e){e.stopPropagation();loadSavedInto(nom,"matin");});
+    let bs=document.createElement("button");bs.className="s";bs.textContent="☽ Charger dans Soir";
+    bs.addEventListener("click",function(e){e.stopPropagation();loadSavedInto(nom,"soir");});
+    btns.appendChild(bm);btns.appendChild(bs);detail.appendChild(btns);
+    tete.addEventListener("click",function(){detail.classList.toggle("ouvert");});
+    wrap.appendChild(tete);wrap.appendChild(detail);
+    el.appendChild(wrap);
   });
 }
 

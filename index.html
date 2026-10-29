@@ -29,7 +29,7 @@
 <meta name="twitter:title" content="Fréquences Thérapeutiques Binaural X">
 <meta name="twitter:description" content="Générateur de sons binauraux thérapeutiques.">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=291026f">
+<link rel="stylesheet" href="styles.css?v=291026g">
 <script>
   // Appliquer le thème AVANT le rendu pour éviter le flash
   (function(){
@@ -113,78 +113,70 @@
 </div>
 
 <div class="page" id="page-perso">
-  <div class="header"><h1>Mes Playlists</h1><p>Matin et Soir · Ajoute depuis Minéraux <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
+  <div class="pp-top">
+    <h1 class="pp-titre">Mes Playlists</h1>
+    <p class="pp-sous">Matin et Soir · Ajoute depuis Minéraux<span class="pp-aide" onclick="toggleAide()">❓ Aide</span></p>
+  </div>
+  <div class="pp-filet"></div>
 
-  <div class="card" id="playlist-card-matin">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:24px">☀</span><span style="font-size:15px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:0.05em">Playlist Matin</span><button onclick='toggleFavPlaylist("matin")' id='fav-btn-matin' style="background:none;border:none;font-size:28px;cursor:pointer;padding:2px 6px;line-height:1;min-width:40px;text-align:center;color:var(--amber)">☆</button></div>
-      <button onclick="clearPlaylist('matin')"
-        style="font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-weight:600">
-        Vider
-      </button>
+  <section class="pp-bloc">
+    <div class="pp-labelrow">
+      <span class="pp-label">Playlist Matin<button class="pp-fav" id="fav-btn-matin" onclick="toggleFavPlaylist('matin')" aria-label="Mettre la playlist en favori">☆</button></span>
+      <span class="pp-droite">
+        <span class="pp-compte" id="compte-matin">0 fréquence</span>
+        <button class="pp-vider" onclick="clearPlaylist('matin')">Vider</button>
+      </span>
     </div>
-    <div id="playlist-items-matin"></div>
-    <button onclick="launchPlaylist('matin')"
-      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
-      ▶ Lancer Matin
-    </button>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <input type="text" id="save-name-matin" placeholder="Nom playlist..."
-        style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:13px;font-family:'Outfit',sans-serif">
-      <button onclick="savePlaylistAs('matin')"
-        style="padding:10px 14px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer">
-        💾 Sauver
-      </button>
+    <div class="pp-liste-items matin" id="playlist-items-matin"></div>
+    <button class="pp-bandeau matin" onclick="launchPlaylist('matin')">▶ Lancer Matin</button>
+    <div class="pp-enreg">
+      <input type="text" id="save-name-matin" placeholder="Nom de la playlist…">
+      <button onclick="savePlaylistAs('matin')">💾 Sauver</button>
     </div>
-  </div>
+  </section>
 
-  <div class="card" id="playlist-card-soir">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:24px;display:inline-block;transform:rotate(180deg)">☽</span><span style="font-size:15px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:0.05em">Playlist Soir</span><button onclick='toggleFavPlaylist("soir")' id='fav-btn-soir' style="background:none;border:none;font-size:28px;cursor:pointer;padding:2px 6px;line-height:1;min-width:40px;text-align:center;color:var(--purple)">☆</button></div>
-      <button onclick="clearPlaylist('soir')"
-        style="font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);cursor:pointer;font-weight:600">
-        Vider
-      </button>
-    </div>
-    <div id="playlist-items-soir"></div>
-    <button onclick="launchPlaylist('soir')"
-      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
-      ▶ Lancer Soir
-    </button>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <input type="text" id="save-name-soir" placeholder="Nom playlist..."
-        style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:13px;font-family:'Outfit',sans-serif">
-      <button onclick="savePlaylistAs('soir')"
-        style="padding:10px 14px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer">
-        💾 Sauver
-      </button>
-    </div>
-  </div>
+  <div class="pp-sep"></div>
 
-  <div class="card" id="playlist-card-partage" style="display:none">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:20px">🔗</span><span style="font-size:15px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.05em">📤 Playlist Partagée</span></div>
-      <button onclick="clearPlaylist('partage')"
-        style="font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer;font-weight:600">
-        Vider
-      </button>
+  <section class="pp-bloc">
+    <div class="pp-labelrow">
+      <span class="pp-label">Playlist Soir<button class="pp-fav" id="fav-btn-soir" onclick="toggleFavPlaylist('soir')" aria-label="Mettre la playlist en favori">☆</button></span>
+      <span class="pp-droite">
+        <span class="pp-compte" id="compte-soir">0 fréquence</span>
+        <button class="pp-vider" onclick="clearPlaylist('soir')">Vider</button>
+      </span>
     </div>
-    <div id="playlist-items-partage"></div>
-    <button onclick="launchPlaylist('partage')"
-      style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);font-size:15px;font-family:'Outfit',sans-serif;cursor:pointer">
-      ▶ Lancer Partagée
-    </button>
-  </div>
+    <div class="pp-liste-items soir" id="playlist-items-soir"></div>
+    <button class="pp-bandeau soir" onclick="launchPlaylist('soir')">▶ Lancer Soir</button>
+    <div class="pp-enreg">
+      <input type="text" id="save-name-soir" placeholder="Nom de la playlist…">
+      <button onclick="savePlaylistAs('soir')">💾 Sauver</button>
+    </div>
+  </section>
 
-  <div class="card" id="saved-playlists-card">
-    <div class="card-label">Mes playlists sauvegardées</div>
-    <div id="saved-playlists-list"></div>
-  </div>
-  <div class="card" id="suggested-protocols-card">
-    <div class="card-label">Protocoles suggérés Matin / Soir</div>
-    <div id="suggested-protocols-list"></div>
-  </div>
+  <div class="pp-sep"></div>
+
+  <section class="pp-bloc" id="playlist-card-partage" style="display:none">
+    <div class="pp-labelrow">
+      <span class="pp-label">Playlist partagée</span>
+      <span class="pp-droite">
+        <span class="pp-compte" id="compte-partage">0 fréquence</span>
+        <button class="pp-vider" onclick="clearPlaylist('partage')">Vider</button>
+      </span>
+    </div>
+    <div class="pp-liste-items partage" id="playlist-items-partage"></div>
+    <button class="pp-bandeau partage" onclick="launchPlaylist('partage')">▶ Lancer Partagée</button>
+  </section>
+
+  <div class="pp-sep"></div>
+
+  <section class="pp-bloc">
+    <div class="pp-labelrow"><span class="pp-label">Mes playlists sauvegardées</span></div>
+    <div class="pp-liste" id="saved-playlists-list"></div>
+  </section>
+
+  <div class="pp-note">Ajoute des fréquences depuis Minéraux avec les boutons M et S.</div>
 </div>
+
 <div class="page" id="page-mineraux">
   <div class="header"><h1>Éléments et Minéraux</h1><p>Appuyer pour charger dans le générateur <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
   <div class="selected-bar" id="sel-bar-min"><span class="selected-bar-text" id="sel-bar-min-txt">—</span></div>
@@ -380,8 +372,8 @@
   </div>
 </div>
 
-<script src="data.js?v=291026f"></script>
-<script src="app.js?v=291026f"></script>
+<script src="data.js?v=291026g"></script>
+<script src="app.js?v=291026g"></script>
 
 <div id="page-player" style="display:none">
   <div class="lp-top">
