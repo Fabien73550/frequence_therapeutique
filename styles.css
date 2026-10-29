@@ -583,3 +583,39 @@ select option{background:var(--s2)}
 #page-perso .pp-sauve-btns .m{background:rgba(255,158,44,.14);color:var(--amber)}
 #page-perso .pp-sauve-btns .s{background:rgba(199,125,255,.16);color:var(--purple)}
 #page-perso .pp-note{text-align:center;font-size:9.5px;color:var(--muted);opacity:.55;margin-top:18px}
+
+/* ===== PAGE MINÉRAUX — maquette validée (29/10/2026) ===== */
+#page-mineraux .mx-titre{font-size:14px;font-weight:500;text-align:center;color:var(--text)}
+#page-mineraux .mx-sous{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+#page-mineraux .mx-aide{display:inline-block;margin-left:7px;font-size:11px;color:var(--amber);cursor:pointer}
+#page-mineraux .mx-filet-top{height:2px;border-radius:2px;margin-top:8px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+#page-mineraux .mx-filet{height:1px;background:rgba(255,255,255,.07);margin:10px 0 0}
+
+#page-mineraux .mx-rech{display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.10);padding:16px 0 9px;margin-bottom:2px}
+#page-mineraux .mx-rech svg{width:15px;height:15px;flex-shrink:0;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round}
+#page-mineraux .mx-rech input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:0}
+#page-mineraux .mx-rech input::placeholder{color:var(--dim)}
+
+#page-mineraux .mx-selection{display:flex;align-items:center;gap:8px;padding:12px 0 6px;font-size:11px;color:var(--muted)}
+#page-mineraux .mx-selection .mx-pt{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
+#page-mineraux .mx-selection b{color:var(--green);font-weight:500}
+
+#page-mineraux .mx-bloc{padding:16px 0 2px}
+#page-mineraux .mx-grp{width:100%;display:flex;align-items:center;gap:9px;padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:6px;background:linear-gradient(90deg,rgba(255,158,44,.10),rgba(255,158,44,.02))}
+#page-mineraux .mx-grp .nom{font-size:12.5px;font-weight:600;color:var(--amber);text-align:left;flex:1}
+#page-mineraux .mx-grp .compte{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim)}
+#page-mineraux .mx-grp .fl{font-size:10px;color:var(--muted);transition:transform .2s}
+#page-mineraux .mx-contenu{display:none}
+#page-mineraux .mx-contenu.ouvert{display:block}
+
+#page-mineraux .mx-min{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;border:none;text-align:left;cursor:pointer;font-family:'Outfit',sans-serif;background:linear-gradient(90deg,rgba(199,125,255,.16),rgba(199,125,255,.03));margin-bottom:5px}
+#page-mineraux .mx-min:active{background:linear-gradient(90deg,rgba(199,125,255,.26),rgba(199,125,255,.07))}
+#page-mineraux .mx-min .nom{font-size:12.5px;color:var(--text);font-weight:500}
+#page-mineraux .mx-min .act{font-size:10px;color:var(--muted);margin-top:2px}
+#page-mineraux .mx-min .droite{display:flex;align-items:center;gap:7px;flex-shrink:0}
+#page-mineraux .mx-min .hz{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--green);opacity:.85}
+#page-mineraux .mx-min .plus{width:24px;height:24px;padding:0;border:none;border-radius:50%;cursor:pointer;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center}
+#page-mineraux .mx-min .plus.m{background:rgba(255,158,44,.16);color:var(--amber)}
+#page-mineraux .mx-min .plus.s{background:rgba(199,125,255,.16);color:var(--purple)}
+#page-mineraux .mx-min .plus.fait{background:rgba(0,255,186,.20);color:var(--green)}
+#page-mineraux .mx-vide{text-align:center;font-size:11.5px;color:var(--dim);padding:16px 8px}

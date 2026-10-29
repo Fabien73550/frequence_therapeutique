@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026g';
+  v.textContent='version 291026h';
   acc.appendChild(v);
 },0);
 
@@ -1288,6 +1288,39 @@ function catLabel(c){
   let L={"Element":"Élément","Mineral":"Minéral","Oligo":"Oligo","Vitamine":"Vitamine","Neuro":"Neuro","Organe":"Organe","Molecule":"Molécule","AA":"Acides Aminés","Pathogene":"🦠 Pathogènes"};
   return L[c]||c;
 }
+function estDansPlaylist(slot,nom){
+  return (playlists[slot]||[]).some(function(x){return x.nom===nom;});
+}
+function majMinEtats(){
+  document.querySelectorAll("#page-mineraux .plus").forEach(function(b){
+    let slot=b.classList.contains("m")?"matin":"soir";
+    let oui=estDansPlaylist(slot,b.dataset.nom);
+    b.classList.toggle("fait",oui);
+    b.textContent=oui?"✓":(slot==="matin"?"M":"S");
+  });
+}
+function renderMinLigne(m, container){
+  let div=document.createElement("div");
+  div.className="mx-min";
+  div.onclick=function(){loadFreq(m.hz,m.duree,m.nom);openPlayer();};
+  let left=document.createElement("div");
+  let nomDiv=document.createElement("div");nomDiv.className="nom";nomDiv.textContent=m.nom||"";
+  left.appendChild(nomDiv);
+  if(m.action){let a=document.createElement("div");a.className="act";a.textContent=m.action;left.appendChild(a);}
+  let right=document.createElement("div");right.className="droite";
+  let hz=document.createElement("span");hz.className="hz";
+  hz.textContent=String(hzAff(m.hz)).replace(".",",")+" Hz";
+  let btnM=document.createElement("button");btnM.className="plus m";btnM.textContent="M";
+  btnM.dataset.nom=m.nom||"";
+  btnM.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"matin");majMinEtats();};
+  let btnS=document.createElement("button");btnS.className="plus s";btnS.textContent="S";
+  btnS.dataset.nom=m.nom||"";
+  btnS.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"soir");majMinEtats();};
+  right.appendChild(hz);right.appendChild(btnM);right.appendChild(btnS);
+  div.appendChild(left);div.appendChild(right);
+  container.appendChild(div);
+}
+
 function buildMineraux(){
   let accordion=document.getElementById("min-accordion");
   if(!accordion)return;
@@ -1323,51 +1356,21 @@ function buildMineraux(){
     {nom:"⚖️ Thyroïde & Hormones",desc:"Iode + Sélénium + Zinc + Tyrosine",noms:["Iode","Sélénium","Zinc","Tyrosine"]}
   ];
 
-  function renderMinItem(m, container){
-    let div=document.createElement("div");
-    div.className="min-item";
-    div.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;";
-    div.onclick=function(){loadFreq(m.hz,m.duree,m.nom);openPlayer();};
-    let left=document.createElement("div");
-    left.innerHTML="<span style='font-weight:600;color:var(--text)'>"+(m.nom||"")+"</span>"+(m.action?"<br><span style='font-size:11px;color:var(--muted)'>"+m.action+"</span>":"");
-    let right=document.createElement("div");
-    right.style.cssText="display:flex;align-items:center;gap:6px;flex-shrink:0";
-    let hz=document.createElement("span");
-    hz.style.cssText="font-size:12px;color:var(--green);margin-right:4px";
-    hz.textContent=hzAff(m.hz)+" "+m.duree+"m";
-    let btnM=document.createElement("button");
-    btnM.className="add-btn matin";btnM.textContent="+M";
-    btnM.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"matin");};
-    let btnS=document.createElement("button");
-    btnS.className="add-btn soir";btnS.textContent="+S";
-    btnS.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"soir");};
-    right.appendChild(hz);right.appendChild(btnM);right.appendChild(btnS);
-    div.appendChild(left);div.appendChild(right);
-    container.appendChild(div);
-  }
-
   function makeSection(label, items, renderFn){
-    let sec=document.createElement("div");
-    sec.style.cssText="margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden";
-    let hdr=document.createElement("div");
-    hdr.style.cssText="font-size:14px;font-weight:700;color:var(--amber);padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
-    let arrow=document.createElement("span");
-    arrow.textContent="▼";
-    arrow.style.cssText="font-size:10px;transition:transform 0.3s;transform:rotate(-90deg)";
-    let titleSpan=document.createElement("span");
-    titleSpan.textContent=label+" ("+items.length+")";
-    hdr.appendChild(titleSpan);hdr.appendChild(arrow);
-    let body=document.createElement("div");
-    body.style.cssText="max-height:0;overflow:hidden;transition:max-height 0.4s ease";
+    let wrap=document.createElement("div");wrap.className="mx-bloc";
+    let hdr=document.createElement("button");hdr.className="mx-grp";
+    let n=document.createElement("span");n.className="nom";n.textContent=label;
+    let c=document.createElement("span");c.className="compte";c.textContent=items.length;
+    let fl=document.createElement("span");fl.className="fl";fl.textContent="\u25B6";
+    hdr.appendChild(n);hdr.appendChild(c);hdr.appendChild(fl);
+    let body=document.createElement("div");body.className="mx-contenu";
+    renderFn(body);
     hdr.onclick=function(){
-      let open=body.style.maxHeight!=="0px"&&body.style.maxHeight!=="";
-      body.style.maxHeight=open?"0":"3000px";
-      arrow.style.transform=open?"rotate(-90deg)":"rotate(0deg)";
-      if(!open&&!body._built){body._built=true;renderFn(body);}
+      let ouvert=body.classList.toggle("ouvert");
+      fl.textContent=ouvert?"\u25BC":"\u25B6";
     };
-    items.forEach(function(){});// placeholder pour count
-    sec.appendChild(hdr);sec.appendChild(body);
-    return sec;
+    wrap.appendChild(hdr);wrap.appendChild(body);
+    return wrap;
   }
 
   // Construire accordéon par catégorie
@@ -1384,13 +1387,13 @@ function buildMineraux(){
           title.style.cssText="font-weight:700;color:var(--text);flex:1";
           title.textContent=combo.nom;
           let btnM=document.createElement("button");
-          btnM.style.cssText="padding:4px 8px;border-radius:6px;border:none;background:var(--amber);color:#000;font-size:10px;font-weight:600;cursor:pointer";
-          btnM.textContent="+M";
-          btnM.onclick=function(){let src=combo.nom;combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"matin",src);});};
+          btnM.className="plus m";btnM.style.cssText="background:rgba(255,158,44,.16);color:var(--amber)";
+          btnM.textContent="M";
+          btnM.onclick=function(){let src=combo.nom;combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"matin",src);});majMinEtats();};
           let btnS=document.createElement("button");
-          btnS.style.cssText="padding:4px 8px;border-radius:6px;border:none;background:var(--green);color:#000;font-size:10px;font-weight:600;cursor:pointer";
-          btnS.textContent="+S";
-          btnS.onclick=function(){let src=combo.nom;combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"soir",src);});};
+          btnS.className="plus s";btnS.style.cssText="background:rgba(199,125,255,.16);color:var(--purple)";
+          btnS.textContent="S";
+          btnS.onclick=function(){let src=combo.nom;combo.noms.forEach(function(nom){let m=MINERAUX.find(function(x){return x.nom===nom;});if(m)addToPlaylist(m.hz,m.duree,m.nom,"soir",src);});majMinEtats();};
           titleRow.appendChild(title);titleRow.appendChild(btnM);titleRow.appendChild(btnS);
           let desc=document.createElement("div");
           desc.style.cssText="font-size:12px;color:var(--muted);margin-bottom:8px";
@@ -1415,32 +1418,12 @@ function buildMineraux(){
     }
     let items=MINERAUX.filter(function(m){return m.cat===cat;}).sort(function(a,b){return a.nom.localeCompare(b.nom);});
     if(items.length===0)return;
-    let label=(CAT_LABELS[cat]||cat)+" ("+items.length+")";
-    let sec=document.createElement("div");
-    sec.style.cssText="margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden";
-    let hdr=document.createElement("div");
-    hdr.style.cssText="font-size:14px;font-weight:700;color:var(--amber);padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
-    let arrow=document.createElement("span");
-    arrow.textContent="▼";arrow.style.cssText="font-size:10px;transition:transform 0.3s;transform:rotate(-90deg)";
-    let titleSpan=document.createElement("span");
-    titleSpan.textContent=label;
-    hdr.appendChild(titleSpan);hdr.appendChild(arrow);
-    let body=document.createElement("div");
-    body.style.cssText="max-height:0;overflow:hidden;transition:max-height 0.4s ease";
-    (function(items,body,arrow){
-      hdr.onclick=function(){
-        let open=body.style.maxHeight!=="0px"&&body.style.maxHeight!=="";
-        body.style.maxHeight=open?"0":"3000px";
-        arrow.style.transform=open?"rotate(-90deg)":"rotate(0deg)";
-        if(!open&&!body._built){
-          body._built=true;
-          items.forEach(function(m){renderMinItem(m,body);});
-        }
-      };
-    })(items,body,arrow);
-    sec.appendChild(hdr);sec.appendChild(body);
-    accordion.appendChild(sec);
+    let label=CAT_LABELS[cat]||cat;
+    accordion.appendChild(makeSection(label,items,function(body){
+      items.forEach(function(m){renderMinLigne(m,body);});
+    }));
   });
+  majMinEtats();
 }
 
 // Recherche globale dans tous les minéraux
@@ -1460,35 +1443,14 @@ function filterMinGlobal(query){
   });
   accordion.innerHTML="";
   if(results.length===0){
-    accordion.innerHTML="<div style='padding:20px;text-align:center;color:var(--muted)'>Aucun résultat pour '"+query+"'</div>";
+    accordion.innerHTML="<div class='mx-vide'>Aucun résultat pour '"+query+"'</div>";
     return;
   }
   results.sort(function(a,b){return a.nom.localeCompare(b.nom);});
   let container=document.createElement("div");
-  container.style.cssText="border-radius:12px;border:1px solid var(--border);overflow:hidden";
-  results.forEach(function(m){
-    let div=document.createElement("div");
-    div.className="min-item";
-    div.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;";
-    div.onclick=function(){loadFreq(m.hz,m.duree,m.nom);openPlayer();};
-    let left=document.createElement("div");
-    left.innerHTML="<span style='font-weight:600;color:var(--text)'>"+m.nom+"</span><br><span style='font-size:11px;color:var(--muted)'>"+(m.action||"")+"</span>";
-    let right=document.createElement("div");
-    right.style.cssText="display:flex;align-items:center;gap:6px;flex-shrink:0";
-    let hz=document.createElement("span");
-    hz.style.cssText="font-size:12px;color:var(--green)";
-    hz.textContent=hzAff(m.hz)+" "+m.duree+"m";
-    let btnM=document.createElement("button");
-    btnM.className="add-btn matin";btnM.textContent="+M";
-    btnM.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"matin");};
-    let btnS=document.createElement("button");
-    btnS.className="add-btn soir";btnS.textContent="+S";
-    btnS.onclick=function(e){e.stopPropagation();addToPlaylist(m.hz,m.duree,m.nom,"soir");};
-    right.appendChild(hz);right.appendChild(btnM);right.appendChild(btnS);
-    div.appendChild(left);div.appendChild(right);
-    container.appendChild(div);
-  });
+  results.forEach(function(m){renderMinLigne(m,container);});
   accordion.appendChild(container);
+  majMinEtats();
 }
 
 function buildProtocoles(){
