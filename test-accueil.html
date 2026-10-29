@@ -78,14 +78,13 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:none;border-ra
 .orow{display:grid;grid-template-columns:21px 1fr auto;align-items:center;gap:11px;width:100%;
   padding:11px 12px;border-radius:10px;border:none;border-left:2px solid transparent;cursor:pointer;
   text-align:left;font-family:'Outfit',sans-serif;
-  background:linear-gradient(90deg,rgba(0,255,186,.055),rgba(255,158,44,.055))}
+  background:rgba(255,255,255,.02)}
 .orow:active{transform:scale(.995)}
 .orow .oletter{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);border:1px solid rgba(255,158,44,.35)}
 .orow .onom{font-size:12.5px;color:var(--text);opacity:.9}
 .orow .ometa{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--amber);opacity:.7}
-.orow.actif{border-left-color:var(--green);
-  background:linear-gradient(90deg,rgba(0,255,186,.14),rgba(255,158,44,.05) 75%)}
+.orow.actif{border-left-color:var(--green)}
 .orow.actif .oletter{background:var(--green);color:#04120e;border-color:var(--green);font-weight:500}
 .orow.actif .onom{opacity:1;font-weight:500}
 .orow.actif .ometa{color:var(--green);opacity:1}
@@ -238,6 +237,20 @@ var ONDES=[
 ];
 var TIMERS=[{l:'inf',v:0},{l:'10',v:10},{l:'13',v:13},{l:'18',v:18},{l:'22',v:22},{l:'30',v:30}];
 
+/* Fonds des lignes : même famille de teintes (vert #00ffba ↔ orange #ff9e2c),
+   déclinée ligne par ligne — vert dominant, orange dominant, équilibré, etc.
+   Toujours à 2-16 % d'opacité : on doit à peine les voir.
+   [0] = version de la ligne SÉLECTIONNÉE, [1] = version au repos. */
+var FONDS=[
+  ['linear-gradient(90deg,rgba(0,255,186,.16),rgba(255,158,44,.05) 80%)','linear-gradient(90deg,rgba(0,255,186,.09),rgba(255,158,44,.03))'],
+  ['linear-gradient(90deg,rgba(255,158,44,.16),rgba(0,255,186,.05) 80%)','linear-gradient(90deg,rgba(255,158,44,.09),rgba(0,255,186,.03))'],
+  ['linear-gradient(90deg,rgba(0,255,186,.12),rgba(255,158,44,.11))','linear-gradient(90deg,rgba(0,255,186,.06),rgba(255,158,44,.06))'],
+  ['linear-gradient(100deg,rgba(255,158,44,.14),rgba(0,255,186,.08))','linear-gradient(100deg,rgba(255,158,44,.07),rgba(0,255,186,.05))'],
+  ['linear-gradient(90deg,rgba(0,255,186,.15),rgba(0,255,186,.04))','linear-gradient(90deg,rgba(0,255,186,.08),rgba(0,255,186,.02))'],
+  ['linear-gradient(90deg,rgba(255,158,44,.15),rgba(255,158,44,.04))','linear-gradient(90deg,rgba(255,158,44,.08),rgba(255,158,44,.02))'],
+  ['linear-gradient(90deg,rgba(0,255,186,.11),rgba(255,158,44,.15))','linear-gradient(90deg,rgba(0,255,186,.05),rgba(255,158,44,.09))']
+];
+
 var base=432, diff=1.2, minuteur=13, iOnde=0, joue=false;
 
 var $hz=document.getElementById('hz'), $cur=document.getElementById('curseur');
@@ -271,16 +284,23 @@ var zOndes=document.getElementById('ondes');
 ONDES.forEach(function(o,i){
   var b=document.createElement('button');
   b.className='orow'+(i===0?' actif':'');
+  b.dataset.i=i;
   b.innerHTML='<span class="oletter">'+o.nom.charAt(0)+'</span>'
              + '<span class="onom">'+o.label+'</span>'
              + '<span class="ometa">'+fr(o.diff,o.diff%1===0?0:1)+' Hz</span>';
   b.onclick=function(){
     iOnde=i; diff=o.diff;
-    [].forEach.call(zOndes.children,function(c,k){c.className='orow'+(k===i?' actif':'');});
+    [].forEach.call(zOndes.children,function(c,k){
+      c.className='orow'+(k===i?' actif':'');
+      c.style.background=FONDS[k][k===i?0:1];
+    });
     majTrio();
   };
   zOndes.appendChild(b);
 });
+
+/* on pose les fonds après construction */
+[].forEach.call(zOndes.children,function(c,k){ c.style.background=FONDS[k][k===iOnde?0:1]; });
 
 var zMin=document.getElementById('minuteurs');
 TIMERS.forEach(function(t,i){
