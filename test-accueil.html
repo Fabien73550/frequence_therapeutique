@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Page test — accueil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
+  --border:#242a3d;--border2:#2e3650;
+  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
+  --green:#00ffba;--blue:#3db5ff;--purple:#c77dff;--amber:#ff9e2c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+.page{min-height:100dvh;display:flex;flex-direction:column;
+      padding:calc(10px + env(safe-area-inset-top)) 20px calc(84px + env(safe-area-inset-bottom))}
+
+/* --- barre haute --- */
+.top{display:grid;grid-template-columns:36px 1fr 76px;align-items:center;height:36px}
+.top .titre{text-align:center;font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rond-aide{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,158,44,.7);
+  background:linear-gradient(135deg,rgba(255,158,44,.40),rgba(255,158,44,.16));color:var(--amber);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;cursor:pointer}
+.rond-aide:active{transform:scale(.96)}
+.top-droite{display:flex;gap:4px;justify-content:flex-end}
+.rond-mini{width:36px;height:36px;padding:0;border-radius:10px;border:1px solid var(--border2);background:var(--s2);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.rond-mini:active{transform:scale(.96)}
+
+/* --- filet + signature --- */
+.filet-top{height:2px;border-radius:2px;margin-top:10px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+.signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+
+/* --- les trois valeurs --- */
+.trio{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;gap:0;margin:22px 0 18px}
+.trio .col{text-align:center}
+.trio .sep{width:1px;height:34px;background:rgba(255,255,255,.09)}
+.trio .val{font-family:'JetBrains Mono',monospace;font-size:27px;font-weight:500;line-height:1;letter-spacing:-.5px;color:var(--text)}
+.trio .val.b{color:var(--blue);font-size:21px}
+.trio .lbl{font-size:10.5px;color:var(--muted);margin-top:7px}
+.filet{height:1px;background:rgba(255,255,255,.07);margin:0}
+
+/* --- blocs --- */
+.bloc{padding:18px 0 4px}
+.label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.champ{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid rgba(255,255,255,.10);padding-bottom:8px}
+.champ input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:500;letter-spacing:-1px}
+.champ .unite{font-size:14px;color:var(--dim)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;margin-top:14px}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:5px;
+  background:linear-gradient(to right,var(--amber) 0 var(--pct,2%),rgba(255,158,44,.20) var(--pct,2%) 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:#fff;margin-top:-6.5px;box-shadow:0 0 10px rgba(255,255,255,.4)}
+input[type=range]::-moz-range-track{height:5px;border-radius:5px;background:rgba(255,158,44,.20)}
+input[type=range]::-moz-range-progress{height:5px;border-radius:5px;background:var(--amber)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:#fff}
+.bornes{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim);margin-top:2px}
+
+/* --- action principale --- */
+.actions{padding:22px 0 20px;text-align:center}
+.principal{width:100%;height:54px;border-radius:27px;border:none;cursor:pointer;color:#04120e;
+  background:linear-gradient(135deg,var(--green),var(--amber));font-family:'Outfit',sans-serif;
+  font-size:15px;font-weight:700;letter-spacing:.01em;box-shadow:0 0 26px rgba(0,255,186,.16)}
+.principal:active{transform:scale(.985)}
+.principal.joue{background:linear-gradient(135deg,rgba(0,255,186,.20),rgba(255,158,44,.20));color:var(--green);
+  box-shadow:inset 0 0 0 1px rgba(0,255,186,.45)}
+.lien{margin-top:14px;background:none;border:none;color:var(--blue);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;opacity:.9}
+
+/* --- pastilles --- */
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:flex;align-items:baseline;gap:7px;padding:9px 12px;border-radius:12px;
+  border:1px solid var(--border2);background:var(--s2);cursor:pointer;font-family:'Outfit',sans-serif}
+.pill .code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);font-weight:500}
+.pill .nom{font-size:11px;color:var(--muted)}
+.pill.actif{border-color:rgba(0,255,186,.55);background:rgba(0,255,186,.07)}
+.pill.actif .code{color:var(--green)}
+.pill.actif .nom{color:var(--text)}
+.pills-min .pill{min-width:44px;justify-content:center;border-radius:12px}
+.pills-min .nom{display:none}
+.pills-min .code{font-size:12px;color:var(--muted)}
+.pills-min .pill.actif .code{color:var(--green)}
+
+.note{text-align:center;font-size:9.5px;color:var(--muted);opacity:.55;margin-top:22px;line-height:1.5}
+
+/* --- barre de navigation (réplique de l'appli) --- */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--border);
+  display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nv{flex:1;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;color:var(--amber);font-family:'Outfit',sans-serif;font-size:9.5px;cursor:pointer;position:relative}
+.nv.actif{color:var(--green)}
+.nv.actif::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2.5px;border-radius:0 0 3px 3px;background:var(--green)}
+.nv svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <button class="rond-aide" aria-label="Aide">?</button>
+    <span class="titre">Fréquences Thérapeutiques</span>
+    <div class="top-droite">
+      <button class="rond-mini" aria-label="Volume">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
+      <button class="rond-mini" aria-label="Thème">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="filet-top"></div>
+  <div class="signature">Marc-Alain Lavoie · Naturasounds</div>
+
+  <div class="trio">
+    <div class="col"><div class="val" id="v-gauche">108</div><div class="lbl">gauche Hz</div></div>
+    <div class="sep"></div>
+    <div class="col"><div class="val b" id="v-batt">1,2</div><div class="lbl">battement</div></div>
+    <div class="sep"></div>
+    <div class="col"><div class="val" id="v-droite">109,2</div><div class="lbl">droite Hz</div></div>
+  </div>
+
+  <div class="filet"></div>
+
+  <section class="bloc">
+    <div class="label">Fréquence</div>
+    <div class="champ">
+      <input id="hz" type="number" inputmode="numeric" min="20" max="20000" value="432" aria-label="Fréquence en hertz">
+      <span class="unite">Hz</span>
+    </div>
+    <input type="range" id="curseur" min="20" max="20000" value="432" aria-label="Curseur de fréquence">
+    <div class="bornes"><span>20 Hz</span><span>20 000 Hz</span></div>
+  </section>
+
+  <div class="actions">
+    <button class="principal" id="play">▶ Lancer l'écoute</button>
+    <button class="lien" id="importer">📥 Importer un fichier</button>
+  </div>
+
+  <div class="filet"></div>
+
+  <section class="bloc">
+    <div class="label">Onde binaurale</div>
+    <div class="pills" id="ondes"></div>
+  </section>
+
+  <section class="bloc">
+    <div class="label">Minuteur</div>
+    <div class="pills pills-min" id="minuteurs"></div>
+  </section>
+
+  <div class="note">Casque obligatoire pour effet binaural<br>Page de test — rien n'est publié dans l'application</div>
+</div>
+
+<nav class="nav">
+  <button class="nv actif" aria-label="Binaural">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>Binaural
+  </button>
+  <button class="nv" aria-label="Perso">
+    <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Perso
+  </button>
+  <button class="nv" aria-label="Minéraux">
+    <svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/></svg>Minéraux
+  </button>
+  <button class="nv" aria-label="Symptômes">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 7v8M7 11h8"/></svg>Symptômes
+  </button>
+  <button class="nv" aria-label="Favoris">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favoris
+  </button>
+  <button class="nv" aria-label="Plus">
+    <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>Plus
+  </button>
+</nav>
+
+<script>
+/* mêmes règles que l'appli : base 9, octave 70-200 Hz (Lavoie ÷ 16) */
+var OCT_MIN=70,OCT_MAX=200,HZ_DIV_LAVOIE=16;
+function sommeChiffres9(v){
+  var t=String(v).replace(".","").replace("-","");
+  if(!t||/[^0-9]/.test(t))return false;
+  var n=0;for(var i=0;i<t.length;i++)n+=t.charCodeAt(i)-48;
+  while(n>9){var u=0;while(n>0){u+=n%10;n=Math.floor(n/10);}n=u;}
+  return n===9;
+}
+function octavier(hz){
+  if(!(hz>0))return hz;
+  var v=hz/HZ_DIV_LAVOIE,k=0;
+  while(v>=OCT_MAX&&k<40){v=v/2;k++;}
+  while(v<OCT_MIN&&k>-40){v=v*2;k--;}
+  return v;
+}
+function base9Affiche(hz){
+  var pas=[0.0001,0.001,0.01,0.1];
+  for(var p=0;p<pas.length;p++){
+    var st=pas[p],n0=Math.round(hz/st);
+    for(var k=0;k<=20;k++){
+      var c=[n0,n0+k,n0-k];
+      for(var i=0;i<3;i++){
+        var v=parseFloat((c[i]*st).toFixed(4));
+        if(v>0&&sommeChiffres9(v))return v;
+      }
+    }
+  }
+  return parseFloat(hz.toFixed(4));
+}
+function hzSortie(hz){return hz?base9Affiche(octavier(hz)):hz;}
+function hzAff(hz){return hz>0?Math.round(hzSortie(hz)*100)/100:hz;}
+function fr(x,d){
+  var s=x.toFixed(d);
+  if(s.indexOf('.')>=0){s=s.replace(/0+$/,'').replace(/\.$/,'');}
+  return s.replace('.',',');
+}
+
+var ONDES=[
+  {nom:'D 1.2',diff:1.2,label:'Delta 1,2 Hz'},{nom:'D 3',diff:3,label:'Delta 3 Hz'},
+  {nom:'T 4',diff:4,label:'Theta 4 Hz'},{nom:'T 6',diff:6,label:'Theta 6 Hz'},
+  {nom:'T 8',diff:8,label:'Theta 8 Hz'},{nom:'A 10',diff:10,label:'Alpha 10 Hz'},
+  {nom:'A 12',diff:12,label:'Alpha 12 Hz'}
+];
+var TIMERS=[{l:'inf',v:0},{l:'10',v:10},{l:'13',v:13},{l:'18',v:18},{l:'22',v:22},{l:'30',v:30}];
+
+var base=432, diff=1.2, minuteur=13, iOnde=0, joue=false;
+
+var $hz=document.getElementById('hz'), $cur=document.getElementById('curseur');
+function majTrio(){
+  var g=hzAff(base);
+  document.getElementById('v-gauche').textContent=fr(g,2);
+  document.getElementById('v-batt').textContent=fr(diff,diff%1===0?0:1);
+  document.getElementById('v-droite').textContent=fr(hzSortie(base)+diff,diff%1===0?0:1);
+}
+function majCurseur(){
+  var pct=(Math.log($cur.value)-Math.log(20))/(Math.log(20000)-Math.log(20))*100;
+  $cur.style.setProperty('--pct',pct.toFixed(1)+'%');
+}
+$hz.oninput=function(){ base=Math.max(1,Math.min(20000,parseFloat($hz.value)||432)); majTrio(); };
+$cur.oninput=function(){
+  base=Math.round(Math.pow(Math.E,Math.log(20)+($cur.value/100)*(Math.log(20000)-Math.log(20))));
+  $hz.value=base; majTrio(); majCurseur();
+};
+
+var zOndes=document.getElementById('ondes');
+ONDES.forEach(function(o,i){
+  var b=document.createElement('button');
+  b.className='pill'+(i===0?' actif':'');
+  b.innerHTML='<span class="code">'+o.nom+'</span><span class="nom">'+o.label+'</span>';
+  b.onclick=function(){
+    iOnde=i; diff=o.diff;
+    [].forEach.call(zOndes.children,function(c,k){c.className='pill'+(k===i?' actif':'');});
+    majTrio();
+  };
+  zOndes.appendChild(b);
+});
+
+var zMin=document.getElementById('minuteurs');
+TIMERS.forEach(function(t,i){
+  var b=document.createElement('button');
+  b.className='pill'+(t.v===13?' actif':'');
+  b.innerHTML='<span class="code">'+t.l+'</span><span class="nom">min</span>';
+  b.onclick=function(){
+    minuteur=t.v;
+    [].forEach.call(zMin.children,function(c,k){c.className='pill'+(TIMERS[k]===t?' actif':'');});
+  };
+  zMin.appendChild(b);
+});
+
+var $play=document.getElementById('play');
+$play.onclick=function(){
+  joue=!joue;
+  $play.className='principal'+(joue?' joue':'');
+  $play.textContent=(joue?'⏸ Écoute en cours':'▶ Lancer l\'écoute');
+};
+
+majTrio(); majCurseur();
+</script>
+</body>
+</html>
