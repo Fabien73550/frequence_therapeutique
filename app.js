@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026p';
+  v.textContent='version 291026q';
   acc.appendChild(v);
 },0);
 
@@ -960,19 +960,6 @@ function buildEveil(){
    {el:"chakra-gamma-list",diff:40,suf:"G 40 Hz",tag:"G40"}].forEach(function(cfg){
     let box=document.getElementById(cfg.el);
     if(!box)return;
-    // Bouton « Tous les chakras » placé juste avant Racine, de la couleur du bouton du bloc
-    let tous=document.createElement("button");
-    tous.type="button";
-    tous.className="tous-chakras";
-    tous.textContent="Tous les chakras";
-    tous.style.cssText="width:100%;padding:9px;border-radius:10px;margin-bottom:6px;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;"
-      +(cfg.diff===1.2
-        ?"border:1px solid rgba(199,125,255,.30);background:linear-gradient(90deg,rgba(199,125,255,.34) 0%,rgba(199,125,255,.12) 40%,rgba(199,125,255,.01) 100%);color:var(--purple)"
-        :"border:1px solid rgba(255,158,44,.30);background:linear-gradient(90deg,rgba(255,158,44,.34) 0%,rgba(255,158,44,.12) 40%,rgba(255,158,44,.01) 100%);color:var(--amber)");
-    tous.onclick=function(){
-      if(cfg.diff===1.2)lancerVoyageChakras();else lancerVoyageEveil();
-    };
-    box.appendChild(tous);
     CHAKRAS.forEach(function(c){
       let el=document.createElement("div");
       el.className="freq-item";
