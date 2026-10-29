@@ -448,10 +448,10 @@ select option{background:var(--s2)}
 /* --- les trois valeurs --- */
 #page-binaural .acc-trio{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;margin:22px 0 18px}
 #page-binaural .acc-col{text-align:center}
-#page-binaural .acc-sep{width:1px;height:34px;background:rgba(255,255,255,.09)}
-#page-binaural .acc-val{font-family:'JetBrains Mono',monospace;font-size:27px;font-weight:500;line-height:1;
+#page-binaural .acc-sep{width:1px;height:28px;background:rgba(255,255,255,.09)}
+#page-binaural .acc-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;line-height:1;
   letter-spacing:-.5px;color:var(--text)}
-#page-binaural .acc-val.acc-b{color:var(--blue);font-size:21px}
+#page-binaural .acc-val.acc-b{color:var(--blue);font-size:18px}
 #page-binaural .acc-lbl{font-size:10.5px;color:var(--muted);margin-top:7px}
 #page-binaural .acc-filet{height:1px;background:rgba(255,255,255,.07);margin:0}
 
@@ -460,8 +460,8 @@ select option{background:var(--s2)}
 #page-binaural .acc-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 #page-binaural .acc-champ{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid rgba(255,255,255,.10);padding-bottom:8px}
 #page-binaural .acc-champ input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);
-  font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:500;letter-spacing:-1px;padding:0}
-#page-binaural .acc-unite{font-size:14px;color:var(--dim)}
+  font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;letter-spacing:-1px;padding:0}
+#page-binaural .acc-unite{font-size:12px;color:var(--dim)}
 /* piste dessinée sous le curseur : le remplissage ne peut plus disparaître
    (un var(--pct) dans ::-webkit-slider-runnable-track n'est pas toujours repeint sur mobile) */
 #page-binaural .acc-curseur{position:relative;height:22px;margin:14px 0 0}
