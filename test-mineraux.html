@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Page test — minéraux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
+  --border:#242a3d;--border2:#2e3650;
+  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
+  --green:#00ffba;--blue:#3db5ff;--purple:#c77dff;--amber:#ff9e2c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+.page{min-height:100dvh;padding:calc(12px + env(safe-area-inset-top)) 20px calc(90px + env(safe-area-inset-bottom))}
+
+/* --- barre haute --- */
+.top{position:relative;height:40px}
+.titre{display:block;text-align:center;line-height:40px;padding:0 44px;font-size:14px;font-weight:500;
+  color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aide{position:absolute;left:0;top:2px;width:36px;height:36px;padding:0;cursor:pointer;border-radius:10px;
+  border:1px solid rgba(255,158,44,.70);background:linear-gradient(135deg,rgba(255,158,44,.40),rgba(255,158,44,.16));
+  color:var(--amber);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;
+  display:flex;align-items:center;justify-content:center}
+.top-droite{position:absolute;right:0;top:2px;display:flex;gap:4px}
+.rond-mini{width:36px;height:36px;padding:0;border-radius:10px;border:1px solid var(--border2);background:var(--s2);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.filet-top{height:2px;border-radius:2px;margin-top:8px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+.signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+.filet{height:1px;background:rgba(255,255,255,.07);margin:0}
+
+/* --- recherche --- */
+.rech{display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.10);
+  padding:16px 0 9px;margin-bottom:2px}
+.rech svg{width:15px;height:15px;flex-shrink:0;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round}
+.rech input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);
+  font-family:'Outfit',sans-serif;font-size:13px;padding:0}
+.rech input::placeholder{color:var(--dim)}
+
+/* --- selection en cours --- */
+.selection{display:flex;align-items:center;gap:8px;padding:12px 0 6px;font-size:11px;color:var(--muted)}
+.selection .pt{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
+.selection b{color:var(--green);font-weight:500}
+.selection .hz{font-family:'JetBrains Mono',monospace;color:var(--dim);font-size:10.5px}
+
+/* --- categories --- */
+.bloc{padding:16px 0 2px}
+.grp{width:100%;display:flex;align-items:center;gap:9px;padding:12px;border-radius:10px;border:none;
+  cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:6px;
+  background:linear-gradient(90deg,rgba(255,158,44,.10),rgba(255,158,44,.02))}
+.grp .nom{font-size:12.5px;font-weight:600;color:var(--amber);text-align:left;flex:1}
+.grp .compte{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim)}
+.grp .fl{font-size:10px;color:var(--muted);transition:transform .2s}
+.contenu{display:none}
+.contenu.ouvert{display:block}
+
+/* --- lignes de mineraux --- */
+.min{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;width:100%;
+  padding:10px 12px;border-radius:10px;border:none;text-align:left;cursor:pointer;font-family:'Outfit',sans-serif;
+  background:rgba(255,255,255,.02);margin-bottom:5px}
+.min:active{background:rgba(255,255,255,.045)}
+.min .nom{font-size:12.5px;color:var(--text);font-weight:500}
+.min .act{font-size:10px;color:var(--muted);margin-top:2px}
+.min .droite{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.min .hz{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--green);opacity:.85}
+.min .plus{width:24px;height:24px;padding:0;border:none;border-radius:50%;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;line-height:1}
+.min .plus.m{background:rgba(255,158,44,.16);color:var(--amber)}
+.min .plus.s{background:rgba(199,125,255,.16);color:var(--purple)}
+.min .plus.fait{background:rgba(0,255,186,.20);color:var(--green)}
+
+.note{text-align:center;font-size:9.5px;color:var(--muted);opacity:.55;margin-top:20px;line-height:1.5}
+
+/* --- nav --- */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--border);
+  display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nv{flex:1;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;
+  background:none;border:none;color:var(--amber);font-family:'Outfit',sans-serif;font-size:9.5px;cursor:pointer;position:relative}
+.nv.actif{color:var(--green)}
+.nv.actif::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2.5px;border-radius:0 0 3px 3px;background:var(--green)}
+.nv svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <button class="aide" aria-label="Aide">?</button>
+    <span class="titre">Éléments et Minéraux</span>
+    <div class="top-droite">
+      <button class="rond-mini" aria-label="Volume">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
+      <button class="rond-mini" aria-label="Thème">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="filet-top"></div>
+  <div class="signature">Appuyer pour charger dans le générateur</div>
+
+  <div class="rech">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input type="text" id="rech" placeholder="Chercher… magnésium, vitamine C, foie">
+  </div>
+
+  <div class="selection" id="selection" style="display:none">
+    <span class="pt"></span>
+    <span>Sélection — <b id="sel-nom">—</b> <span class="hz" id="sel-hz"></span></span>
+  </div>
+
+  <div class="filet" style="margin-top:10px"></div>
+
+  <div class="bloc" id="categories"></div>
+
+  <div class="note">Page de test — rien n'est publié dans l'application</div>
+</div>
+
+<nav class="nav">
+  <a class="nv" href="index.html" aria-label="Binaural">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>Binaural
+  </a>
+  <a class="nv" href="test-perso.html" aria-label="Perso">
+    <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Perso
+  </a>
+  <span class="nv actif" aria-label="Minéraux">
+    <svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/></svg>Minéraux
+  </span>
+  <a class="nv" href="index.html" aria-label="Symptômes">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 7v8M7 11h8"/></svg>Symptômes
+  </a>
+  <a class="nv" href="index.html" aria-label="Favoris">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favoris
+  </a>
+  <a class="nv" href="index.html" aria-label="Plus">
+    <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>Plus
+  </a>
+</nav>
+
+<script>
+/* mêmes règles que l'appli : base 9, octave 70-200 Hz */
+var OCT_MIN=70,OCT_MAX=200,HZ_DIV_LAVOIE=16;
+function sommeChiffres9(v){
+  var t=String(v).replace(".","").replace("-","");
+  if(!t||/[^0-9]/.test(t))return false;
+  var n=0;for(var i=0;i<t.length;i++)n+=t.charCodeAt(i)-48;
+  while(n>9){var u=0;while(n>0){u+=n%10;n=Math.floor(n/10);}n=u;}
+  return n===9;
+}
+function octavier(hz){
+  if(!(hz>0))return hz;
+  var v=hz/HZ_DIV_LAVOIE,k=0;
+  while(v>=OCT_MAX&&k<40){v=v/2;k++;}
+  while(v<OCT_MIN&&k>-40){v=v*2;k--;}
+  return v;
+}
+function base9Affiche(hz){
+  var pas=[0.0001,0.001,0.01,0.1];
+  for(var p=0;p<pas.length;p++){
+    var st=pas[p],n0=Math.round(hz/st);
+    for(var k=0;k<=20;k++){
+      var c=[n0,n0+k,n0-k];
+      for(var i=0;i<3;i++){
+        var v=parseFloat((c[i]*st).toFixed(4));
+        if(v>0&&sommeChiffres9(v))return v;
+      }
+    }
+  }
+  return parseFloat(hz.toFixed(4));
+}
+function hzSortie(hz){return hz?base9Affiche(octavier(hz)):hz;}
+function hzAff(hz){return hz>0?Math.round(hzSortie(hz)*100)/100:hz;}
+function fr(x,d){var s=(parseFloat(x)||0).toFixed(d===undefined?2:d);
+  if(s.indexOf('.')>=0){s=s.replace(/0+$/,'').replace(/\.$/,'');}return s.replace('.',',');}
+
+/* vraies données de l'appli (extrait) */
+var CATS=[
+  {label:'💊 Vitamines', n:17, ouvert:true, items:[
+    {nom:'CoQ10',hz:2588.106860,d:10,act:'Énergie mitochondriale'},
+    {nom:'Glutathion',hz:916.000271,d:10,act:'Antioxydant majeur'},
+    {nom:'Vitamine C',hz:4200.040431,d:10,act:'Immunité et collagène'},
+    {nom:'Vitamine D',hz:1146.453340,d:10,act:'Calcium et immunité'}
+  ]},
+  {label:'🧬 Acides Aminés', n:20, ouvert:true, items:[
+    {nom:'Tryptophane',hz:3546.0,d:10,act:'Sérotonine, sommeil'},
+    {nom:'Tyrosine',hz:3159.0,d:10,act:'Thyroïde, dopamine'},
+    {nom:'Glycine',hz:1300.0,d:10,act:'Sommeil, collagène'}
+  ]},
+  {label:'💎 Minéraux', n:24, ouvert:false, items:[
+    {nom:'Magnésium',hz:1159.232148,d:10,act:'Détente, muscles'},
+    {nom:'Calcium',hz:1911.528738,d:10,act:'Os et muscles'},
+    {nom:'Zinc',hz:1100.0,d:10,act:'Immunité, peau'}
+  ]},
+  {label:'🔬 Oligo-éléments', n:8, ouvert:false, items:[]},
+  {label:'⚛️ Éléments', n:16, ouvert:false, items:[]},
+  {label:'🧠 Neuro-transmetteurs', n:10, ouvert:false, items:[
+    {nom:'Acétylcholine',hz:435.772681,d:10,act:'Mémoire et concentration'},
+    {nom:'Dopamine',hz:456.554588,d:10,act:'Motivation et plaisir'}
+  ]},
+  {label:'🫀 Organes', n:0, ouvert:false, items:[]},
+  {label:'🌿 Molécules actives', n:0, ouvert:false, items:[]},
+  {label:'🦠 Pathogènes', n:0, ouvert:false, items:[]},
+  {label:'🔗 Combos Synergiques', n:15, ouvert:false, items:[]}
+];
+
+var z=document.getElementById('categories');
+CATS.forEach(function(cat,ci){
+  var g=document.createElement('button');
+  g.className='grp';
+  g.innerHTML='<span class="nom">'+cat.label+'</span><span class="compte">'+cat.n+'</span><span class="fl">'+(cat.ouvert?'▼':'▶')+'</span>';
+  var box=document.createElement('div');
+  box.className='contenu'+(cat.ouvert?' ouvert':'');
+  (cat.items||[]).forEach(function(it){
+    var b=document.createElement('div');
+    b.className='min';
+    b.innerHTML='<div><div class="nom">'+it.nom+'</div>'+(it.act?'<div class="act">'+it.act+'</div>':'')+'</div>'
+      +'<div class="droite"><span class="hz">'+fr(hzAff(it.hz),2)+' Hz</span>'
+      +'<button class="plus m" aria-label="Ajouter à Matin">M</button>'
+      +'<button class="plus s" aria-label="Ajouter à Soir">S</button></div>';
+    b.onclick=function(){
+      var sel=document.getElementById('selection');
+      sel.style.display='flex';
+      document.getElementById('sel-nom').textContent=it.nom;
+      document.getElementById('sel-hz').textContent='· '+fr(hzAff(it.hz),2)+' Hz · '+it.d+' min';
+    };
+    b.querySelectorAll('.plus').forEach(function(p){
+      p.onclick=function(e){
+        e.stopPropagation();
+        var etait=p.classList.contains('fait');
+        p.classList.toggle('fait',!etait);
+        p.textContent=etait?(p.classList.contains('m')?'M':'S'):'✓';
+      };
+    });
+    box.appendChild(b);
+  });
+  g.onclick=function(){
+    var ouvert=box.classList.toggle('ouvert');
+    g.querySelector('.fl').textContent=ouvert?'▼':'▶';
+  };
+  z.appendChild(g);
+  z.appendChild(box);
+});
+</script>
+</body>
+</html>
