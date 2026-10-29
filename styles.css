@@ -83,8 +83,8 @@ select option{background:var(--s2)}
 .freq-item-hz{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--blue)}
 .freq-item-dur{font-size:12px;color:var(--muted)}
 .proto-card{border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
-.proto-header{padding:12px 14px;background:linear-gradient(90deg,rgba(199,125,255,.16),rgba(199,125,255,.03));display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.2s}
-.proto-header:hover{background:linear-gradient(90deg,rgba(199,125,255,.26),rgba(199,125,255,.07))}
+.proto-header{padding:12px 14px;background:linear-gradient(90deg,rgba(199,125,255,.30),rgba(199,125,255,.08));display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.2s}
+.proto-header:hover{background:linear-gradient(90deg,rgba(199,125,255,.40),rgba(199,125,255,.12))}
 .proto-title{font-size:13px;font-weight:600;color:var(--purple)}
 .proto-badge{font-size:10px;padding:3px 8px;border-radius:6px;background:var(--s3);color:var(--muted);flex-shrink:0;margin-left:8px}
 .proto-body{padding:12px 14px;background:var(--s1);display:none}

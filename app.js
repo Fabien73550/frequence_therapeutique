@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026j';
+  v.textContent='version 291026k';
   acc.appendChild(v);
 },0);
 
@@ -1526,7 +1526,7 @@ function buildProtocoles(){
     let secEl=document.createElement("div");
     secEl.style.cssText="margin-bottom:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden";
     let titreEl=document.createElement("div");
-    titreEl.style.cssText="font-size:13px;font-weight:600;color:var(--amber);padding:12px 14px;background:linear-gradient(90deg,rgba(255,158,44,.10),rgba(255,158,44,.02));cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
+    titreEl.style.cssText="font-size:13px;font-weight:600;color:var(--amber);padding:12px 14px;background:linear-gradient(90deg,rgba(255,158,44,.28),rgba(255,158,44,.07));cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none";
     let arrow=document.createElement("span");
     arrow.textContent="\u25BC";
     arrow.style.cssText="font-size:10px;transition:transform 0.3s;transform:rotate(-90deg)";
