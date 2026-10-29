@@ -176,40 +176,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
     <div class="liste" id="liste-sauve"></div>
   </section>
 
-  <div class="filet"></div>
-
-  <!-- ===== SUGGERES ===== -->
-  <section class="bloc">
-    <div class="label-row"><span class="label">Protocoles suggérés Matin / Soir</span></div>
-
-    <button class="grp" data-cible="grp-matin">
-      <span class="nom">☀ Matin</span><span class="fl">▼</span>
-    </button>
-    <div class="contenu ouvert" id="grp-matin">
-      <div class="proto">
-        <div class="haut"><span class="pt">Réveil en douceur</span><button class="bouton">Charger Matin</button></div>
-        <div class="desc">Démarrage progressif : ancrage puis montée vers l'éveil.</div>
-        <div class="chips"><span class="chip">Racine</span><span class="chip">Magnésium</span><span class="chip">Alpha 10</span></div>
-      </div>
-      <div class="proto">
-        <div class="haut"><span class="pt">Énergie du matin</span><button class="bouton">Charger Matin</button></div>
-        <div class="desc">Vitalité et concentration pour la matinée.</div>
-        <div class="chips"><span class="chip">Adrénaline</span><span class="chip">Acétylcholine</span><span class="chip">Beta 18</span></div>
-      </div>
-    </div>
-
-    <button class="grp soir" data-cible="grp-soir">
-      <span class="nom">☽ Soir</span><span class="fl">▼</span>
-    </button>
-    <div class="contenu" id="grp-soir">
-      <div class="proto soir">
-        <div class="haut"><span class="pt">Endormissement</span><button class="bouton">Charger Soir</button></div>
-        <div class="desc">Détente puis descente vers le sommeil profond.</div>
-        <div class="chips"><span class="chip">Mélatonine</span><span class="chip">GABA</span><span class="chip">Delta 3</span></div>
-      </div>
-    </div>
-  </section>
-
   <div class="note">Page de test — rien n'est publié dans l'application</div>
 </div>
 
@@ -235,8 +201,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 </nav>
 
 <script>
-var MATIN=[];
-var SOIR=[];
+/* --- playlists du moment : remplies depuis Minéraux, gardées sur l'appareil --- */
+var CLE_MATIN='ft_slot_matin';
+var CLE_SOIR='ft_slot_soir';
+function chargeSlot(slot){
+  try{
+    var t=localStorage.getItem(slot==='matin'?CLE_MATIN:CLE_SOIR);
+    if(!t){return [];}
+    var a=JSON.parse(t);
+    if(!Array.isArray(a)){return [];}
+    return a.filter(function(x){return x&&x.nom;});
+  }catch(e){return [];}
+}
+function gardeSlot(slot){
+  try{localStorage.setItem(slot==='matin'?CLE_MATIN:CLE_SOIR,JSON.stringify(slot==='matin'?MATIN:SOIR));}catch(e){}
+}
+var MATIN=chargeSlot('matin');
+var SOIR=chargeSlot('soir');
 
 /* --- playlists sauvegardées : gardées en mémoire sur l'appareil --- */
 var CLE_SAUVE='ft_sauve_v1';
@@ -269,7 +250,7 @@ function dessineListe(idListe,idCompte,items,tag){
       var b=document.createElement('div');b.className='item';
       b.innerHTML='<span class="nom">'+it.nom+'</span><span class="duree">'+fr(it.hz,2)+' Hz · '+it.d+' min</span>'
                  +'<button class="sup" aria-label="Retirer">✕</button>';
-      b.querySelector('.sup').onclick=function(){items.splice(i,1);dessineListe(idListe,idCompte,items,tag);};
+      b.querySelector('.sup').onclick=function(){items.splice(i,1);gardeSlot(tag);dessineListe(idListe,idCompte,items,tag);};
       el.appendChild(b);
     });
   }
@@ -288,14 +269,6 @@ function dessineSauve(){
     el.appendChild(b);
   });
 }
-
-document.querySelectorAll('.grp').forEach(function(b){
-  b.onclick=function(){
-    var c=document.getElementById(b.dataset.cible);
-    var ouvert=c.classList.toggle('ouvert');
-    b.querySelector('.fl').textContent=ouvert?'▼':'▶';
-  };
-});
 
 ['matin','soir'].forEach(function(slot){
   var btn=document.getElementById('lancer-'+slot);
@@ -327,6 +300,7 @@ document.querySelectorAll('.vider').forEach(function(b){
     var slot=b.dataset.vider;
     var items=(slot==='matin')?MATIN:SOIR;
     items.length=0;
+    gardeSlot(slot);
     dessineListe('liste-'+slot,'compte-'+slot,items,slot);
     var lancer=document.getElementById('lancer-'+slot);
     lancer.classList.remove('joue');

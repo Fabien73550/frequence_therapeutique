@@ -210,6 +210,30 @@ var CATS=[
   {label:'🔗 Combos Synergiques', n:15, ouvert:false, items:[]}
 ];
 
+/* --- les boutons M / S ecrivent dans les playlists de la page Perso --- */
+function cleSlot(slot){return slot==='matin'?'ft_slot_matin':'ft_slot_soir';}
+function litSlot(slot){
+  try{var a=JSON.parse(localStorage.getItem(cleSlot(slot))||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}
+}
+function ecritSlot(slot,arr){
+  try{localStorage.setItem(cleSlot(slot),JSON.stringify(arr));}catch(e){}
+}
+function dansSlot(slot,nom){return litSlot(slot).some(function(x){return x.nom===nom;});}
+function basculeSlot(slot,it){
+  var a=litSlot(slot),i=-1;
+  for(var k=0;k<a.length;k++){if(a[k].nom===it.nom){i=k;break;}}
+  if(i>=0){a.splice(i,1);}else{a.push({nom:it.nom,hz:hzAff(it.hz),d:it.d});}
+  ecritSlot(slot,a);
+}
+function majEtats(){
+  document.querySelectorAll('.plus').forEach(function(p){
+    var slot=p.classList.contains('m')?'matin':'soir';
+    var oui=dansSlot(slot,p.dataset.nom);
+    p.classList.toggle('fait',oui);
+    p.textContent=oui?'✓':(slot==='matin'?'M':'S');
+  });
+}
+
 var z=document.getElementById('categories');
 CATS.forEach(function(cat,ci){
   var g=document.createElement('button');
@@ -231,11 +255,12 @@ CATS.forEach(function(cat,ci){
       document.getElementById('sel-hz').textContent='· '+fr(hzAff(it.hz),2)+' Hz · '+it.d+' min';
     };
     b.querySelectorAll('.plus').forEach(function(p){
+      p.dataset.nom=it.nom;
       p.onclick=function(e){
         e.stopPropagation();
-        var etait=p.classList.contains('fait');
-        p.classList.toggle('fait',!etait);
-        p.textContent=etait?(p.classList.contains('m')?'M':'S'):'✓';
+        var slot=p.classList.contains('m')?'matin':'soir';
+        basculeSlot(slot,it);
+        majEtats();
       };
     });
     box.appendChild(b);
@@ -247,6 +272,8 @@ CATS.forEach(function(cat,ci){
   z.appendChild(g);
   z.appendChild(box);
 });
+
+majEtats();
 </script>
 </body>
 </html>
