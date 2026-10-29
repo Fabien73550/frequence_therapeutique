@@ -85,11 +85,11 @@ select option{background:var(--s2)}
 /* Page Éveil & Conscience : lignes inversées par rapport à leur bouton
    (bouton Solfège orange -> lignes violettes · bouton Chakras violet -> lignes orange) */
 #page-eveil #solfege-list .freq-item{background:linear-gradient(90deg,rgba(199,125,255,.38) 0%,rgba(199,125,255,.15) 40%,rgba(199,125,255,.01) 100%);border-color:rgba(199,125,255,.28)}
-#page-eveil #chakra-delta-list .freq-item{background:linear-gradient(90deg,rgba(199,125,255,.38) 0%,rgba(199,125,255,.15) 40%,rgba(199,125,255,.01) 100%);border-color:rgba(199,125,255,.28)}
-#page-eveil #chakra-gamma-list .freq-item{background:linear-gradient(90deg,rgba(255,158,44,.38) 0%,rgba(255,158,44,.15) 40%,rgba(255,158,44,.01) 100%);border-color:rgba(255,158,44,.28)}
+#page-eveil #chakra-delta-list .freq-item{background:linear-gradient(90deg,rgba(255,158,44,.38) 0%,rgba(255,158,44,.15) 40%,rgba(255,158,44,.01) 100%);border-color:rgba(255,158,44,.28)}
+#page-eveil #chakra-gamma-list .freq-item{background:linear-gradient(90deg,rgba(199,125,255,.38) 0%,rgba(199,125,255,.15) 40%,rgba(199,125,255,.01) 100%);border-color:rgba(199,125,255,.28)}
 #page-eveil #solfege-list .freq-item-name,#page-eveil #chakra-delta-list .freq-item-name,#page-eveil #chakra-gamma-list .freq-item-name{color:var(--text)}
-#page-eveil #solfege-list .freq-item-hz,#page-eveil #chakra-delta-list .freq-item-hz{color:var(--purple)}
-#page-eveil #chakra-gamma-list .freq-item-hz{color:var(--amber)}
+#page-eveil #solfege-list .freq-item-hz,#page-eveil #chakra-gamma-list .freq-item-hz{color:var(--purple)}
+#page-eveil #chakra-delta-list .freq-item-hz{color:var(--amber)}
 .proto-card{border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
 .proto-header{padding:12px 14px;background:linear-gradient(90deg,rgba(199,125,255,.52) 0%,rgba(199,125,255,.24) 14%,rgba(199,125,255,.09) 45%,rgba(199,125,255,.01) 100%);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.2s}
 .proto-header:hover{background:linear-gradient(90deg,rgba(199,125,255,.62) 0%,rgba(199,125,255,.32) 14%,rgba(199,125,255,.13) 45%,rgba(199,125,255,.03) 100%)}
