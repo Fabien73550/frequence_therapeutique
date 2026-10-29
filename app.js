@@ -174,7 +174,7 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026c';
+  v.textContent='version 291026d';
   acc.appendChild(v);
 },0);
 
@@ -284,6 +284,7 @@ function doResume(){
   // Also hide player resume overlay if present
   let pr=document.getElementById("player-resume-overlay");
   if(pr)pr.style.display="none";
+  accMajCurseur(baseHz);
   updateDisplays();updateTimerDisplay();
   if(seqType&&seqQueue.length>0){
     openPlayer();
@@ -308,20 +309,40 @@ function toggleLiveTone(){
     startLiveTone();
     liveToneActive=true;
     btn.innerHTML="⏹ Arrêter l'écoute";
-    btn.style.borderColor="var(--amber-border)";
-    btn.style.background="var(--amber-bg)";
-    btn.style.color="var(--amber)";
+    btn.classList.add("joue");
   }else{
     stopLiveTone();
     liveToneActive=false;
     btn.innerHTML="▶ Lancer l'écoute";
-    btn.style.borderColor="var(--blue-border)";
-    btn.style.background="var(--blue-bg)";
-    btn.style.color="var(--blue)";
+    btn.classList.remove("joue");
   }
 }
+/* --- accueil : curseur en echelle log (le rond reste au bout du remplissage) --- */
+var ACC_LN_MIN=Math.log(20), ACC_LN_ETENDUE=Math.log(20000)-Math.log(20);
+function accPosDeHz(hz){
+  var v=Math.max(20,Math.min(20000,parseFloat(hz)||432));
+  return (Math.log(v)-ACC_LN_MIN)/ACC_LN_ETENDUE*100;
+}
+function accHzDePos(p){
+  var v=Math.exp(ACC_LN_MIN+(Math.max(0,Math.min(100,parseFloat(p)||0))/100)*ACC_LN_ETENDUE);
+  return Math.round(Math.max(20,Math.min(20000,v)));
+}
+function accMajCurseur(hz){
+  var s=document.getElementById('bin-slider');
+  if(!s)return;
+  var p=accPosDeHz(hz);
+  s.value=p.toFixed(1);
+  s.style.setProperty('--pct',p.toFixed(2)+'%');
+}
+function accFr(x,d){
+  var s=(parseFloat(x)||0).toFixed(d===undefined?1:d);
+  if(s.indexOf('.')>=0){s=s.replace(/0+$/,'').replace(/\.$/,'');}
+  return s.replace('.',',');
+}
 function onBinSlider(){
-  let v=parseInt(document.getElementById("bin-slider").value);
+  let sl=document.getElementById("bin-slider");
+  let v=accHzDePos(sl.value);
+  sl.style.setProperty('--pct',(parseFloat(sl.value)||0).toFixed(2)+'%');
   document.getElementById("bin-hz-input").value=v;
   baseHz=v;currentLabel=hzAff(v)+" Hz";
   updateDisplays();
@@ -360,7 +381,7 @@ function onBinInput(){
   let v=parseInt(document.getElementById("bin-hz-input").value);
   if(isNaN(v))return;
   v=Math.min(20000,Math.max(20,v));
-  document.getElementById("bin-slider").value=v;
+  accMajCurseur(v);
   baseHz=v;currentLabel=hzAff(v)+" Hz";
   updateDisplays();
   if(playing&&leftOsc&&rightOsc){
@@ -811,14 +832,16 @@ function filterMinList(query,cat){
 // l'import direct dans l'app.
 
 function init(){
-  document.getElementById("bin-slider").value=baseHz;
+  accMajCurseur(baseHz);
   document.getElementById("bin-hz-input").value=baseHz;
 
   const oc=document.getElementById("onde-chips");
   ONDES.forEach((o,i)=>{
     const b=document.createElement("button");
     b.className="chip"+(i===0?" b":"");
-    b.innerHTML="<span>"+o.nom+"</span><span class='sub'>"+o.label+"</span>";
+    b.innerHTML="<span class='oletter'>"+o.nom.charAt(0)+"</span>"
+              +"<span class='onom'>"+o.label.split(" ")[0]+"</span>"
+              +"<span class='ometa'>"+accFr(o.diff,o.diff%1===0?0:1)+" Hz</span>";
     b.onclick=function(){
       document.querySelectorAll("#onde-chips .chip").forEach(function(x,j){x.className="chip"+(j===i?" b":"");});
       diff=o.diff;updateDisplays();
@@ -831,7 +854,7 @@ function init(){
   TIMERS.forEach((t,i)=>{
     const b=document.createElement("button");
     b.className="t-chip"+(t.v===13?" p":"");
-    b.textContent=t.v===0?"inf":t.l+"m";
+    b.textContent=t.v===0?"inf":t.l;
     b.onclick=function(){
       document.querySelectorAll(".t-chip").forEach(function(x,j){x.className="t-chip"+(j===i?" p":"");});
       timerMin=t.v;if(!playing)updateTimerDisplay();
@@ -961,9 +984,9 @@ function setTimerChip(d){
 }
 
 function updateDisplays(){
-  document.getElementById("f-left").textContent=hzAff(baseHz);
-  document.getElementById("f-right").textContent=(hzSortie(baseHz)+diff).toFixed(1);
-  let beatEl=document.getElementById("f-beat");beatEl.textContent=diff%1===0?diff:diff.toFixed(1);beatEl.style.color="var(--blue)";
+  document.getElementById("f-left").textContent=accFr(hzAff(baseHz),2);
+  document.getElementById("f-right").textContent=accFr(hzSortie(baseHz)+diff,1);
+  let beatEl=document.getElementById("f-beat");beatEl.textContent=accFr(diff,diff%1===0?0:1);beatEl.style.color="var(--blue)";
   document.getElementById("pb-freq").textContent=currentLabel+" - D "+diff+" Hz";
   updateTimerDisplay();
 }

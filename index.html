@@ -29,7 +29,7 @@
 <meta name="twitter:title" content="Fréquences Thérapeutiques Binaural X">
 <meta name="twitter:description" content="Générateur de sons binauraux thérapeutiques.">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=291026c">
+<link rel="stylesheet" href="styles.css?v=291026d">
 <script>
   // Appliquer le thème AVANT le rendu pour éviter le flash
   (function(){
@@ -58,32 +58,53 @@
 </div>
 
 <div class="page active" id="page-binaural">
-  <div class="header"><h1>Fréquences Thérapeutiques</h1><p>Marc-Alain Lavoie · Naturasounds <span style="display:inline-block;margin-left:6px;font-size:14px;color:var(--amber);cursor:pointer" onclick="toggleAide()">❓ Aide</span></p></div>
-  <div class="freq-row">
-    <div class="freq-box"><div class="freq-num" id="f-left">432</div><div class="freq-lbl">gauche Hz</div></div>
-    <div class="freq-sep"></div>
-    <div class="freq-box"><div class="beat-num" id="f-beat">1.2</div><div class="freq-lbl">battement</div></div>
-    <div class="freq-sep"></div>
-    <div class="freq-box"><div class="freq-num" id="f-right">433.2</div><div class="freq-lbl">droite Hz</div></div>
+  <div class="acc-top">
+    <button class="acc-aide" onclick="toggleAide()" aria-label="Aide">?</button>
+    <span class="acc-titre">Fréquences Thérapeutiques</span>
   </div>
-  <div class="card">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="card-label" style="margin-bottom:0;white-space:nowrap">Recherche fréquence</div>
-    <input type="number" id="bin-hz-input" min="20" max="20000" value="432"
-      style="width:100px;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--s2);color:var(--green);font-size:16px;font-family:'JetBrains Mono',monospace;text-align:center"
-      oninput="onBinInput()">
-    <span style="font-size:13px;color:var(--muted)">Hz</span>
+  <div class="acc-filet-top"></div>
+  <div class="acc-signature">Marc-Alain Lavoie · Naturasounds</div>
+
+  <div class="acc-trio">
+    <div class="acc-col"><div class="acc-val" id="f-left">108</div><div class="acc-lbl">gauche Hz</div></div>
+    <div class="acc-sep"></div>
+    <div class="acc-col"><div class="acc-val acc-b" id="f-beat">1,2</div><div class="acc-lbl">battement</div></div>
+    <div class="acc-sep"></div>
+    <div class="acc-col"><div class="acc-val" id="f-right">109,2</div><div class="acc-lbl">droite Hz</div></div>
   </div>
-  <input type="range" id="bin-slider" min="20" max="20000" value="432" step="1"
-    style="width:100%;accent-color:var(--green);margin-bottom:6px" oninput="onBinSlider()">
-  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:8px">
-    <span>20 Hz</span><span style="color:var(--green)">← glisser →</span><span>20 000 Hz</span>
+
+  <div class="acc-filet"></div>
+
+  <section class="acc-bloc">
+    <div class="acc-label">Fréquence</div>
+    <div class="acc-champ">
+      <input type="number" id="bin-hz-input" min="20" max="20000" value="432" inputmode="numeric"
+        oninput="onBinInput()" aria-label="Fréquence en hertz">
+      <span class="acc-unite">Hz</span>
+    </div>
+    <input type="range" id="bin-slider" min="0" max="100" step="0.1" value="44.5"
+      oninput="onBinSlider()" aria-label="Curseur de fréquence">
+    <div class="acc-bornes"><span>20 Hz</span><span>20 000 Hz</span></div>
+  </section>
+
+  <div class="acc-actions">
+    <button class="acc-principal" id="btn-live-tone" onclick="toggleLiveTone()">▶ Lancer l'écoute</button>
+    <button class="acc-lien" onclick="document.getElementById('ft-wav-input').click()"
+      title="Importer un fichier partagé par un autre utilisateur (.wav ou .flac)">📥 Importer un fichier</button>
   </div>
-  <button id="btn-live-tone" onclick="toggleLiveTone()" class="btn btn-blue btn-block" style="margin-bottom:8px">▶ Lancer l'écoute</button>
-  <button onclick="document.getElementById('ft-wav-input').click()" class="btn btn-secondary btn-sm btn-block" title="Importer un fichier partagé par un autre utilisateur (.wav ou .flac)">📥 Importer</button>
-  </div>
-  <div class="card"><div class="card-label">Onde binaurale</div><div class="chips" id="onde-chips"></div></div>
-  <div class="card"><div class="card-label">Minuteur</div><div class="timer-chips" id="timer-chips"></div></div>
+
+  <div class="acc-filet"></div>
+
+  <section class="acc-bloc">
+    <div class="acc-label">Onde binaurale</div>
+    <div class="acc-olist" id="onde-chips"></div>
+  </section>
+
+  <section class="acc-bloc">
+    <div class="acc-label">Minuteur</div>
+    <div class="acc-pills" id="timer-chips"></div>
+  </section>
+
   <p class="warning">Casque obligatoire pour effet binaural</p>
 </div>
 
@@ -355,8 +376,8 @@
   </div>
 </div>
 
-<script src="data.js?v=291026c"></script>
-<script src="app.js?v=291026c"></script>
+<script src="data.js?v=291026d"></script>
+<script src="app.js?v=291026d"></script>
 
 <div id="page-player" style="display:none">
   <div class="lp-top">

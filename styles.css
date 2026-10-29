@@ -425,3 +425,102 @@ select option{background:var(--s2)}
   font-size:12px;cursor:pointer;padding:4px 8px;opacity:.9}
 #page-player .lp-lien:active{opacity:1;transform:scale(.97)}
 #page-player .lp-legende{margin-top:6px;text-align:center;font-size:9.5px;color:var(--muted);opacity:.55;line-height:1.5}
+
+/* ============================================================
+   PAGE D'ACCUEIL (Binaural) — maquette validée le 29/10/2026
+   Bandeau d'action sans contour, orange au repos / vert en écoute
+   ============================================================ */
+#page-binaural{padding:calc(12px + env(safe-area-inset-top)) 20px 190px}
+
+/* --- barre haute (les boutons volume + thème de l'appli restent fixes à droite) --- */
+#page-binaural .acc-top{position:relative;height:40px}
+#page-binaural .acc-titre{display:block;text-align:center;line-height:40px;padding:0 44px;
+  font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#page-binaural .acc-aide{position:absolute;left:0;top:2px;width:36px;height:36px;padding:0;cursor:pointer;
+  border-radius:10px;border:1px solid rgba(255,158,44,.70);
+  background:linear-gradient(135deg,rgba(255,158,44,.40),rgba(255,158,44,.16));color:var(--amber);
+  font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center}
+#page-binaural .acc-aide:active{transform:scale(.96)}
+#page-binaural .acc-filet-top{height:2px;border-radius:2px;margin-top:8px;
+  background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+#page-binaural .acc-signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+
+/* --- les trois valeurs --- */
+#page-binaural .acc-trio{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;margin:22px 0 18px}
+#page-binaural .acc-col{text-align:center}
+#page-binaural .acc-sep{width:1px;height:34px;background:rgba(255,255,255,.09)}
+#page-binaural .acc-val{font-family:'JetBrains Mono',monospace;font-size:27px;font-weight:500;line-height:1;
+  letter-spacing:-.5px;color:var(--text)}
+#page-binaural .acc-val.acc-b{color:var(--blue);font-size:21px}
+#page-binaural .acc-lbl{font-size:10.5px;color:var(--muted);margin-top:7px}
+#page-binaural .acc-filet{height:1px;background:rgba(255,255,255,.07);margin:0}
+
+/* --- blocs --- */
+#page-binaural .acc-bloc{padding:18px 0 4px}
+#page-binaural .acc-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+#page-binaural .acc-champ{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid rgba(255,255,255,.10);padding-bottom:8px}
+#page-binaural .acc-champ input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:500;letter-spacing:-1px;padding:0}
+#page-binaural .acc-unite{font-size:14px;color:var(--dim)}
+#page-binaural input[type=range]#bin-slider{-webkit-appearance:none;appearance:none;width:100%;height:22px;
+  background:transparent;margin:14px 0 0;padding:0}
+#page-binaural input[type=range]#bin-slider::-webkit-slider-runnable-track{height:5px;border-radius:5px;
+  background:linear-gradient(to right,var(--amber) 0 var(--pct,44%),rgba(255,158,44,.20) var(--pct,44%) 100%)}
+#page-binaural input[type=range]#bin-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;
+  border-radius:50%;background:#fff;margin-top:-6.5px;box-shadow:0 0 10px rgba(255,255,255,.4)}
+#page-binaural input[type=range]#bin-slider::-moz-range-track{height:5px;border-radius:5px;background:rgba(255,158,44,.20)}
+#page-binaural input[type=range]#bin-slider::-moz-range-progress{height:5px;border-radius:5px;background:var(--amber)}
+#page-binaural input[type=range]#bin-slider::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:#fff}
+#page-binaural .acc-bornes{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;color:var(--dim);margin-top:2px}
+
+/* --- bandeau d'action : orange au repos, vert en écoute, jamais de contour --- */
+#page-binaural .acc-actions{padding:22px 0 20px;text-align:center}
+#page-binaural .acc-principal{display:block;width:100%;padding:14px 12px;border:none;border-radius:10px;cursor:pointer;
+  background:linear-gradient(90deg,rgba(255,158,44,.20),rgba(255,158,44,.06));
+  color:var(--amber);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;text-align:center}
+#page-binaural .acc-principal:active{transform:scale(.985)}
+#page-binaural .acc-principal.joue{background:linear-gradient(90deg,rgba(0,255,186,.20),rgba(0,255,186,.06));
+  color:var(--green)}
+#page-binaural .acc-lien{margin-top:14px;background:none;border:none;color:var(--blue);
+  font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;opacity:.9}
+
+/* --- ondes : une ligne pleine largeur par onde, fond propre à chacune --- */
+#page-binaural .acc-olist{display:flex;flex-direction:column;gap:6px}
+#page-binaural #onde-chips .chip{display:grid;grid-template-columns:21px 1fr auto;align-items:center;gap:11px;
+  width:100%;padding:11px 12px;border-radius:10px;border:none;border-left:2px solid transparent;cursor:pointer;
+  text-align:left;font-family:'Outfit',sans-serif;background:rgba(255,255,255,.02);white-space:normal}
+#page-binaural #onde-chips .chip:hover{background:rgba(255,255,255,.03);box-shadow:none}
+#page-binaural #onde-chips .chip:active{transform:scale(.995)}
+#page-binaural #onde-chips .chip .oletter{width:21px;height:21px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--amber);border:1px solid rgba(255,158,44,.35)}
+#page-binaural #onde-chips .chip .onom{font-size:12.5px;color:var(--text);opacity:.9}
+#page-binaural #onde-chips .chip .ometa{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--amber);opacity:.7}
+/* un dégradé par ligne, même famille vert ↔ orange, 2 à 9 % d'opacité */
+#page-binaural #onde-chips .chip:nth-child(1){background:linear-gradient(90deg,rgba(0,255,186,.09),rgba(255,158,44,.03))}
+#page-binaural #onde-chips .chip:nth-child(2){background:linear-gradient(90deg,rgba(255,158,44,.09),rgba(0,255,186,.03))}
+#page-binaural #onde-chips .chip:nth-child(3){background:linear-gradient(90deg,rgba(0,255,186,.06),rgba(255,158,44,.06))}
+#page-binaural #onde-chips .chip:nth-child(4){background:linear-gradient(100deg,rgba(255,158,44,.07),rgba(0,255,186,.05))}
+#page-binaural #onde-chips .chip:nth-child(5){background:linear-gradient(90deg,rgba(0,255,186,.08),rgba(0,255,186,.02))}
+#page-binaural #onde-chips .chip:nth-child(6){background:linear-gradient(90deg,rgba(255,158,44,.08),rgba(255,158,44,.02))}
+#page-binaural #onde-chips .chip:nth-child(7){background:linear-gradient(90deg,rgba(0,255,186,.05),rgba(255,158,44,.09))}
+/* la ligne choisie : liseré vert + son propre dégradé renforcé */
+#page-binaural #onde-chips .chip.b{border-left-color:var(--green)}
+#page-binaural #onde-chips .chip.b .oletter{background:var(--green);color:#04120e;border-color:var(--green);font-weight:500}
+#page-binaural #onde-chips .chip.b .onom{opacity:1;font-weight:500}
+#page-binaural #onde-chips .chip.b .ometa{color:var(--green);opacity:1}
+#page-binaural #onde-chips .chip.b:nth-child(1){background:linear-gradient(90deg,rgba(0,255,186,.16),rgba(255,158,44,.05) 80%)}
+#page-binaural #onde-chips .chip.b:nth-child(2){background:linear-gradient(90deg,rgba(255,158,44,.16),rgba(0,255,186,.05) 80%)}
+#page-binaural #onde-chips .chip.b:nth-child(3){background:linear-gradient(90deg,rgba(0,255,186,.12),rgba(255,158,44,.11))}
+#page-binaural #onde-chips .chip.b:nth-child(4){background:linear-gradient(100deg,rgba(255,158,44,.14),rgba(0,255,186,.08))}
+#page-binaural #onde-chips .chip.b:nth-child(5){background:linear-gradient(90deg,rgba(0,255,186,.15),rgba(0,255,186,.04))}
+#page-binaural #onde-chips .chip.b:nth-child(6){background:linear-gradient(90deg,rgba(255,158,44,.15),rgba(255,158,44,.04))}
+#page-binaural #onde-chips .chip.b:nth-child(7){background:linear-gradient(90deg,rgba(0,255,186,.11),rgba(255,158,44,.15))}
+
+/* --- minuteur : pastilles sobres --- */
+#page-binaural .acc-pills{display:flex;flex-wrap:wrap;gap:8px}
+#page-binaural #timer-chips .t-chip{padding:9px 12px;min-width:44px;border-radius:12px;border:1px solid var(--border2);
+  background:var(--s2);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;box-shadow:none}
+#page-binaural #timer-chips .t-chip:hover{background:var(--s2);border-color:var(--border2);box-shadow:none}
+#page-binaural #timer-chips .t-chip.p{border-color:rgba(0,255,186,.55);background:rgba(0,255,186,.07);color:var(--green);box-shadow:none}
