@@ -39,6 +39,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 .label-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
 .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .compte{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim);letter-spacing:.02em}
+.droite{display:flex;align-items:baseline;gap:12px}
 .vider{background:none;border:none;color:var(--dim);font-family:'Outfit',sans-serif;font-size:11px;cursor:pointer;
   padding:2px 4px;text-decoration:underline;text-underline-offset:3px}
 .vider:active{color:var(--muted)}
@@ -135,7 +136,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
   <section class="bloc">
     <div class="label-row">
       <span class="label">Playlist Matin</span>
-      <span class="compte" id="compte-matin">3 fréquences</span>
+      <span class="droite">
+        <span class="compte" id="compte-matin">0 fréquence</span>
+        <button class="vider" data-vider="matin">Vider</button>
+      </span>
     </div>
     <div class="liste matin" id="liste-matin"></div>
     <button class="bandeau matin" id="lancer-matin">▶ Lancer Matin</button>
@@ -151,7 +155,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
   <section class="bloc">
     <div class="label-row">
       <span class="label">Playlist Soir</span>
-      <span class="compte" id="compte-soir">2 fréquences</span>
+      <span class="droite">
+        <span class="compte" id="compte-soir">0 fréquence</span>
+        <button class="vider" data-vider="soir">Vider</button>
+      </span>
     </div>
     <div class="liste soir" id="liste-soir"></div>
     <button class="bandeau soir" id="lancer-soir">▶ Lancer Soir</button>
@@ -228,19 +235,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit
 </nav>
 
 <script>
-var MATIN=[
-  {nom:'Racine',hz:108,d:13},
-  {nom:'Magnésium',hz:72.45,d:10},
-  {nom:'Alpha 10',hz:126,d:18}
-];
-var SOIR=[
-  {nom:'Mélatonine',hz:117,d:22},
-  {nom:'Delta 3',hz:108,d:30}
-];
-var SAUVE=[
-  {nom:'Détente du soir',n:3},
-  {nom:'Réveil en douceur',n:4}
-];
+var MATIN=[];
+var SOIR=[];
+var SAUVE=[];
 
 function fr(x,d){var s=(parseFloat(x)||0).toFixed(d===undefined?2:d);
   if(s.indexOf('.')>=0){s=s.replace(/0+$/,'').replace(/\.$/,'');}return s.replace('.',',');}
@@ -289,6 +286,18 @@ document.querySelectorAll('.grp').forEach(function(b){
     var joue=btn.classList.contains('joue');
     document.querySelectorAll('.bandeau').forEach(function(x){x.classList.remove('joue');x.textContent='▶ Lancer '+(x.id==='lancer-matin'?'Matin':'Soir');});
     if(!joue){btn.classList.add('joue');btn.textContent='⏸ Écoute en cours';}
+  };
+});
+
+document.querySelectorAll('.vider').forEach(function(b){
+  b.onclick=function(){
+    var slot=b.dataset.vider;
+    var items=(slot==='matin')?MATIN:SOIR;
+    items.length=0;
+    dessineListe('liste-'+slot,'compte-'+slot,items,slot);
+    var lancer=document.getElementById('lancer-'+slot);
+    lancer.classList.remove('joue');
+    lancer.textContent='▶ Lancer '+(slot==='matin'?'Matin':'Soir');
   };
 });
 
