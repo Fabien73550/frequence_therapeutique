@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Page test — page d'accueil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
+  --border:#242a3d;--border2:#2e3650;
+  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
+  --green:#00ffba;--blue:#3db5ff;--purple:#c77dff;--amber:#ff9e2c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+.page{min-height:100dvh;display:flex;flex-direction:column;
+      padding:calc(10px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom))}
+
+/* barre haute */
+.top{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;height:36px}
+.top .titre{text-align:center;font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rond-aide{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,158,44,.7);
+  background:linear-gradient(135deg,rgba(255,158,44,.40),rgba(255,158,44,.16));color:var(--amber);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none}
+.rond-mini{width:36px;height:36px;border-radius:10px;border:1px solid var(--border2);background:var(--s2);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;font-size:14px}
+
+.filet-top{height:2px;border-radius:2px;margin-top:10px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+.signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+
+/* action principale */
+.principal{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:22px;
+  padding:16px;border-radius:14px;cursor:pointer;text-decoration:none;
+  border:1px solid rgba(0,255,186,.45);
+  background:linear-gradient(90deg,rgba(0,255,186,.22),rgba(0,255,186,.07));
+  color:var(--green);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600}
+.principal .rond{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--green),#7dffd2);color:#04120e;font-size:12px}
+.sous-principal{text-align:center;font-size:11px;color:var(--dim);margin-top:8px}
+
+/* grille des cartes */
+.label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px}
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.carte{display:flex;flex-direction:column;gap:8px;padding:14px 13px;border-radius:14px;
+  border:1px solid var(--border);background:var(--s1);text-decoration:none;color:var(--text)}
+.carte:active{background:var(--s2)}
+.carte .ico{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,158,44,.30);background:linear-gradient(135deg,rgba(255,158,44,.18),rgba(255,158,44,.05));color:var(--amber)}
+.carte .ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.carte .nom{font-size:14px;font-weight:500;line-height:1.2}
+.carte .desc{font-size:11px;color:var(--muted);line-height:1.35}
+.carte .n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim)}
+.carte-pleine{grid-column:1 / -1;flex-direction:row;align-items:center;gap:12px}
+.carte-pleine .nom{flex:0 0 auto}
+.carte-pleine .desc{margin-left:auto;text-align:right}
+
+/* bloc explication */
+.expli{display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px;border-radius:14px;
+  border:1px solid rgba(61,181,255,.35);background:linear-gradient(90deg,rgba(61,181,255,.16),rgba(61,181,255,.04));
+  text-decoration:none;color:var(--text)}
+.expli .ico{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(61,181,255,.4);color:var(--blue);flex-shrink:0}
+.expli .ico svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.expli .txt{flex:1;min-width:0}
+.expli .t{font-size:13.5px;font-weight:500}
+.expli .d{font-size:11px;color:var(--muted);margin-top:2px}
+.expli .fleche{color:var(--blue);font-size:18px}
+
+.note{text-align:center;font-size:10.5px;color:var(--dim);margin-top:22px;line-height:1.5}
+.note a{color:var(--amber);text-decoration:none}
+@media(min-width:620px){
+  .page{max-width:720px;margin:0 auto}
+  .grille{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <a class="rond-aide" href="index.html" aria-label="Aide">?</a>
+    <span class="titre">Fréquences Thérapeutiques</span>
+    <a class="rond-mini" href="index.html" aria-label="Retour à l'application">✕</a>
+  </div>
+  <div class="filet-top"></div>
+  <div class="signature">Marc-Alain Lavoie · Naturasounds</div>
+
+  <a class="principal" href="index.html">
+    <span class="rond">▶</span> Reprendre — Racine · 108 Hz
+  </a>
+  <p class="sous-principal">Dernière séance interrompue · 3 min écoutées sur 14</p>
+
+  <div class="label">Écouter</div>
+  <div class="grille">
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg></span>
+      <span class="nom">Binauraux</span>
+      <span class="desc">Le générateur de fréquences</span>
+    </a>
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+      <span class="nom">Protocoles</span>
+      <span class="desc">164 protocoles · S1 nettoyage, S2 réparation</span>
+    </a>
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg></span>
+      <span class="nom">Minéraux</span>
+      <span class="desc">228 minéraux · masse molaire → fréquence</span>
+    </a>
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 7v8M7 11h8"/></svg></span>
+      <span class="nom">Symptômes</span>
+      <span class="desc">Par symptôme, pas par produit</span>
+    </a>
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg></span>
+      <span class="nom">Éveil & Chakras</span>
+      <span class="desc">Solfège · chakras · voyages</span>
+    </a>
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7A4 4 0 0 0 19 16l-4-7V3"/><line x1="9" y1="3" x2="15" y2="3"/></svg></span>
+      <span class="nom">Pathogènes</span>
+      <span class="desc">Bactéries · virus · champignons</span>
+    </a>
+
+  </div>
+
+  <div class="label">Mes listes</div>
+  <div class="grille">
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+      <span class="nom">Mes playlists</span>
+      <span class="desc">Tes listes matin et soir</span>
+    </a>
+
+    <a class="carte" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+      <span class="nom">Mes favoris</span>
+      <span class="desc">Les fréquences mises de côté</span>
+    </a>
+
+    <a class="carte carte-pleine" href="index.html">
+      <span class="ico"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+      <span class="nom">Historique</span>
+      <span class="desc">Tes sessions et tes stats</span>
+    </a>
+
+  </div>
+
+  <a class="expli" href="index.html">
+    <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+    <span class="txt">
+      <span class="t">Comment ça marche</span>
+      <span class="d">D'où viennent les fréquences, le battement, comment lire une séance</span>
+    </span>
+    <span class="fleche">›</span>
+  </a>
+
+  <p class="note">Page test — rien n'est installé dans l'appli.<br><a href="index.html">Retour à l'application</a></p>
+
+</div>
+</body>
+</html>
