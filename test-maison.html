@@ -70,11 +70,18 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Ou
 .carte-pleine .desc{margin-left:auto;text-align:right}
 
 /* bloc explication */
-.expli{display:flex;align-items:center;gap:11px;margin-top:14px;padding:11px 13px;border-radius:12px;
-  border:1px solid rgba(61,181,255,.35);background:linear-gradient(90deg,rgba(61,181,255,.16),rgba(61,181,255,.04));
-  text-decoration:none;color:var(--text)}
-.expli .ico{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-  border:1px solid rgba(61,181,255,.4);color:var(--blue);flex-shrink:0}
+.expli{position:relative;display:flex;align-items:center;gap:11px;margin-top:14px;padding:11px 13px;border-radius:12px;
+  border:1px solid rgba(61,181,255,.62);
+  background:linear-gradient(100deg,rgba(61,181,255,.40) 0%,rgba(52,166,246,.20) 34%,rgba(40,140,230,.07) 74%,rgba(40,140,230,.03) 100%);
+  text-decoration:none;color:var(--text);
+  box-shadow:0 0 26px rgba(61,181,255,.18),inset 0 1px 0 rgba(255,255,255,.18),inset 3px 0 16px rgba(96,200,255,.30)}
+.expli::after{content:"";position:absolute;inset:1px 1px auto 1px;height:48%;border-radius:11px 11px 40% 40%;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0));pointer-events:none}
+.expli .ico{position:relative;z-index:1;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(120,205,255,.60);color:#d8f1ff;flex-shrink:0;
+  background:linear-gradient(140deg,rgba(120,205,255,.55),rgba(61,181,255,.12));
+  box-shadow:0 0 14px rgba(61,181,255,.50),inset 0 1px 0 rgba(255,255,255,.45)}
+.expli .txt,.expli .fleche{position:relative;z-index:1}
 .expli .ico svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .expli .txt{flex:1;min-width:0}
 .expli .t{font-size:14px;font-weight:500}
