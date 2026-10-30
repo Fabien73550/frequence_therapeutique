@@ -48,8 +48,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Ou
 .carte{display:flex;flex-direction:column;gap:8px;padding:14px 13px;border-radius:14px;
   border:1px solid var(--border);background:var(--s1);text-decoration:none;color:var(--text)}
 .carte:active{background:var(--s2)}
-.carte .ico{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;
-  border:1px solid rgba(255,158,44,.30);background:linear-gradient(135deg,rgba(255,158,44,.18),rgba(255,158,44,.05));color:var(--amber)}
+.carte .vign{width:44px;height:44px;border-radius:11px;object-fit:cover;display:block;
+  border:1px solid rgba(255,255,255,.10)}
 .carte .ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .carte .nom{font-size:14px;font-weight:500;line-height:1.2}
 .carte .desc{font-size:11px;color:var(--muted);line-height:1.35}
@@ -106,37 +106,37 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Ou
   <div class="grille">
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg></span>
+      <img class="vign" src="img/freq-binauraux.webp" alt="">
       <span class="nom">Binauraux</span>
       <span class="desc">Le générateur de fréquences</span>
     </a>
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+      <img class="vign" src="img/freq-protocoles.webp" alt="">
       <span class="nom">Protocoles</span>
       <span class="desc">164 protocoles · S1 nettoyage, S2 réparation</span>
     </a>
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg></span>
+      <img class="vign" src="img/freq-mineraux.webp" alt="">
       <span class="nom">Minéraux</span>
       <span class="desc">228 minéraux · masse molaire → fréquence</span>
     </a>
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 7v8M7 11h8"/></svg></span>
+      <img class="vign" src="img/freq-symptomes.webp" alt="">
       <span class="nom">Symptômes</span>
       <span class="desc">Par symptôme, pas par produit</span>
     </a>
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg></span>
+      <img class="vign" src="img/freq-eveil.webp" alt="">
       <span class="nom">Éveil & Chakras</span>
       <span class="desc">Solfège · chakras · voyages</span>
     </a>
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7A4 4 0 0 0 19 16l-4-7V3"/><line x1="9" y1="3" x2="15" y2="3"/></svg></span>
+      <img class="vign" src="img/freq-pathogenes.webp" alt="">
       <span class="nom">Pathogènes</span>
       <span class="desc">Bactéries · virus · champignons</span>
     </a>
@@ -147,19 +147,19 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Ou
   <div class="grille">
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+      <img class="vign" src="img/freq-playlists.webp" alt="">
       <span class="nom">Mes playlists</span>
       <span class="desc">Tes listes matin et soir</span>
     </a>
 
     <a class="carte" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+      <img class="vign" src="img/freq-favoris.webp" alt="">
       <span class="nom">Mes favoris</span>
       <span class="desc">Les fréquences mises de côté</span>
     </a>
 
     <a class="carte carte-pleine" href="index.html">
-      <span class="ico"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+      <img class="vign" src="img/freq-historique.webp" alt="">
       <span class="nom">Historique</span>
       <span class="desc">Tes dernières écoutes</span>
     </a>
