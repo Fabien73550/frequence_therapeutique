@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Page test — visuels des cartes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
+  --border:#242a3d;--border2:#2e3650;
+  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
+  --green:#00ffba;--blue:#3db5ff;--purple:#c77dff;--amber:#ff9e2c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+.page{min-height:100dvh;display:flex;flex-direction:column;
+      padding:calc(10px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom))}
+
+.top{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;height:36px}
+.top .titre{text-align:center;font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rond-aide{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,158,44,.7);
+  background:linear-gradient(135deg,rgba(255,158,44,.40),rgba(255,158,44,.16));color:var(--amber);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;text-decoration:none}
+.rond-mini{width:36px;height:36px;border-radius:10px;border:1px solid var(--border2);background:var(--s2);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px}
+.filet-top{height:2px;border-radius:2px;margin-top:10px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+.signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
+
+.label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px}
+.label span{color:var(--dim);text-transform:none;letter-spacing:0;font-size:11px;margin-left:6px}
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.note{font-size:11px;color:var(--dim);line-height:1.5;margin:-4px 0 12px}
+
+/* A — vignette a la place de l'icone */
+.carteA{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:14px;
+  border:1px solid var(--border);background:var(--s1);text-decoration:none;color:var(--text)}
+.carteA img{width:44px;height:44px;border-radius:11px;object-fit:cover;flex-shrink:0;
+  border:1px solid rgba(255,255,255,.10)}
+.carteA .nom{font-size:13.5px;font-weight:500;line-height:1.2}
+.carteA .desc{font-size:10.5px;color:var(--muted);line-height:1.35;margin-top:3px}
+
+/* B — bandeau haut de carte */
+.carteB{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;
+  border:1px solid var(--border);background:var(--s1);text-decoration:none;color:var(--text)}
+.carteB .visuel{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.carteB .txt{padding:10px 12px 12px}
+.carteB .nom{font-size:13.5px;font-weight:500;line-height:1.2}
+.carteB .desc{font-size:10.5px;color:var(--muted);line-height:1.35;margin-top:3px}
+
+/* C — les visuels nus */
+.mosaique{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mosaique figure{margin:0}
+.mosaique img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;display:block;
+  border:1px solid rgba(255,255,255,.07)}
+.mosaique figcaption{font-size:9.5px;color:var(--dim);text-align:center;margin-top:4px;
+  font-family:'JetBrains Mono',monospace}
+
+.retour{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:22px;
+  padding:11px 14px;border-radius:12px;text-decoration:none;
+  border:1px solid rgba(0,255,186,.45);
+  background:linear-gradient(90deg,rgba(0,255,186,.22),rgba(0,255,186,.07));
+  color:var(--green);font-size:14px;font-weight:600}
+.retour2{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--amber);text-decoration:none}
+
+@media(min-width:620px){
+  .page{max-width:760px;margin:0 auto}
+  .grille{grid-template-columns:repeat(3,1fr)}
+  .mosaique{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <a class="rond-aide" href="index.html" aria-label="Aide">?</a>
+    <span class="titre">Visuels des cartes</span>
+    <a class="rond-mini" href="index.html" aria-label="Retour à l'application">✕</a>
+  </div>
+  <div class="filet-top"></div>
+  <div class="signature">Page test · 9 visuels fabriqués en code</div>
+
+  <div class="label">A — En vignette <span>44 px, à la place de l'icône</span></div>
+  <div class="grille">
+    <a class="carteA" href="index.html"><img src="img/freq-binauraux.webp" alt=""><span><span class="nom">Binauraux</span><span class="desc">Le générateur de fréquences</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-protocoles.webp" alt=""><span><span class="nom">Protocoles</span><span class="desc">164 protocoles · S1, S2</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-mineraux.webp" alt=""><span><span class="nom">Minéraux</span><span class="desc">228 minéraux</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-symptomes.webp" alt=""><span><span class="nom">Symptômes</span><span class="desc">Par symptôme</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-eveil.webp" alt=""><span><span class="nom">Éveil &amp; Chakras</span><span class="desc">Solfège · voyages</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-pathogenes.webp" alt=""><span><span class="nom">Pathogènes</span><span class="desc">Bactéries · virus</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-playlists.webp" alt=""><span><span class="nom">Mes playlists</span><span class="desc">Tes listes</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-favoris.webp" alt=""><span><span class="nom">Mes favoris</span><span class="desc">Mises de côté</span></span></a>
+    <a class="carteA" href="index.html"><img src="img/freq-historique.webp" alt=""><span><span class="nom">Historique</span><span class="desc">Tes dernières écoutes</span></span></a>
+  </div>
+
+  <div class="label">B — En bandeau <span>haut de carte, 16/9</span></div>
+  <div class="grille">
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-binauraux.webp" alt=""><span class="txt"><span class="nom">Binauraux</span><span class="desc">Le générateur de fréquences</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-protocoles.webp" alt=""><span class="txt"><span class="nom">Protocoles</span><span class="desc">164 protocoles · S1, S2</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-mineraux.webp" alt=""><span class="txt"><span class="nom">Minéraux</span><span class="desc">228 minéraux</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-symptomes.webp" alt=""><span class="txt"><span class="nom">Symptômes</span><span class="desc">Par symptôme</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-eveil.webp" alt=""><span class="txt"><span class="nom">Éveil &amp; Chakras</span><span class="desc">Solfège · voyages</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-pathogenes.webp" alt=""><span class="txt"><span class="nom">Pathogènes</span><span class="desc">Bactéries · virus</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-playlists.webp" alt=""><span class="txt"><span class="nom">Mes playlists</span><span class="desc">Tes listes</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-favoris.webp" alt=""><span class="txt"><span class="nom">Mes favoris</span><span class="desc">Mises de côté</span></span></a>
+    <a class="carteB" href="index.html"><img class="visuel" src="img/freq-historique.webp" alt=""><span class="txt"><span class="nom">Historique</span><span class="desc">Tes dernières écoutes</span></span></a>
+  </div>
+
+  <div class="label">C — Les 9 visuels <span>600 × 600 · 46 à 63 Ko</span></div>
+  <div class="mosaique">
+    <figure><img src="img/freq-binauraux.webp" alt="Binauraux"><figcaption>binauraux</figcaption></figure>
+    <figure><img src="img/freq-protocoles.webp" alt="Protocoles"><figcaption>protocoles</figcaption></figure>
+    <figure><img src="img/freq-mineraux.webp" alt="Minéraux"><figcaption>minéraux</figcaption></figure>
+    <figure><img src="img/freq-symptomes.webp" alt="Symptômes"><figcaption>symptômes</figcaption></figure>
+    <figure><img src="img/freq-eveil.webp" alt="Éveil"><figcaption>éveil</figcaption></figure>
+    <figure><img src="img/freq-pathogenes.webp" alt="Pathogènes"><figcaption>pathogènes</figcaption></figure>
+    <figure><img src="img/freq-playlists.webp" alt="Playlists"><figcaption>playlists</figcaption></figure>
+    <figure><img src="img/freq-favoris.webp" alt="Favoris"><figcaption>favoris</figcaption></figure>
+    <figure><img src="img/freq-historique.webp" alt="Historique"><figcaption>historique</figcaption></figure>
+  </div>
+
+  <a class="retour" href="index.html"><span>▶</span> Retour à l'application</a>
+  <a class="retour2" href="test-maison.html">Voir la page d'accueil en test</a>
+
+  <p class="note" style="margin-top:22px;text-align:center">Page test — rien n'est installé dans l'appli.</p>
+</div>
+</body>
+</html>
