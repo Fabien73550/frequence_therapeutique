@@ -10,14 +10,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#080b12;--s1:#0e1220;--s2:#141826;--s3:#1c2235;
-  --border:#242a3d;--border2:#2e3650;
-  --text:#e8edf8;--muted:#a8b8d8;--dim:#7a8caf;
+  --bg:#0d1424;--s1:#171f33;--s2:#1f2942;--s3:#293454;
+  --border:#33405f;--border2:#425073;
+  --text:#eef2fb;--muted:#b9c8e4;--dim:#93a5c5;
   --green:#00ffba;--blue:#3db5ff;--purple:#c77dff;--amber:#ff9e2c;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
-.page{min-height:100dvh;display:flex;flex-direction:column;
+/* lumiere venant de la GAUCHE de l'ecran */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(95% 70% at -12% 38%,rgba(186,214,255,.30),rgba(186,214,255,0) 66%),
+             radial-gradient(70% 52% at -6% 6%,rgba(255,192,132,.18),rgba(255,192,132,0) 62%),
+             linear-gradient(90deg,rgba(200,222,255,.13),rgba(200,222,255,.03) 22%,rgba(255,255,255,0) 52%)}
+.page{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column;
       padding:calc(10px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom))}
 
 /* barre haute */
@@ -29,7 +34,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Ou
 .rond-mini{width:36px;height:36px;border-radius:10px;border:1px solid var(--border2);background:var(--s2);
   color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;font-size:14px}
 
-.filet-top{height:2px;border-radius:2px;margin-top:10px;background:linear-gradient(90deg,rgba(255,158,44,.52),rgba(255,158,44,.18))}
+.filet-top{height:2px;border-radius:2px;margin-top:10px;background:linear-gradient(90deg,rgba(255,158,44,.72),rgba(255,158,44,.26))}
 .signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
 
 /* action principale */
@@ -37,7 +42,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Ou
   padding:11px 14px;border-radius:12px;cursor:pointer;text-decoration:none;
   border:1px solid rgba(255,158,44,.5);
   background:linear-gradient(90deg,rgba(255,158,44,.24),rgba(255,158,44,.08));
-  color:var(--amber);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600}
+  color:var(--amber);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;
+  box-shadow:0 0 26px rgba(255,158,44,.20),inset 0 1px 0 rgba(255,255,255,.07)}
 .principal .rond{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,var(--amber),#ffc77d);color:#1a0d00;font-size:10px}
 .sous-principal{text-align:center;font-size:11px;color:var(--dim);margin-top:8px}
@@ -46,7 +52,9 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Ou
 .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px}
 .grille{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .carte{display:flex;flex-direction:column;gap:8px;padding:14px 13px;border-radius:14px;
-  border:1px solid var(--border);background:var(--s1);text-decoration:none;color:var(--text)}
+  border:1px solid var(--border);text-decoration:none;color:var(--text);
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 55%),var(--s1);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:background .15s}
 .carte:active{background:var(--s2)}
 .carte .vign{width:44px;height:44px;border-radius:11px;object-fit:cover;display:block;
   border:1px solid rgba(255,255,255,.10)}
