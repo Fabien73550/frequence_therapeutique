@@ -17,11 +17,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
-/* lumiere venant de la GAUCHE de l'ecran */
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(95% 70% at -12% 38%,rgba(186,214,255,.30),rgba(186,214,255,0) 66%),
-             radial-gradient(70% 52% at -6% 6%,rgba(255,192,132,.18),rgba(255,192,132,0) 62%),
-             linear-gradient(90deg,rgba(200,222,255,.13),rgba(200,222,255,.03) 22%,rgba(255,255,255,0) 52%)}
 .page{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column;
       padding:calc(10px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom))}
 
@@ -38,12 +33,17 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
 .signature{text-align:center;font-size:10px;color:var(--dim);letter-spacing:.06em;margin-top:9px}
 
 /* action principale */
-.principal{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:18px;
+.principal{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:18px;
   padding:11px 14px;border-radius:12px;cursor:pointer;text-decoration:none;
-  border:1px solid rgba(255,158,44,.5);
-  background:linear-gradient(90deg,rgba(255,158,44,.24),rgba(255,158,44,.08));
-  color:var(--amber);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;
-  box-shadow:0 0 26px rgba(255,158,44,.20),inset 0 1px 0 rgba(255,255,255,.07)}
+  border:1px solid rgba(255,168,60,.72);
+  background:linear-gradient(100deg,#ff9e2c 0%,rgba(255,148,32,.62) 30%,rgba(255,132,22,.20) 72%,rgba(255,120,16,.07) 100%);
+  color:#fff1e2;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;
+  text-shadow:0 1px 2px rgba(90,40,0,.55);
+  box-shadow:0 0 30px rgba(255,158,44,.30),inset 0 1px 0 rgba(255,255,255,.22),inset 3px 0 16px rgba(255,180,80,.35)}
+.principal::after{content:"";position:absolute;inset:1px 1px auto 1px;height:48%;border-radius:11px 11px 40% 40%;
+  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0));pointer-events:none}
+.principal .rond{background:linear-gradient(140deg,#ffd9a8,#ff9e2c 55%,#e06f00);color:#3a1a00;
+  box-shadow:0 0 12px rgba(255,158,44,.55),inset 0 1px 0 rgba(255,255,255,.5)}
 .principal .rond{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,var(--amber),#ffc77d);color:#1a0d00;font-size:10px}
 .sous-principal{text-align:center;font-size:11px;color:var(--dim);margin-top:8px}
@@ -51,13 +51,16 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
 /* grille des cartes */
 .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px}
 .grille{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.carte{display:flex;flex-direction:column;gap:8px;padding:14px 13px;border-radius:14px;
-  border:1px solid var(--border);text-decoration:none;color:var(--text);
-  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 55%),var(--s1);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:background .15s}
+.carte{position:relative;display:flex;flex-direction:column;gap:8px;padding:14px 13px;border-radius:14px;
+  border:1px solid var(--border);text-decoration:none;color:var(--text);overflow:hidden;
+  background:linear-gradient(145deg,rgba(255,158,44,.16),rgba(255,158,44,.03) 44%,rgba(0,0,0,0) 72%),var(--s1);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.carte.vi{background:linear-gradient(145deg,rgba(199,125,255,.17),rgba(199,125,255,.03) 44%,rgba(0,0,0,0) 72%),var(--s1)}
 .carte:active{background:var(--s2)}
 .carte .vign{width:44px;height:44px;border-radius:11px;object-fit:cover;display:block;
-  border:1px solid rgba(255,255,255,.10)}
+  border:1px solid rgba(255,255,255,.16);position:relative;
+  box-shadow:0 0 0 1px rgba(255,158,44,.30),0 0 20px 2px rgba(255,158,44,.42),0 8px 16px -6px rgba(0,0,0,.9)}
+.carte.vi .vign{box-shadow:0 0 0 1px rgba(199,125,255,.32),0 0 20px 2px rgba(199,125,255,.44),0 8px 16px -6px rgba(0,0,0,.9)}
 .carte .ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .carte .nom{font-size:14px;font-weight:500;line-height:1.2}
 .carte .desc{font-size:11px;color:var(--muted);line-height:1.35}
@@ -125,7 +128,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
       <span class="desc">164 protocoles · S1 nettoyage, S2 réparation</span>
     </a>
 
-    <a class="carte" href="index.html">
+    <a class="carte vi" href="index.html">
       <img class="vign" src="img/freq-mineraux.webp" alt="">
       <span class="nom">Minéraux</span>
       <span class="desc">228 minéraux · masse molaire → fréquence</span>
@@ -143,7 +146,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
       <span class="desc">Solfège · chakras · voyages</span>
     </a>
 
-    <a class="carte" href="index.html">
+    <a class="carte vi" href="index.html">
       <img class="vign" src="img/freq-pathogenes.webp" alt="">
       <span class="nom">Pathogènes</span>
       <span class="desc">Bactéries · virus · champignons</span>
@@ -154,19 +157,19 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="label">Mes listes</div>
   <div class="grille">
 
-    <a class="carte" href="index.html">
+    <a class="carte vi" href="index.html">
       <img class="vign" src="img/freq-playlists.webp" alt="">
       <span class="nom">Mes playlists</span>
       <span class="desc">Tes listes matin et soir</span>
     </a>
 
-    <a class="carte" href="index.html">
+    <a class="carte vi" href="index.html">
       <img class="vign" src="img/freq-favoris.webp" alt="">
       <span class="nom">Mes favoris</span>
       <span class="desc">Les fréquences mises de côté</span>
     </a>
 
-    <a class="carte carte-pleine" href="index.html">
+    <a class="carte carte-pleine vi" href="index.html">
       <img class="vign" src="img/freq-historique.webp" alt="">
       <span class="nom">Historique</span>
       <span class="desc">Tes dernières écoutes</span>
