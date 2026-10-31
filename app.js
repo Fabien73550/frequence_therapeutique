@@ -195,9 +195,9 @@ let guideSections=[];
 if(accEl){
   GUIDE.forEach(function(section,i){
     let sec=document.createElement('div');
-    sec.style.cssText='margin-bottom:8px;border-radius:12px;border:1px solid var(--amber-border);overflow:hidden';
+    sec.style.cssText='margin-bottom:8px;border-radius:12px;border:1px solid var(--purple-border);overflow:hidden';
     let titre=document.createElement('div');
-    titre.style.cssText='font-size:14px;font-weight:600;padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;color:var(--amber)';
+    titre.style.cssText='font-size:14px;font-weight:600;padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;color:var(--purple)';
     let arrow=document.createElement('span');
     arrow.textContent='▶';
     arrow.style.cssText='font-size:10px;transition:transform 0.2s';
@@ -206,7 +206,7 @@ if(accEl){
     titre.appendChild(txtSpan);
     titre.appendChild(arrow);
     let contenu=document.createElement('div');
-    contenu.style.cssText='max-height:0;opacity:0;overflow:hidden;transition:max-height 0.35s ease,opacity 0.3s ease,padding 0.3s ease;padding:0 14px;font-size:13px;color:var(--green);line-height:1.7';
+    contenu.style.cssText='max-height:0;opacity:0;overflow:hidden;transition:max-height 0.35s ease,opacity 0.3s ease,padding 0.3s ease;padding:0 14px;font-size:13px;color:var(--purple);line-height:1.7';
     contenu.innerHTML=section.c;
     titre.addEventListener('click',function(){
       let open=contenu.style.maxHeight!=='0px'&&contenu.style.maxHeight!=='';
