@@ -240,6 +240,17 @@ if(accEl){
     marquerSousTitres(contenu);
     titre.addEventListener('click',function(){
       let open=contenu.style.maxHeight!=='0px'&&contenu.style.maxHeight!=='';
+      // accordeon : un seul bouton ouvert a la fois
+      if(!open){
+        guideSections.forEach(function(autre){
+          if(autre.contenu!==contenu){
+            autre.contenu.style.maxHeight='0';
+            autre.contenu.style.opacity='0';
+            autre.contenu.style.padding='0 14px';
+            autre.arrow.style.transform='rotate(0deg)';
+          }
+        });
+      }
       contenu.style.display='block';   // sinon display:none l'emporte sur max-height
       contenu.style.maxHeight=open?'0':'2000px';
       contenu.style.opacity=open?'0':'1';
