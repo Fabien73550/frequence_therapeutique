@@ -190,17 +190,37 @@ setTimeout(function(){
   acc.appendChild(v);
 },0);
 
+// Guide : les titres internes de chaque section (le <b> qui ouvre un bloc) en orange
+function marquerSousTitres(racine){
+  var enfants=Array.prototype.slice.call(racine.childNodes);
+  var blocVide=true;
+  for(var i=0;i<enfants.length;i++){
+    var n=enfants[i];
+    if(n.nodeType===3){
+      if(n.nodeValue.replace(/[\s\u00A0]/g,'').length) blocVide=false;
+      continue;
+    }
+    if(n.nodeName==='BR'){
+      var j=i+1;
+      while(j<enfants.length && enfants[j].nodeType===3 && !enfants[j].nodeValue.trim()) j++;
+      if(j<enfants.length && enfants[j].nodeName==='BR'){ blocVide=true; }
+      continue;
+    }
+    if(n.nodeName==='B' && blocVide){ n.style.color='var(--amber)'; }
+    blocVide=false;
+  }
+}
 let accEl=document.getElementById('help-accordion');
 let guideSections=[];
 if(accEl){
   GUIDE.forEach(function(section,i){
     let sec=document.createElement('div');
-    sec.style.cssText='margin-bottom:8px;border-radius:12px;border:1px solid var(--amber-border);overflow:hidden';
+    sec.style.cssText='margin-bottom:8px;border-radius:14px;border:1px solid var(--border);overflow:hidden;background:linear-gradient(145deg,rgba(199,125,255,.17),rgba(199,125,255,.03) 44%,rgba(0,0,0,0) 72%),var(--s1);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)';
     let titre=document.createElement('div');
-    titre.style.cssText='font-size:14px;font-weight:600;padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;color:var(--amber)';
+    titre.style.cssText='font-size:14px;font-weight:600;padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;color:#ffffff';
     let arrow=document.createElement('span');
     arrow.textContent='▶';
-    arrow.style.cssText='font-size:10px;transition:transform 0.2s';
+    arrow.style.cssText='font-size:10px;transition:transform 0.2s;color:#ffffff';
     let txtSpan=document.createElement('span');
     txtSpan.innerHTML=section.t;
     titre.appendChild(txtSpan);
@@ -208,6 +228,7 @@ if(accEl){
     let contenu=document.createElement('div');
     contenu.style.cssText='max-height:0;opacity:0;overflow:hidden;transition:max-height 0.35s ease,opacity 0.3s ease,padding 0.3s ease;padding:0 14px;font-size:13px;color:var(--purple);line-height:1.7';
     contenu.innerHTML=section.c;
+    marquerSousTitres(contenu);
     titre.addEventListener('click',function(){
       let open=contenu.style.maxHeight!=='0px'&&contenu.style.maxHeight!=='';
       contenu.style.display='block';   // sinon display:none l'emporte sur max-height
