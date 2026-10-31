@@ -174,7 +174,19 @@ setTimeout(function(){
   if(!acc)return;
   var v=document.createElement('div');
   v.style.cssText='text-align:center;font-size:10px;color:var(--muted);padding:10px 0 2px';
-  v.textContent='version 291026r';
+  v.textContent='version '+(function(){
+    try{
+      var ss=document.getElementsByTagName('script');
+      for(var i=0;i<ss.length;i++){
+        var s=ss[i].getAttribute('src')||'';
+        if(s.indexOf('app.js')>=0){
+          var m=s.match(/[?&]v=([A-Za-z0-9.]+)/);
+          if(m)return m[1];
+        }
+      }
+    }catch(e){}
+    return 'inconnue';
+  })();
   acc.appendChild(v);
 },0);
 
