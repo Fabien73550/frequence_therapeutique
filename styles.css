@@ -370,7 +370,7 @@ select option{background:var(--s2)}
 #page-player .lp-top{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;height:36px}
 #page-player .lp-titre{text-align:center;font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #page-player .lp-back{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,158,44,.55);
-  background:linear-gradient(100deg,rgba(255,158,44,.95) 0%,rgba(255,158,44,.62) 30%,rgba(255,158,44,.20) 72%,rgba(255,158,44,.07) 100%);border-color:rgba(255,158,44,.70);color:var(--amber);
+  background:linear-gradient(100deg,rgba(255,158,44,.95) 0%,rgba(255,158,44,.62) 30%,rgba(255,158,44,.20) 72%,rgba(255,158,44,.07) 100%);border-color:rgba(255,158,44,.70);color:#fff1e2;text-shadow:0 1px 2px rgba(90,40,0,.55);
   display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.35)}
 #page-player .lp-back:active{transform:scale(.96);background:rgba(255,158,44,.32)}
 #page-player .lp-stop{width:36px;height:36px;border-radius:10px;border:1px solid var(--border2);background:var(--s2);
@@ -446,7 +446,7 @@ select option{background:var(--s2)}
   font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #page-binaural .acc-aide{position:absolute;left:0;top:2px;width:36px;height:36px;padding:0;cursor:pointer;
   border-radius:10px;border:1px solid rgba(255,158,44,.70);
-  background:linear-gradient(100deg,rgba(255,158,44,.95) 0%,rgba(255,158,44,.62) 30%,rgba(255,158,44,.20) 72%,rgba(255,158,44,.07) 100%);color:var(--amber);
+  background:linear-gradient(100deg,rgba(255,158,44,.95) 0%,rgba(255,158,44,.62) 30%,rgba(255,158,44,.20) 72%,rgba(255,158,44,.07) 100%);color:#fff1e2;text-shadow:0 1px 2px rgba(90,40,0,.55);
   font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center}
 #page-binaural .acc-aide:active{transform:scale(.96)}
 #page-binaural .acc-filet-top{height:2px;border-radius:2px;margin-top:8px;
@@ -492,9 +492,10 @@ select option{background:var(--s2)}
 #page-binaural .acc-actions{padding:22px 0 20px;text-align:center}
 #page-binaural .acc-principal{display:block;width:100%;padding:14px 12px;border:none;border-radius:10px;cursor:pointer;
   background:linear-gradient(100deg,rgba(255,158,44,.95) 0%,rgba(255,158,44,.62) 30%,rgba(255,158,44,.20) 72%,rgba(255,158,44,.07) 100%);
-  color:var(--amber);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;text-align:center}
+  color:#fff1e2;text-shadow:0 1px 2px rgba(90,40,0,.55);
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;letter-spacing:.01em;text-align:center}
 #page-binaural .acc-principal:active{transform:scale(.985)}
-#page-binaural .acc-principal.joue{background:linear-gradient(100deg,rgba(0,255,186,.95) 0%,rgba(0,255,186,.62) 30%,rgba(0,255,186,.20) 72%,rgba(0,255,186,.07) 100%);
+#page-binaural .acc-principal.joue{background:linear-gradient(100deg,rgba(0,255,186,.11) 0%,rgba(0,255,186,.05) 30%,rgba(0,255,186,.016) 72%,rgba(0,255,186,.006) 100%);
   color:var(--green)}
 #page-binaural .acc-lien{margin-top:14px;background:none;border:none;color:var(--blue);
   font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;opacity:.9}
@@ -578,7 +579,7 @@ select option{background:var(--s2)}
 #page-perso .pp-enreg button{background:none;border:none;color:var(--green);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:4px 6px;white-space:nowrap}
 
 #page-perso .pp-liste{display:flex;flex-direction:column;gap:6px}
-#page-perso .pp-sauve{border-radius:10px;background:linear-gradient(100deg,rgba(0,255,186,.95) 0%,rgba(0,255,186,.62) 30%,rgba(0,255,186,.20) 72%,rgba(0,255,186,.07) 100%);padding:12px}
+#page-perso .pp-sauve{border-radius:10px;background:linear-gradient(100deg,rgba(0,255,186,.11) 0%,rgba(0,255,186,.05) 30%,rgba(0,255,186,.016) 72%,rgba(0,255,186,.006) 100%);padding:12px}
 #page-perso .pp-sauve-tete{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
 #page-perso .pp-sauve .nom{font-size:13px;color:var(--text);font-weight:500}
 #page-perso .pp-sauve .sous{font-size:10.5px;color:var(--muted);margin-top:3px}
