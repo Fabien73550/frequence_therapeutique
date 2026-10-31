@@ -215,14 +215,23 @@ let guideSections=[];
 if(accEl){
   GUIDE.forEach(function(section,i){
     let sec=document.createElement('div');
-    sec.style.cssText='margin-bottom:8px;border-radius:14px;border:1px solid var(--border);overflow:hidden;background:linear-gradient(145deg,rgba(199,125,255,.30),rgba(199,125,255,.07) 46%,rgba(0,0,0,0) 74%),var(--s1);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)';
+    sec.style.cssText='margin-bottom:8px';
+    // on reprend EXACTEMENT les classes du bouton "Decouvrir le fonctionnement"
     let titre=document.createElement('div');
-    titre.style.cssText='font-size:14px;font-weight:600;padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;color:#ffffff';
-    let arrow=document.createElement('span');
-    arrow.textContent='▶';
-    arrow.style.cssText='font-size:10px;transition:transform 0.2s;color:#ffffff';
+    titre.className='ae-expli';
+    titre.style.cssText='margin-top:0;user-select:none';
+    let ico=document.createElement('span');
+    ico.className='ae-ico';
+    let car=Array.from(section.t);
+    ico.textContent=car.shift();
     let txtSpan=document.createElement('span');
-    txtSpan.innerHTML=section.t;
+    txtSpan.className='ae-expli-txt';
+    txtSpan.innerHTML=car.join('').replace(/^\s+/,'');
+    let arrow=document.createElement('span');
+    arrow.className='ae-fleche';
+    arrow.textContent='›';
+    arrow.style.cssText='transition:transform 0.2s';
+    titre.appendChild(ico);
     titre.appendChild(txtSpan);
     titre.appendChild(arrow);
     let contenu=document.createElement('div');
