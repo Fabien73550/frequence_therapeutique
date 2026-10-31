@@ -1816,13 +1816,41 @@ function showPage(id,btn){
   btn.classList.add("active");
   // Masquer le bandeau lecteur sur Binaural (déjà un bouton "Lancer l'écoute" sur cette page)
   let pbEl=document.getElementById("play-bar");
-  if(pbEl)pbEl.style.display=(id==='binaural')?"none":"flex";
+  if(pbEl)pbEl.style.display=(id==='binaural'||id==='accueil')?"none":"flex";
+  if(id==='accueil')aeInit();
+  window.scrollTo(0,0);
   // Build pathogènes lazily on first visit
   if(id==='pathogenes'){
     let pl=document.getElementById('path-list');
     if(pl&&pl.children.length===0)buildPathogenes();
   }
 }
+
+// ====== PAGE ACCUEIL (vignettes) ======
+// Chaque carte mene a sa page ; le bouton du bas correspondant est active.
+function aeVers(id){
+  var map={binaural:'nav-binaural',proto:'nav-binaural',eveil:'nav-binaural',
+           pathogenes:'nav-binaural',history:'nav-binaural',perso:'nav-perso',
+           mineraux:'nav-mineraux',symptomes:'nav-symptomes',favs:'nav-favs'};
+  var b=document.getElementById(map[id]||'nav-accueil');
+  showPage(id,b);
+}
+// Bloc "Reprendre" : affiche uniquement s'il y a vraiment une seance interrompue.
+function aeInit(){
+  var box=document.getElementById('ae-reprendre');
+  var txt=document.getElementById('ae-reprendre-txt');
+  var sub=document.getElementById('ae-reprendre-sous');
+  if(!box||!txt)return;
+  var ps=(typeof pendingSession!=='undefined')?pendingSession:null;
+  if(!ps){box.style.display='none';if(sub)sub.style.display='none';return;}
+  var lb=ps.lb||'Racine';
+  var hz=Math.round(ps.hz||432);
+  var min=Math.max(1,Math.round((ps.sl||0)/60));
+  txt.textContent='Reprendre \u2014 '+lb+' \u00b7 '+hz+' Hz';
+  if(sub){sub.textContent='Derni\u00e8re s\u00e9ance interrompue \u00b7 '+min+' min restantes';sub.style.display='block';}
+  box.style.display='flex';
+}
+document.addEventListener('DOMContentLoaded',function(){setTimeout(aeInit,400);});
 
 // ====== PAGE PATHOGENES ======
 function buildPathogenes(){

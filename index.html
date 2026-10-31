@@ -29,7 +29,7 @@
 <meta name="twitter:title" content="Fréquences Thérapeutiques Binaural X">
 <meta name="twitter:description" content="Générateur de sons binauraux thérapeutiques.">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=301026b">
+<link rel="stylesheet" href="styles.css?v=311026">
 <script>
   // Appliquer le thème AVANT le rendu pour éviter le flash
   (function(){
@@ -57,7 +57,81 @@
   <button onclick="dismissResume()" style="padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.5);background:transparent;color:#fff;font-size:12px;cursor:pointer">✕</button>
 </div>
 
-<div class="page active" id="page-binaural">
+<div class="page active" id="page-accueil">
+  <div class="ae-top">
+    <button class="ae-rond-aide" onclick="toggleAide()" aria-label="Aide">?</button>
+    <span class="ae-titre">Fréquences Thérapeutiques</span>
+    <span></span>
+  </div>
+  <div class="ae-filet"></div>
+  <div class="ae-signature">Marc-Alain Lavoie · Naturasounds</div>
+
+  <button class="ae-reprendre" id="ae-reprendre" onclick="doResume();aeInit()" style="display:none">
+    <span class="ae-rond">▶</span> <span id="ae-reprendre-txt">Reprendre</span>
+  </button>
+  <p class="ae-sous" id="ae-reprendre-sous" style="display:none"></p>
+
+  <button class="ae-expli" onclick="toggleAide()">
+    <span class="ae-ico">?</span>
+    <span class="ae-expli-txt">Découvrir le fonctionnement</span>
+    <span class="ae-fleche">›</span>
+  </button>
+
+  <div class="ae-label">Écouter</div>
+  <div class="ae-grille">
+      <button class="ae-carte" onclick="aeVers('binaural')">
+        <img class="ae-vign" src="img/freq-binauraux.webp" alt="">
+        <span class="ae-nom">Binauraux</span>
+        <span class="ae-desc">Le générateur de fréquences</span>
+      </button>
+      <button class="ae-carte" onclick="aeVers('proto')">
+        <img class="ae-vign" src="img/freq-protocoles.webp" alt="">
+        <span class="ae-nom">Protocoles</span>
+        <span class="ae-desc">164 protocoles · S1 nettoyage, S2 réparation</span>
+      </button>
+      <button class="ae-carte vi" onclick="aeVers('mineraux')">
+        <img class="ae-vign" src="img/freq-mineraux.webp" alt="">
+        <span class="ae-nom">Minéraux</span>
+        <span class="ae-desc">228 minéraux · masse molaire → fréquence</span>
+      </button>
+      <button class="ae-carte" onclick="aeVers('symptomes')">
+        <img class="ae-vign" src="img/freq-symptomes.webp" alt="">
+        <span class="ae-nom">Symptômes</span>
+        <span class="ae-desc">Par symptôme, pas par produit</span>
+      </button>
+      <button class="ae-carte" onclick="aeVers('eveil')">
+        <img class="ae-vign" src="img/freq-eveil.webp" alt="">
+        <span class="ae-nom">Éveil &amp; Chakras</span>
+        <span class="ae-desc">Solfège · chakras · voyages</span>
+      </button>
+      <button class="ae-carte vi" onclick="aeVers('pathogenes')">
+        <img class="ae-vign" src="img/freq-pathogenes.webp" alt="">
+        <span class="ae-nom">Pathogènes</span>
+        <span class="ae-desc">Bactéries · virus · champignons</span>
+      </button>
+  </div>
+
+  <div class="ae-label">Mes listes</div>
+  <div class="ae-grille">
+      <button class="ae-carte vi" onclick="aeVers('perso')">
+        <img class="ae-vign" src="img/freq-playlists.webp" alt="">
+        <span class="ae-nom">Mes playlists</span>
+        <span class="ae-desc">Tes listes matin et soir</span>
+      </button>
+      <button class="ae-carte vi" onclick="aeVers('favs')">
+        <img class="ae-vign" src="img/freq-favoris.webp" alt="">
+        <span class="ae-nom">Mes favoris</span>
+        <span class="ae-desc">Les fréquences mises de côté</span>
+      </button>
+      <button class="ae-carte vi" onclick="aeVers('history')">
+        <img class="ae-vign" src="img/freq-historique.webp" alt="">
+        <span class="ae-nom">Historique</span>
+        <span class="ae-desc">Tes dernières écoutes</span>
+      </button>
+  </div>
+</div>
+
+<div class="page" id="page-binaural">
   <div class="acc-top">
     <button class="acc-aide" onclick="toggleAide()" aria-label="Aide">?</button>
     <span class="acc-titre">Fréquences Thérapeutiques</span>
@@ -270,19 +344,22 @@
 </div>
 
 <nav class="nav">
-  <button class="nav-btn active" onclick="showPage('binaural',this)" aria-label="Binaural">
+  <button class="nav-btn active" id="nav-accueil" onclick="showPage('accueil',this)" aria-label="Accueil">
+    <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Accueil
+  </button>
+  <button class="nav-btn" id="nav-binaural" onclick="showPage('binaural',this)" aria-label="Binaural">
     <svg class="nav-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Binaural
   </button>
-  <button class="nav-btn" onclick="showPage('perso',this)" aria-label="Mes playlists">
+  <button class="nav-btn" id="nav-perso" onclick="showPage('perso',this)" aria-label="Mes playlists">
     <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Perso
   </button>
-  <button class="nav-btn" onclick="showPage('mineraux',this)" aria-label="Minéraux">
+  <button class="nav-btn" id="nav-mineraux" onclick="showPage('mineraux',this)" aria-label="Minéraux">
     <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>Minéraux
   </button>
-  <button class="nav-btn" onclick="showPage('symptomes',this)" aria-label="Symptômes">
+  <button class="nav-btn" id="nav-symptomes" onclick="showPage('symptomes',this)" aria-label="Symptômes">
     <svg class="nav-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 7v8M7 11h8"/></svg>Symptômes
   </button>
-  <button class="nav-btn" onclick="showPage('favs',this)" aria-label="Favoris">
+  <button class="nav-btn" id="nav-favs" onclick="showPage('favs',this)" aria-label="Favoris">
     <svg class="nav-icon-svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favoris
   </button>
   <button class="nav-btn-more" onclick="toggleMoreMenu(event)" aria-label="Plus d'onglets">
@@ -292,16 +369,16 @@
 
 <!-- Menu "Plus" déroulant -->
 <div class="more-menu" id="more-menu">
-  <button class="more-menu-item" onclick="showPage('proto',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+  <button class="more-menu-item" onclick="showPage('proto',document.getElementById('nav-binaural'));closeMoreMenu()">
     <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Protocoles
   </button>
-  <button class="more-menu-item" onclick="showPage('eveil',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+  <button class="more-menu-item" onclick="showPage('eveil',document.getElementById('nav-binaural'));closeMoreMenu()">
     <svg viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg>Éveil & Chakras
   </button>
-  <button class="more-menu-item" onclick="showPage('pathogenes',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+  <button class="more-menu-item" onclick="showPage('pathogenes',document.getElementById('nav-binaural'));closeMoreMenu()">
     <svg viewBox="0 0 24 24"><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7A4 4 0 0 0 19 16l-4-7V3"/><line x1="9" y1="3" x2="15" y2="3"/></svg>Pathogènes
   </button>
-  <button class="more-menu-item" onclick="showPage('history',document.querySelector('.nav-btn:nth-child(1)'));closeMoreMenu()">
+  <button class="more-menu-item" onclick="showPage('history',document.getElementById('nav-binaural'));closeMoreMenu()">
     <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Historique
   </button>
 </div>
@@ -391,7 +468,7 @@
 </div>
 
 <script src="data.js?v=291026r"></script>
-<script src="app.js?v=291026r"></script>
+<script src="app.js?v=311026"></script>
 
 <div id="page-player" style="display:none">
   <div class="lp-top">

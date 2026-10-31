@@ -10,7 +10,7 @@
 // la nouvelle version. Sans ça, le cache ancien reste actif.
 // ============================================================
 
-const CACHE_VERSION = 'v26';  // ← BUMPER à chaque déploiement !
+const CACHE_VERSION = 'v27';  // ← BUMPER à chaque déploiement !
 const CACHE_NAME = 'ft-app-' + CACHE_VERSION;
 
 // Fichiers critiques à précharger à l'installation
@@ -20,7 +20,10 @@ const PRECACHE_ASSETS = [
   './styles.css',
   './app.js',
   './data.js',
-  './manifest.json'
+  './manifest.json',
+  './img/freq-binauraux.webp','./img/freq-protocoles.webp','./img/freq-mineraux.webp',
+  './img/freq-symptomes.webp','./img/freq-eveil.webp','./img/freq-pathogenes.webp',
+  './img/freq-playlists.webp','./img/freq-favoris.webp','./img/freq-historique.webp'
 ];
 
 // Extensions considérées comme "critiques" (toujours network-first)
