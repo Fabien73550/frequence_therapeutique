@@ -195,9 +195,9 @@ let guideSections=[];
 if(accEl){
   GUIDE.forEach(function(section,i){
     let sec=document.createElement('div');
-    sec.style.cssText='margin-bottom:8px;border-radius:12px;border:1px solid var(--purple-border);overflow:hidden';
+    sec.style.cssText='margin-bottom:8px;border-radius:12px;border:1px solid var(--amber-border);overflow:hidden';
     let titre=document.createElement('div');
-    titre.style.cssText='font-size:14px;font-weight:600;padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;color:var(--purple)';
+    titre.style.cssText='font-size:14px;font-weight:600;padding:12px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;color:var(--amber)';
     let arrow=document.createElement('span');
     arrow.textContent='▶';
     arrow.style.cssText='font-size:10px;transition:transform 0.2s';
