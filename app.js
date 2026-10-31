@@ -198,6 +198,7 @@ if(accEl){
     contenu.innerHTML=section.c;
     titre.addEventListener('click',function(){
       let open=contenu.style.maxHeight!=='0px'&&contenu.style.maxHeight!=='';
+      contenu.style.display='block';   // sinon display:none l'emporte sur max-height
       contenu.style.maxHeight=open?'0':'2000px';
       contenu.style.opacity=open?'0':'1';
       contenu.style.padding=open?'0 14px':'14px';
@@ -234,7 +235,7 @@ function toggleAide(){
       }
     });
     guideSections.forEach(function(sec){
-      sec.contenu.style.display='none';
+      sec.contenu.style.display='block';
       sec.contenu.style.maxHeight='0';
       sec.contenu.style.opacity='0';
       sec.contenu.style.padding='0 14px';
