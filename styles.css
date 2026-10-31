@@ -717,3 +717,17 @@ select option{background:var(--s2)}
 .ae-nom{font-size:14px;font-weight:500;line-height:1.25}
 .ae-desc{font-size:11px;color:var(--muted);line-height:1.35;margin-top:2px}
 @media(min-width:620px){.ae-grille{grid-template-columns:repeat(3,1fr)}}
+
+/* ===== Banniere d'installation (beforeinstallprompt) ===== */
+.ae-install{position:relative;display:flex;align-items:center;gap:10px;margin-top:14px;padding:11px 12px;border-radius:14px;
+  border:1px solid rgba(0,255,186,.42);overflow:hidden;
+  background:linear-gradient(145deg,rgba(0,255,186,.16),rgba(0,255,186,.03) 44%,rgba(0,0,0,0) 72%),var(--s1);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.ae-install-ico{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:var(--s2);color:var(--green);font-size:15px;border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 0 0 1px rgba(0,255,186,.30),0 0 18px 2px rgba(0,255,186,.38)}
+.ae-install-txt{flex:1;font-size:12.5px;line-height:1.3;color:var(--text)}
+.ae-install-oui{border:1px solid rgba(0,255,186,.55);border-radius:9px;padding:7px 12px;cursor:pointer;
+  background:linear-gradient(100deg,rgba(0,255,186,.30),rgba(0,255,186,.10));color:var(--green);
+  font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:600;flex-shrink:0}
+.ae-install-non{border:none;background:none;color:var(--dim);font-size:14px;cursor:pointer;padding:2px 4px;flex-shrink:0}

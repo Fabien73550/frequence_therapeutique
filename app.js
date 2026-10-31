@@ -1831,6 +1831,39 @@ function showPage(id,btn){
   }
 }
 
+// ====== INSTALLATION PWA ======
+// On capture la demande d'installation de Chrome (beforeinstallprompt) et on la rejoue
+// depuis le bouton "Installer" de l'accueil. Sans ce bloc, Chrome ne montre plus rien
+// depuis qu'il a retire sa banniere automatique.
+var deferredInstall=null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstall=e;
+  try{
+    var dejaInstalle=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+    if(!dejaInstalle && localStorage.getItem('ft_install_off')!=='1') afficherBanniereInstall();
+  }catch(_e){}
+});
+function afficherBanniereInstall(){var b=document.getElementById('install-banner');if(b)b.style.display='flex';}
+function installerApp(){
+  var b=document.getElementById('install-banner');
+  if(!deferredInstall){ if(b)b.style.display='none'; return; }
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(function(r){
+    if(r&&r.outcome==='accepted'&&b)b.style.display='none';
+    deferredInstall=null;
+  }).catch(function(){deferredInstall=null;});
+}
+function fermerBanniereInstall(){
+  var b=document.getElementById('install-banner');if(b)b.style.display='none';
+  try{localStorage.setItem('ft_install_off','1');}catch(_e){}
+}
+window.addEventListener('appinstalled',function(){
+  var b=document.getElementById('install-banner');if(b)b.style.display='none';
+  deferredInstall=null;
+  try{localStorage.removeItem('ft_install_off');}catch(_e){}
+});
+
 // ====== PAGE ACCUEIL (vignettes) ======
 // Chaque carte mene a sa page ; le bouton du bas correspondant est active.
 function aeVers(id){

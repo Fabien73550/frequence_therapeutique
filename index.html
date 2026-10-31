@@ -29,7 +29,7 @@
 <meta name="twitter:title" content="Fréquences Thérapeutiques Binaural X">
 <meta name="twitter:description" content="Générateur de sons binauraux thérapeutiques.">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=311026">
+<link rel="stylesheet" href="styles.css?v=311026b">
 <script>
   // Appliquer le thème AVANT le rendu pour éviter le flash
   (function(){
@@ -70,6 +70,13 @@
     <span class="ae-rond">▶</span> <span id="ae-reprendre-txt">Reprendre</span>
   </button>
   <p class="ae-sous" id="ae-reprendre-sous" style="display:none"></p>
+
+  <div class="ae-install" id="install-banner" style="display:none">
+    <span class="ae-install-ico">⬇</span>
+    <span class="ae-install-txt">Installer l'application sur cet appareil</span>
+    <button class="ae-install-oui" onclick="installerApp()">Installer</button>
+    <button class="ae-install-non" onclick="fermerBanniereInstall()" aria-label="Plus tard">✕</button>
+  </div>
 
   <button class="ae-expli" onclick="toggleAide()">
     <span class="ae-ico">?</span>
@@ -468,7 +475,7 @@
 </div>
 
 <script src="data.js?v=291026r"></script>
-<script src="app.js?v=311026b"></script>
+<script src="app.js?v=311026c"></script>
 
 <div id="page-player" style="display:none">
   <div class="lp-top">
