@@ -261,7 +261,8 @@ function saveSession(){try{localStorage.setItem("ft_s",JSON.stringify({hz:baseHz
 function restoreSession(){try{let s=localStorage.getItem("ft_s");if(!s)return;let d=JSON.parse(s);if(!d.sl||d.sl<=0)return;
   pendingSession=d;
   let bar=document.getElementById("resume-bar");
-  document.getElementById("resume-text").textContent="Reprendre : "+(d.lb||"session")+" ("+Math.floor(d.sl/60)+"min)";
+  var _mm=Math.floor(d.sl/60),_ss=d.sl%60;
+  document.getElementById("resume-text").textContent="Reprendre : "+(d.lb||"session")+" ("+_mm+":"+String(_ss).padStart(2,"0")+")";
   bar.style.display="flex";
   // Also show in player if open
   let pp=document.getElementById('page-player');
@@ -273,13 +274,15 @@ function restoreSession(){try{let s=localStorage.getItem("ft_s");if(!s)return;le
 }catch(e){}}
 
 let pendingSession=null;
+let resumeAt=null;   // secondes exactes a reprendre (non arrondies)
 
 function doResume(){
   if(!pendingSession)return;
   let d=pendingSession;
   baseHz=d.hz||432;diff=d.df||1.2;secondsLeft=d.sl;currentLabel=d.lb||"";
   seqQueue=d.sq||[];seqIndex=d.si||0;seqType=d.st||"";seqProtoName=d.sp||"";seqEveilDiffs=d.sd||[];
-  timerMin=Math.ceil(d.sl/60);
+  timerMin=Math.max(1,Math.ceil(d.sl/60));
+  resumeAt=d.sl;   // on reprend a la SECONDE exacte, pas a la minute arrondie
   document.getElementById("resume-bar").style.display="none";
   // Also hide player resume overlay if present
   let pr=document.getElementById("player-resume-overlay");
@@ -288,6 +291,8 @@ function doResume(){
   updateDisplays();updateTimerDisplay();
   if(seqType&&seqQueue.length>0){
     openPlayer();
+    poserEtape(seqIndex);   // remet la plage en cours, son libelle et son etape dans le lecteur
+    resumeAt=d.sl;          // poserEtape a pu recaler timerMin : on rearme la position exacte
     startAudioSequence();
   } else {
     startAudio();
@@ -1096,7 +1101,7 @@ function startAudio(){
   paused=false;
   updateMediaSession();
   if(timerMin>0){
-    secondsLeft=timerMin*60;updateTimerDisplay();
+    secondsLeft=(resumeAt!==null&&resumeAt>0)?resumeAt:timerMin*60;resumeAt=null;updateTimerDisplay();
     timerInterval=setInterval(function(){secondsLeft--;saveSession();updateTimerDisplay();if(secondsLeft<=0){playEndChime();stopAudio();}},1000);
   }
   }catch(err){
@@ -1709,7 +1714,7 @@ function startAudioSequence(){
   pb.style.display="flex";pb.innerHTML="\u23f8 Pause";
   pb.style.borderColor="var(--green-border)";pb.style.background="var(--green-bg)";pb.style.color="var(--green)";
   paused=false;
-  secondsLeft=timerMin*60;updateTimerDisplay();
+  secondsLeft=(resumeAt!==null&&resumeAt>0)?resumeAt:timerMin*60;resumeAt=null;updateTimerDisplay();
   timerInterval=setInterval(function(){
     secondsLeft--;saveSession();updateTimerDisplay();
     if(secondsLeft<=0){
@@ -1847,7 +1852,7 @@ function aeInit(){
   var hz=Math.round(ps.hz||432);
   var min=Math.max(1,Math.round((ps.sl||0)/60));
   txt.textContent='Reprendre \u2014 '+lb+' \u00b7 '+hz+' Hz';
-  if(sub){sub.textContent='Derni\u00e8re s\u00e9ance interrompue \u00b7 '+min+' min restantes';sub.style.display='block';}
+  if(sub){var _m=Math.floor((ps.sl||0)/60),_s=(ps.sl||0)%60;sub.textContent='Derni\u00e8re s\u00e9ance interrompue \u00b7 '+_m+':'+String(_s).padStart(2,'0')+' restantes';sub.style.display='block';}
   box.style.display='flex';
 }
 document.addEventListener('DOMContentLoaded',function(){setTimeout(aeInit,400);});
