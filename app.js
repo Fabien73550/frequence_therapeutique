@@ -546,8 +546,7 @@ function launchPlaylist(slot){
   function go(){
     seqQueue=playlists[slot].map(function(p){return{n:p.nom,hz:p.hz,d:p.d,source:p.source||''};});
     seqType="playlist";seqProtoName=slot==="matin"?"Playlist Matin":"Playlist Soir";seqIndex=0;
-    let binBtn=document.querySelector('.nav-btn');
-    if(binBtn)showPage('binaural',binBtn);
+    showPage('binaural',null);
     openPlayer();
     poserEtape(seqIndex);
   }
@@ -1092,6 +1091,7 @@ function startAudio(){
   merger.connect(gainNode);gainNode.connect(audioCtx.destination);
   leftOsc.start();rightOsc.start();
   playing=true;
+  majBarreLecteur();
   document.getElementById("play-btn").disabled=false;
   document.getElementById("play-btn").className="play-btn playing";
   document.getElementById("play-btn").innerHTML="<span class='pulse'></span>";
@@ -1706,6 +1706,7 @@ function startAudioSequence(){
   merger.connect(gainNode);gainNode.connect(audioCtx.destination);
   leftOsc.start();rightOsc.start();
   playing=true;
+  majBarreLecteur();
   updateVoyageBtn();
   updateMediaSession();
   document.getElementById("play-btn").className="play-btn playing";
@@ -1818,12 +1819,14 @@ function showPage(id,btn){
   document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
   document.getElementById("page-"+id).classList.add("active");
   document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.remove("active");});
-  btn.classList.add("active");
+  if(btn)btn.classList.add("active");
+  var _hb=document.getElementById("btn-accueil");
+  if(_hb)_hb.style.display=(id==="accueil")?"none":"flex";
   // Masquer le bandeau lecteur sur Binaural (déjà un bouton "Lancer l'écoute" sur cette page)
   let pbEl=document.getElementById("play-bar");
-  if(pbEl)pbEl.style.display=(id==='binaural'||id==='accueil')?"none":"flex";
+  if(pbEl)pbEl.style.display=(id==='binaural')?"none":((id==='accueil'&&!(playing||paused))?"none":"flex");
   if(id==='accueil')aeInit();
-  window.scrollTo(0,0);
+  try{document.body.scrollTop=0;document.documentElement.scrollTop=0;}catch(e){}window.scrollTo(0,0);
   // Build pathogènes lazily on first visit
   if(id==='pathogenes'){
     let pl=document.getElementById('path-list');
@@ -1866,12 +1869,17 @@ window.addEventListener('appinstalled',function(){
 
 // ====== PAGE ACCUEIL (vignettes) ======
 // Chaque carte mene a sa page ; le bouton du bas correspondant est active.
+function hautDePage(){
+  try{document.body.scrollTop=0;document.documentElement.scrollTop=0;}catch(e){}
+  window.scrollTo(0,0);
+}
 function aeVers(id){
   var map={binaural:'nav-binaural',proto:'nav-binaural',eveil:'nav-binaural',
            pathogenes:'nav-binaural',history:'nav-binaural',perso:'nav-perso',
            mineraux:'nav-mineraux',symptomes:'nav-symptomes',favs:'nav-favs'};
   var b=document.getElementById(map[id]||'nav-accueil');
   showPage(id,b);
+  hautDePage();
 }
 // Bloc "Reprendre" : affiche uniquement s'il y a vraiment une seance interrompue.
 function aeInit(){
@@ -2260,8 +2268,7 @@ if('serviceWorker' in navigator){
     // Afficher la carte partagée et aller sur l'onglet Perso
     let card=document.getElementById('playlist-card-partage');
     if(card)card.style.display='block';
-    let persoBtn=document.querySelectorAll('.nav-btn')[1];
-    if(persoBtn)showPage('perso',persoBtn);
+    showPage('perso',null);
   }
 })();
 
@@ -2540,6 +2547,14 @@ document.addEventListener('click', function(e) {
 // Applique le volume au lecteur principal ET a l'ecoute libre.
 // Toujours annuler les automations en attente : sinon la montee de 2 s programmee
 // au demarrage reprend la main et le gain revient a 0,25 (mesure du 28/10/2026).
+function majBarreLecteur(){
+  try{
+    var pb=document.getElementById("play-bar");
+    var ac=document.getElementById("page-accueil");
+    if(!pb)return;
+    if(ac&&ac.classList.contains("active"))pb.style.display=(playing||paused)?"flex":"none";
+  }catch(e){}
+}
 function appliquerVolume(){
   const v = masterVolume;
   // Lissage : setValueAtTime sautait d'un coup a chaque pixel du curseur -> craquements
