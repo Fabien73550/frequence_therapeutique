@@ -2542,16 +2542,22 @@ document.addEventListener('click', function(e) {
 // au demarrage reprend la main et le gain revient a 0,25 (mesure du 28/10/2026).
 function appliquerVolume(){
   const v = masterVolume;
+  // Lissage : setValueAtTime sautait d'un coup a chaque pixel du curseur -> craquements
+  // (bruit de "zipper" numerique). setTargetAtTime part de la valeur en cours et rejoint
+  // la nouvelle en ~15 ms : plus aucune discontinuite audible (31/10/2026).
+  const TAU = 0.015;
   if (gainNode && audioCtx) {
     try {
-      gainNode.gain.cancelScheduledValues(0);              // annule aussi la montee de 2 s
-      gainNode.gain.setValueAtTime(v, audioCtx.currentTime); // valeur immediate, sans rampe
+      const t = audioCtx.currentTime;
+      gainNode.gain.cancelScheduledValues(t);   // annule aussi la montee de 2 s programmee
+      gainNode.gain.setTargetAtTime(v, t, TAU);
     } catch(e) {}
   }
   if (liveGain && liveCtx) {
     try {
-      liveGain.gain.cancelScheduledValues(0);
-      liveGain.gain.setValueAtTime(v, liveCtx.currentTime);
+      const t2 = liveCtx.currentTime;
+      liveGain.gain.cancelScheduledValues(t2);
+      liveGain.gain.setTargetAtTime(v, t2, TAU);
     } catch(e) {}
   }
 }
