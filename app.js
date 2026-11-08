@@ -1459,6 +1459,15 @@ function buildMineraux(){
     hdr.onclick=function(){
       let ouvert=body.classList.toggle("ouvert");
       fl.textContent=ouvert?"\u25BC":"\u25B6";
+      // Accordeon exclusif : ouvrir une categorie referme celle qui etait ouverte
+      if(ouvert){
+        Array.prototype.forEach.call(accordion.querySelectorAll(".mx-contenu.ouvert"),function(autre){
+          if(autre===body)return;
+          autre.classList.remove("ouvert");
+          let b2=autre.previousElementSibling;
+          if(b2){let f2=b2.querySelector(".fl");if(f2)f2.textContent="\u25B6";}
+        });
+      }
     };
     wrap.appendChild(hdr);wrap.appendChild(body);
     return wrap;
@@ -2291,7 +2300,7 @@ function filterSymptomes() {
 init();
 checkFirstVisit();
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js?v=291026r');
+  navigator.serviceWorker.register('sw.js?v=081126');
 }
 
 // --- DETECTION LIEN PARTAGE ---
